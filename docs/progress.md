@@ -227,3 +227,65 @@ progate_clone/
   → 導入理由: 設計書2節で指定された軽量・拡張しやすいエディタライブラリのため
 - iframe(srcdoc)による実行結果プレビューの土台を実装
 - 正誤判定・進捗保存はまだ行わない（ステップ5・6で実装）
+
+---
+
+## 2026-07-24: ステップ4 学習画面（3ペイン）の実装
+
+### 新規ライブラリ導入
+- **`@uiw/react-codemirror`** (+ `@codemirror/lang-html`, `@codemirror/state`,
+  `@codemirror/view`, `@codemirror/theme-one-dark`, `codemirror`)
+  - 導入理由: 設計書でエディタとして指定されている CodeMirror 6 を素のAPIで
+    Reactに組み込む場合、`EditorView`の生成・破棄や値の同期を`useRef`/`useEffect`で
+    手動管理する必要があり複雑になる。`@uiw/react-codemirror`は広く使われている
+    実績のあるReact用ラッパーで、`<CodeMirror value={} onChange={} />`という
+    シンプルなPropsベースのAPIを提供するため、保守性・可読性・「未経験者にも
+    理解しやすいコード」という方針に合致すると判断した。
+
+### 実施内容
+- `src/components/SlidePanel.tsx`: 左ペイン。スライド番号(`n / 総数`)、
+  explanation本文またはexercise問題文+ヒント、前へ/次へボタンを表示する
+  プレゼンテーショナルコンポーネント
+- `src/components/CodeEditor.tsx`（`"use client"`）: CodeMirror 6 + HTML言語モードの
+  コードエディタ。`value`/`onChange`をpropsで受け取るだけのシンプルな作り
+- `src/components/PreviewPane.tsx`: `iframe srcDoc`で受け取ったコードをそのまま
+  レンダリングする実行結果プレビュー。`sandbox="allow-same-origin"`のみを指定し
+  `allow-scripts`は付けていない（HTML/CSSコースでは`<script>`実行が不要なため、
+  安全側に倒した設定。将来JSコース追加時に`allow-scripts`の要否を検討する）
+- `src/components/LessonWorkspace.tsx`（`"use client"`）: スライドindexとコード文字列を
+  Stateで保持する3ペインのコンテナ。スライド切り替え時、exerciseスライドなら
+  `starterCode`で、explanationスライドなら空文字でコードをリセットする
+- `src/app/courses/[courseId]/lessons/[lessonId]/page.tsx`: レッスンをServer Component
+  として取得し、`LessonWorkspace`（Client Component）に渡す構成。存在しない
+  lessonIdは`notFound()`で404
+
+正誤判定ボタン・ヒント表示のトリガー・進捗保存は設計書の通りステップ5・6で実装するため、
+本ステップではプレビューは入力するたびに即座に更新される「土台」の状態にとどめている。
+
+### 変更・作成したファイル
+- 新規: `src/components/SlidePanel.tsx`, `CodeEditor.tsx`, `PreviewPane.tsx`, `LessonWorkspace.tsx`
+- 新規: `src/app/courses/[courseId]/lessons/[lessonId]/page.tsx`
+- 変更: `package.json` / `package-lock.json`（CodeMirror関連パッケージ追加）
+
+### 動作確認結果
+- `npm run lint` → エラーなし
+- `npm run build` → ビルド成功（学習画面ルートが約195KBの追加バンドルとして認識、妥当な範囲）
+- **実ブラウザでの動作確認**（Playwright + Chromiumを使用。`run`スキルの案内に従い、
+  `chromium-cli`が未導入の環境だったためPlaywrightで代替）:
+  - `http://localhost:3000/courses/html-css/lessons/01-html-basic`を開き、
+    左ペインに解説文、右上にCodeMirmorエディタ、右下にiframeプレビューの
+    3ペインレイアウトが正しく表示されることをスクリーンショットで確認
+  - 「次へ」クリックでexerciseスライド(2/2)に切り替わり、問題文・ヒント・
+    starterCodeが正しく表示されることを確認（最終スライドのため「次へ」は無効化）
+  - エディタに`<h1>Hello World</h1>`を入力 → iframeプレビューが即座に更新され、
+    「Hello World」の見出しがレンダリングされることを確認
+    (`iframe.contentDocument`から`h1`のtextContentを取得して検証)
+  - ブラウザコンソールエラー: **0件**
+
+### 次回やること（ステップ5: 正誤判定ロジック実装）
+- `src/lib/judge/htmlCssJudge.ts`を実装し、`checkType`（`contains-tag`, `css-property`）
+  ごとの判定関数をStrategyパターンでディスパッチ
+- 学習画面に「実行して確認する」ボタンを追加し、押下時に`iframe.contentDocument`を
+  判定ロジックに渡して正誤判定
+- 正解時は次のスライドへ自動的に進める、不正解時はヒントを表示する動作を実装
+- 設計書11節の「CSS判定の厳密さ」「ヒント表示のタイミング」を実装時に検討・決定する
