@@ -1,0 +1,22 @@
+{
+  "id": "01-html-basic",
+  "title": "HTMLとは",
+  "slides": [
+    {
+      "type": "explanation",
+      "body": "HTMLはWebページの構造を作るための言語です。\n<h1>タグは見出しを表します。"
+    },
+    {
+      "type": "exercise",
+      "instruction": "見出し「Hello World」を表示する<h1>タグを書いてみましょう。",
+      "starterCode": "<!-- ここにコードを書いてください -->\n",
+      "solutionCode": "<h1>Hello World</h1>",
+      "checkType": "contains-tag",
+      "checkRule": {
+        "tag": "h1",
+        "textContent": "Hello World"
+      },
+      "hint": "<h1>タグで文字を囲みましょう"
+    }
+  ]
+}

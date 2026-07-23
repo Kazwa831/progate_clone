@@ -1,0 +1,23 @@
+{
+  "id": "03-css-basic",
+  "title": "CSSで文字に色をつける",
+  "slides": [
+    {
+      "type": "explanation",
+      "body": "CSSを使うとHTMLの要素に色やサイズなどのスタイルを設定できます。\n<style>タグの中に「セレクタ { プロパティ: 値; }」の形式で書きます。"
+    },
+    {
+      "type": "exercise",
+      "instruction": "<h1>タグの文字色を赤色(red)にしてみましょう。",
+      "starterCode": "<style>\n  /* ここにCSSを書いてください */\n</style>\n<h1>Hello World</h1>",
+      "solutionCode": "<style>\n  h1 {\n    color: red;\n  }\n</style>\n<h1>Hello World</h1>",
+      "checkType": "css-property",
+      "checkRule": {
+        "selector": "h1",
+        "property": "color",
+        "value": "red"
+      },
+      "hint": "h1 { color: red; } のように書いてみましょう"
+    }
+  ]
+}

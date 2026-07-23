@@ -134,3 +134,50 @@ progate_clone/
 - `src/types/lesson.ts`に型定義を作成
 - `src/lib/contentLoader.ts`でJSON読み込みユーティリティを実装
 - `/api/courses`, `/api/courses/[courseId]`等のAPIを実装し動作確認
+
+---
+
+## 2026-07-24: ステップ2 コンテンツ読み込み基盤
+
+### 実施内容
+- `src/types/lesson.ts`に設計書4.4節の型定義（`Slide`, `Lesson`, `Chapter`, `Course`等）を作成
+- `content/html-css/course.json`を作成（第1章: HTMLの基本(2レッスン)、第2章: CSSで装飾する(1レッスン)）
+- サンプルレッスンJSONを3件作成
+  - `01-html-basic.json`（`<h1>`タグ、checkType: `contains-tag`）
+  - `02-html-tags.json`（`<p>`タグ・`<ul>/<li>`タグ、checkType: `contains-tag`）
+  - `03-css-basic.json`（`color`プロパティ、checkType: `css-property`）
+  - 3種類のchekType（`contains-tag`, `css-property`）を実データでカバーし、ステップ5の判定ロジック実装に備えた
+- `src/lib/contentLoader.ts`を実装（`fs`で`content/`配下のJSONを読み込む）
+  - `getAllCourses()`: 全コースのメタ情報一覧を取得
+  - `getCourseById(courseId)`: 指定コースの章・レッスン一覧を取得（存在しなければ`null`）
+  - `getLessonById(courseId, lessonId)`: 指定レッスンのスライド内容を取得（存在しなければ`null`）
+- 設計書8節のAPI設計に沿って、コース/レッスン系の3エンドポイントを実装
+  - `GET /api/courses`
+  - `GET /api/courses/[courseId]`
+  - `GET /api/courses/[courseId]/lessons/[lessonId]`
+  - いずれもNext.js 15の非同期`params`規約（`await params`）に対応
+  - 存在しないIDの場合は`404`と`{ error: string }`を返す
+
+### 変更・作成したファイル
+- 新規: `src/types/lesson.ts`
+- 新規: `content/html-css/course.json`
+- 新規: `content/html-css/lessons/01-html-basic.json`, `02-html-tags.json`, `03-css-basic.json`
+- 新規: `src/lib/contentLoader.ts`
+- 新規: `src/app/api/courses/route.ts`
+- 新規: `src/app/api/courses/[courseId]/route.ts`
+- 新規: `src/app/api/courses/[courseId]/lessons/[lessonId]/route.ts`
+
+### 動作確認結果
+- 全JSONファイルを`python3 -m json.tool`で構文チェック → 全て正常
+- `npm run lint` → エラーなし
+- `npm run build` → ビルド成功（3つのAPIルートが動的ルートとして正しく認識されている）
+- `npm run dev`で起動し、`curl`で全エンドポイントを確認
+  - `GET /api/courses` → **HTTP 200**、コース一覧JSONを返却
+  - `GET /api/courses/html-css` → **HTTP 200**、章・レッスン一覧を返却
+  - `GET /api/courses/html-css/lessons/01-html-basic` → **HTTP 200**、スライド内容を返却
+  - `GET /api/courses/not-exist` → **HTTP 404**、`{"error":"Course not found"}`を返却（異常系も確認）
+
+### 次回やること（ステップ3: コース一覧・コース詳細画面）
+- `/`（コース一覧トップページ）を実装し、`CourseCard`コンポーネントでコース一覧を表示
+- `/courses/[courseId]`（コース詳細ページ）を実装し、章立て・レッスン一覧を表示
+- この時点では進捗（完了/未着手など）はダミー表示でよい（進捗DB連携はステップ6）
