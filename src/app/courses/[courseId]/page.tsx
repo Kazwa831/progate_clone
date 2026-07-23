@@ -1,9 +1,19 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getCourseById, getLessonById } from "@/lib/contentLoader";
+import { getLessonProgressMap, type LessonStatus } from "@/lib/progress";
+
+// 進捗は学習の都度変わる動的なデータのため、ビルド時の静的プリレンダリング対象から外す
+export const dynamic = "force-dynamic";
 
 type CourseDetailPageProps = {
   params: Promise<{ courseId: string }>;
+};
+
+const STATUS_LABEL: Record<LessonStatus, string> = {
+  not_started: "未着手",
+  in_progress: "学習中",
+  completed: "完了",
 };
 
 export default async function CourseDetailPage({
@@ -15,6 +25,8 @@ export default async function CourseDetailPage({
   if (!course) {
     notFound();
   }
+
+  const progressMap = await getLessonProgressMap(course.id);
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-12">
@@ -39,6 +51,7 @@ export default async function CourseDetailPage({
             <ul className="mt-3 space-y-2">
               {chapter.lessonIds.map((lessonId) => {
                 const lesson = getLessonById(course.id, lessonId);
+                const status = progressMap.get(lessonId)?.status ?? "not_started";
                 return (
                   <li key={lessonId}>
                     <Link
@@ -46,8 +59,9 @@ export default async function CourseDetailPage({
                       className="flex items-center justify-between rounded-md px-3 py-2 hover:bg-gray-50"
                     >
                       <span>{lesson?.title ?? lessonId}</span>
-                      {/* 進捗ステータスはステップ6で実データに置き換える */}
-                      <span className="text-xs text-gray-400">未着手</span>
+                      <span className="text-xs text-gray-400">
+                        {STATUS_LABEL[status]}
+                      </span>
                     </Link>
                   </li>
                 );

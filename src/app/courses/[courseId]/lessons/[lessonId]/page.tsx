@@ -22,7 +22,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
         </h1>
       </header>
       <div className="min-h-0 flex-1">
-        <LessonWorkspace lesson={lesson} />
+        <LessonWorkspace courseId={courseId} lesson={lesson} />
       </div>
     </div>
   );

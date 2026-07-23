@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Lesson } from "@/types/lesson";
 import type { JudgeResult } from "@/lib/judge/types";
 import { judgeExercise } from "@/lib/judge/htmlCssJudge";
@@ -10,6 +10,7 @@ import { PreviewPane } from "@/components/PreviewPane";
 import { ResultChecker } from "@/components/ResultChecker";
 
 type LessonWorkspaceProps = {
+  courseId: string;
   lesson: Lesson;
 };
 
@@ -21,7 +22,23 @@ function initialCodeFor(lesson: Lesson, slideIndex: number): string {
 // 正解表示を見せてから次のスライドへ進めるまでの待機時間
 const ADVANCE_DELAY_MS = 1000;
 
-export function LessonWorkspace({ lesson }: LessonWorkspaceProps) {
+function reportProgress(
+  courseId: string,
+  lessonId: string,
+  slideIndex: number,
+  totalSlides: number
+) {
+  const status = slideIndex === totalSlides - 1 ? "completed" : "in_progress";
+  fetch("/api/progress", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ courseId, lessonId, currentSlide: slideIndex, status }),
+  }).catch(() => {
+    // ローカル学習ツールのため、進捗保存に失敗しても学習自体は継続できるようにする
+  });
+}
+
+export function LessonWorkspace({ courseId, lesson }: LessonWorkspaceProps) {
   const [slideIndex, setSlideIndex] = useState(0);
   const [code, setCode] = useState(() => initialCodeFor(lesson, 0));
   const [result, setResult] = useState<JudgeResult | null>(null);
@@ -29,10 +46,17 @@ export function LessonWorkspace({ lesson }: LessonWorkspaceProps) {
 
   const currentSlide = lesson.slides[slideIndex];
 
+  useEffect(() => {
+    reportProgress(courseId, lesson.id, 0, lesson.slides.length);
+    // レッスンを開いた時点の初回1回だけ記録する
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   function goToSlide(nextIndex: number) {
     setSlideIndex(nextIndex);
     setCode(initialCodeFor(lesson, nextIndex));
     setResult(null);
+    reportProgress(courseId, lesson.id, nextIndex, lesson.slides.length);
   }
 
   function handleCheck() {

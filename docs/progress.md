@@ -338,3 +338,73 @@ progate_clone/
 - `/api/progress`（GET/POST）を実装し、レッスンの`currentSlide`・`status`をDBに保存
 - 学習画面（`LessonWorkspace`）からスライド遷移時・正解時に進捗更新APIを呼び出す
 - コース一覧・コース詳細ページのプレースホルダー進捗表示を実データに置き換える
+
+---
+
+## 2026-07-24: ステップ6 進捗保存機能の実装
+
+### 実施内容
+- `src/lib/progress.ts`を新規作成
+  - `getAllCourseProgress()`: 全コースの`{ courseId, totalLessons, completedLessons }`を返す
+    （`CourseProgress`テーブルに未作成のコースはレッスン0件完了として扱う）
+  - `getLessonProgressMap(courseId)`: コース内の各レッスンの`status`/`currentSlide`をMapで返す
+  - `updateLessonProgress()`: `LessonProgress`をupsertしつつ、一度「完了」になったレッスンは
+    後でスライドを見返しても未完了へ後退させない（一度`completed`なら`completed`を維持）
+  - 更新のたびに`CourseProgress`（完了レッスン数のキャッシュ）を実データから再集計して同期
+    （インクリメンタルに数値を足し引きするのではなく都度カウントし直す方式にし、
+    ズレが蓄積するバグを防止）
+- `src/app/api/progress/route.ts`: `GET`（一覧取得）と`POST`（進捗更新、バリデーション付き・
+  不正な値は400を返す）を実装
+- `src/components/LessonWorkspace.tsx`: レッスンを開いた初回と、スライド遷移のたびに
+  `/api/progress`へPOSTするように変更（`courseId`をpropsに追加）
+- コース一覧(`src/app/page.tsx`)・コース詳細(`src/app/courses/[courseId]/page.tsx`)の
+  プレースホルダー表示を、`getAllCourseProgress()`/`getLessonProgressMap()`から取得した
+  実データに置き換え
+
+### 設計上の判断（Server ComponentからのAPI呼び出し方針）
+設計書8節では`GET /api/progress`が「トップページ用」と明記されているが、トップページ
+（Server Component）が自分自身のAPI Routeをfetchするのは不要なネットワークホップになるため、
+`src/lib/progress.ts`の関数をAPI RouteとServer Componentの両方から直接呼び出す共通ロジック層
+として実装した。`/api/progress`のGET/POSTは設計書通りAPIとして存在し、クライアント側
+（`LessonWorkspace`の進捗POST）から実際に利用されている。
+
+### 重大な不具合の発見と修正（Next.js + Turbopack + Prisma + SQLite相対パス問題）
+`npm run build`時にトップページの静的プリレンダリングで
+`Error code 14: Unable to open the database file`が発生。原因は2点:
+1. 進捗表示は本質的に「都度変わる動的データ」であり、静的プリレンダリング対象にすべきでは
+   なかった → `/`と`/courses/[courseId]`に`export const dynamic = "force-dynamic"`を追加
+2. それでも`npm run dev`実行時に同じエラーが発生することが判明。`.env`の
+   `DATABASE_URL="file:../data/app.db"`という相対パスが、Next.js(Turbopack)のランタイム
+   実行コンテキストでは正しく解決されないことが原因（Prisma CLIからは正しく解決される）。
+   → `src/lib/prisma.ts`で`path.join(process.cwd(), "data", "app.db")`により絶対パスを
+   組み立て、`new PrismaClient({ datasourceUrl })`で明示的に上書きするよう修正。
+   `.env`の値はPrisma CLI（migrate等）専用として残している。
+
+### 変更・作成したファイル
+- 新規: `src/lib/progress.ts`, `src/app/api/progress/route.ts`
+- 変更: `src/lib/prisma.ts`（絶対パスでのDB接続に修正）
+- 変更: `src/components/LessonWorkspace.tsx`（進捗POST機能を追加、`courseId` prop追加）
+- 変更: `src/app/courses/[courseId]/lessons/[lessonId]/page.tsx`（`courseId`を渡すよう修正）
+- 変更: `src/components/CourseCard.tsx`（progress propsを受け取るように変更）
+- 変更: `src/app/page.tsx`（実進捗データの取得・`force-dynamic`化）
+- 変更: `src/app/courses/[courseId]/page.tsx`（実ステータス表示・`force-dynamic`化）
+
+### 動作確認結果
+- `npm run lint` → エラーなし
+- `npm run build` → ビルド成功（修正前は`/`のプリレンダリングでDBエラーが発生することを確認済み）
+- **実ブラウザでの動作確認**（Playwright + Chromium）:
+  - 学習前: トップページで「0 / 3 レッスン完了」を確認
+  - `01-html-basic`レッスンを最後まで正解して完了 → コース詳細ページで該当レッスンが
+    「完了」表示に変化することを確認
+  - トップページの進捗表示が「1 / 3 レッスン完了」に更新されることを確認
+  - `GET /api/progress`が実データ(`[{"courseId":"html-css","totalLessons":3,"completedLessons":1}]`)を
+    返すことを`curl`で確認
+  - `POST /api/progress`に不正なボディを送ると`400`+`{"error":"Invalid request body"}`を
+    返すことを確認（異常系）
+  - ブラウザコンソールエラー: **0件**
+  - 検証で作成したテスト用進捗データは、コミット前にスクリプトで削除しクリーンな状態に戻した
+
+### 次回やること（ステップ7: HTML/CSSコースの中身を拡充）
+- 設計書10節のMVPスコープに沿って、実際に学習に使える分量までレッスン数を拡充
+- 設計書11節の「レッスンの粒度・数」をどの程度まで拡充するか、方針を確認しながら進める
+- 拡充した内容でも判定ロジック・進捗保存が問題なく動作することを回帰確認する
