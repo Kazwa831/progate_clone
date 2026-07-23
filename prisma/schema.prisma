@@ -1,0 +1,32 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model LessonProgress {
+  id           Int       @id @default(autoincrement())
+  courseId     String
+  lessonId     String
+  status       String    @default("not_started") // not_started | in_progress | completed
+  currentSlide Int       @default(0)
+  completedAt  DateTime?
+  updatedAt    DateTime  @updatedAt
+
+  @@unique([courseId, lessonId])
+}
+
+model CourseProgress {
+  id               Int      @id @default(autoincrement())
+  courseId         String   @unique
+  totalLessons     Int
+  completedLessons Int      @default(0)
+  updatedAt        DateTime @updatedAt
+}
