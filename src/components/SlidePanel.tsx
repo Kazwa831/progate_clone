@@ -26,16 +26,9 @@ export function SlidePanel({
             {slide.body}
           </p>
         ) : (
-          <>
-            <p className="mt-4 whitespace-pre-line text-gray-800">
-              {slide.instruction}
-            </p>
-            {slide.hint && (
-              <p className="mt-4 text-sm text-gray-500">
-                ヒント: {slide.hint}
-              </p>
-            )}
-          </>
+          <p className="mt-4 whitespace-pre-line text-gray-800">
+            {slide.instruction}
+          </p>
         )}
       </div>
       <div className="mt-6 flex justify-between">

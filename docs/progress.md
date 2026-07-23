@@ -289,3 +289,52 @@ progate_clone/
   判定ロジックに渡して正誤判定
 - 正解時は次のスライドへ自動的に進める、不正解時はヒントを表示する動作を実装
 - 設計書11節の「CSS判定の厳密さ」「ヒント表示のタイミング」を実装時に検討・決定する
+
+---
+
+## 2026-07-24: ステップ5 正誤判定ロジック実装
+
+### 設計書11節の未確定事項に対する判断
+- **CSS判定の厳密さ**: `getComputedStyle`による厳密判定を採用しつつ、
+  「期待値の文字列（例: `"red"`）」と「ブラウザが解決した実際の値（例: `"rgb(255, 0, 0)"`）」の
+  表記ゆれを吸収するため、非表示のprobe要素に同じ値を設定して`getComputedStyle`を通し、
+  ブラウザ自身に正規化させてから比較する方式を採用した。プロパティごとに色名↔rgb変換表を
+  自前で持つ必要がなく、`color`以外のプロパティにも汎用的に対応できる。
+- **ヒント表示のタイミング**: 「不正解1回目から表示する」方針とした。個人学習用ツールであり
+  ゲーム性よりも学習効率を優先するため、つまずいたらすぐヒントが見える方が親切と判断。
+  また、常時表示ではなく「不正解を1回試した後にのみ」表示することで、設計書6.3の
+  「不正解ならヒント表示」という指示にも合致させた（ステップ4では常時表示にしていたSlidePanelの
+  ヒントを撤去し、`ResultChecker`側に移動した）。
+
+### 実施内容
+- `src/lib/judge/types.ts`: `JudgeResult = { correct: boolean; message?: string }`
+- `src/lib/judge/htmlCssJudge.ts`: `judgeExercise()`が`checkType`に応じて
+  `checkContainsTag`/`checkCssProperty`にディスパッチするStrategyパターンで実装
+- `src/components/ResultChecker.tsx`: 「実行して確認する」ボタン、正誤メッセージ、
+  不正解時のみのヒント表示を担当するコンポーネント
+- `src/components/PreviewPane.tsx`: React 19の「refをpropsとして受け取る」新方式で
+  `ref`を追加し、親から`iframe.contentDocument`にアクセスできるように変更
+- `src/components/LessonWorkspace.tsx`: 「実行して確認する」押下時に`judgeExercise`を呼び、
+  結果をStateに保持。正解時は1秒後に自動で次のスライドへ遷移する処理を追加
+- `src/components/SlidePanel.tsx`: 常時表示していたヒントを削除（ResultChecker側に一本化）
+
+### 変更・作成したファイル
+- 新規: `src/lib/judge/types.ts`, `src/lib/judge/htmlCssJudge.ts`, `src/components/ResultChecker.tsx`
+- 変更: `src/components/PreviewPane.tsx`, `src/components/LessonWorkspace.tsx`, `src/components/SlidePanel.tsx`
+
+### 動作確認結果
+- `npm run lint` → エラーなし
+- `npm run build` → ビルド成功
+- **実ブラウザでの動作確認**（Playwright + Chromium、`02-html-tags`レッスンで検証）:
+  - 不正解（`<p>wrong</p>`）を入力して「実行して確認する」→ 赤字のエラーメッセージと
+    ヒントが表示されることを確認
+  - 正解（`<p>Progateで学習しています</p>`）を入力して実行 → 緑字で「正解です！次の
+    スライドに進みます。」と表示され、約1秒後にスライドが自動で2/3→3/3へ進むことを確認
+  - ブラウザコンソールエラー: **0件**
+
+### 次回やること（ステップ6: 進捗保存機能の実装）
+- `prisma/schema.prisma`は既にステップ1で確定済みのため追加変更は不要な見込み
+  （必要であれば設計書との差異を確認の上で調整）
+- `/api/progress`（GET/POST）を実装し、レッスンの`currentSlide`・`status`をDBに保存
+- 学習画面（`LessonWorkspace`）からスライド遷移時・正解時に進捗更新APIを呼び出す
+- コース一覧・コース詳細ページのプレースホルダー進捗表示を実データに置き換える
