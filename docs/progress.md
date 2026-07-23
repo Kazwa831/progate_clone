@@ -181,3 +181,49 @@ progate_clone/
 - `/`（コース一覧トップページ）を実装し、`CourseCard`コンポーネントでコース一覧を表示
 - `/courses/[courseId]`（コース詳細ページ）を実装し、章立て・レッスン一覧を表示
 - この時点では進捗（完了/未着手など）はダミー表示でよい（進捗DB連携はステップ6）
+
+---
+
+## 2026-07-24: ステップ3 コース一覧・コース詳細画面
+
+### 実施内容
+- `src/components/CourseCard.tsx`を作成（Server Component。コースタイトル・説明・
+  レッスン総数を表示し、コース詳細ページへリンク。進捗表示は設計書の指示通り
+  「0 / 合計レッスン数」のプレースホルダー。実データ連携はステップ6で行う）
+- `src/app/page.tsx`（トップページ）を、`contentLoader.getAllCourses()`から取得した
+  コース一覧を`CourseCard`でグリッド表示するように更新
+- `src/app/courses/[courseId]/page.tsx`（コース詳細ページ）を新規作成
+  - 章（Chapter）ごとに`<details>/<summary>`によるネイティブアコーディオンで表示
+    （クライアントJS不要でシンプルに実装、設計書6.2の「アコーディオン」要件を満たす）
+  - 各レッスンへのリンクと、ステータス表示（現時点では全て「未着手」固定。
+    実際のステータス判定はステップ6で実装）
+  - 存在しない`courseId`の場合は`next/navigation`の`notFound()`で標準404を表示
+- ページ・コンポーネントはServer Componentとして実装（クライアント状態が不要なため
+  `"use client"`は使用していない）
+
+### 変更・作成したファイル
+- 新規: `src/components/CourseCard.tsx`
+- 新規: `src/app/courses/[courseId]/page.tsx`
+- 変更: `src/app/page.tsx`（デフォルト表示 → コース一覧表示）
+
+### 動作確認結果
+- `npm run lint` → エラーなし
+- `npm run build` → ビルド成功。`/`, `/courses/[courseId]`が正しく認識されている
+- `npm run dev`で起動し`curl`で確認
+  - `GET /` → **HTTP 200**、「HTML/CSS基礎コース」のカードと「レッスン完了」の
+    プレースホルダー表示を確認
+  - `GET /courses/html-css` → **HTTP 200**、「第1章: HTMLの基本」「HTMLとは」
+    「段落とリストのタグ」「CSSで文字に色をつける」の表示を確認
+  - `GET /courses/not-exist` → **HTTP 404**（`notFound()`が正しく機能）
+
+### 既知の制限（次ステップで解消予定）
+- コース詳細ページの各レッスンリンク（`/courses/[courseId]/lessons/[lessonId]`）は
+  学習画面がまだ存在しないため、クリックすると404になる。ステップ4で実装する。
+
+### 次回やること（ステップ4: 学習画面（3ペイン）の実装）
+- `/courses/[courseId]/lessons/[lessonId]`ページを新規作成
+- スライド解説・問題文の表示とスライド送り（前へ/次へ）を実装
+- CodeMirror 6を導入し、コードエディタを実装（starterCodeを初期表示）
+  → 導入理由: 設計書2節で指定された軽量・拡張しやすいエディタライブラリのため
+- iframe(srcdoc)による実行結果プレビューの土台を実装
+- 正誤判定・進捗保存はまだ行わない（ステップ5・6で実装）
