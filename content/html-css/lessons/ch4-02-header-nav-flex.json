@@ -1,0 +1,31 @@
+{
+  "id": "ch4-02-header-nav-flex",
+  "title": "ナビゲーションを横並びにしよう",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "メニューをまとめるnavタグ",
+      "body": "ヘッダーの中に置くメニュー（ナビゲーション）には、専用の `<nav>` タグを使います。中には `<ul>` と `<li>` でリンクの一覧を作るのが一般的です。\nそのままだとリンクは縦に並んでしまうので、3章で学んだ `display: flex;` を使って横並びにします。",
+      "points": ["`<nav>` の中の `<ul>` に `display: flex;` を指定すると、メニューが横並びになる"]
+    },
+    {
+      "type": "example",
+      "description": "`nav ul` に `display: flex;` を指定すると、メニューの項目が横に並びます。",
+      "code": "<style>\n  nav ul {\n    display: flex;\n  }\n</style>\n<header>\n  <h1>My Website</h1>\n  <nav>\n    <ul>\n      <li>Home</li>\n      <li>About</li>\n      <li>Contact</li>\n    </ul>\n  </nav>\n</header>"
+    },
+    {
+      "type": "exercise",
+      "instruction": "`<nav>` 内の `<ul>` に `display: flex;` を設定して、メニューを横並びにしてみましょう。",
+      "starterCode": "<style>\n  /* ここにCSSを書いてください */\n</style>\n<header>\n  <h1>My Website</h1>\n  <nav>\n    <ul>\n      <li>Home</li>\n      <li>About</li>\n      <li>Contact</li>\n    </ul>\n  </nav>\n</header>",
+      "solutionCode": "<style>\n  nav ul {\n    display: flex;\n  }\n</style>\n<header>\n  <h1>My Website</h1>\n  <nav>\n    <ul>\n      <li>Home</li>\n      <li>About</li>\n      <li>Contact</li>\n    </ul>\n  </nav>\n</header>",
+      "checkType": "css-property",
+      "checkRule": {
+        "selector": "nav ul",
+        "property": "display",
+        "value": "flex"
+      },
+      "hint": "`nav ul { display: flex; }` のように書いてみましょう。",
+      "commonMistakes": ["`nav` 自体ではなく `nav` の中の `ul` に `display: flex;` を指定する点に注意"]
+    }
+  ]
+}

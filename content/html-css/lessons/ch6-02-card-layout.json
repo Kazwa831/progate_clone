@@ -1,0 +1,43 @@
+{
+  "id": "ch6-02-card-layout",
+  "title": "カードを並べよう",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "カードを一覧にする",
+      "body": "商品一覧やブログ一覧のように、同じ形のカードをいくつも並べるレイアウトはとてもよく使われます。\n`class` をつけた `<div>` をカードの単位として作り、それらをまとめる親要素に `display: flex;` を指定すれば、横並びのカード一覧になります。",
+      "points": ["同じ構造・同じclass名の `<div>` を繰り返すことで、統一感のあるカード一覧になる"]
+    },
+    {
+      "type": "example",
+      "description": "class「card」をつけた `<div>` を3つ並べ、親の `.cards` に `display: flex;` を指定します。",
+      "code": "<style>\n  .cards {\n    display: flex;\n  }\n  .card {\n    border: 1px solid black;\n    padding: 16px;\n  }\n</style>\n<div class=\"cards\">\n  <div class=\"card\">商品A</div>\n  <div class=\"card\">商品B</div>\n  <div class=\"card\">商品C</div>\n</div>"
+    },
+    {
+      "type": "exercise",
+      "instruction": "class「card」の `<div>` を3つ作ってみましょう。中身のテキストは自由です。",
+      "starterCode": "<div class=\"cards\">\n  <!-- ここにcard divを3つ書いてください -->\n</div>",
+      "solutionCode": "<div class=\"cards\">\n  <div class=\"card\">商品A</div>\n  <div class=\"card\">商品B</div>\n  <div class=\"card\">商品C</div>\n</div>",
+      "checkType": "contains-tag",
+      "checkRule": {
+        "tag": ".card",
+        "minCount": 3
+      },
+      "hint": "`<div class=\"card\">商品A</div>` のような `<div>` を3つ並べましょう。"
+    },
+    {
+      "type": "exercise",
+      "instruction": "class「cards」の `<div>` に `display: flex;` を設定して、カードを横並びにしてみましょう。",
+      "starterCode": "<style>\n  .cards {\n    /* ここにCSSを書いてください */\n  }\n</style>\n<div class=\"cards\">\n  <div class=\"card\">商品A</div>\n  <div class=\"card\">商品B</div>\n  <div class=\"card\">商品C</div>\n</div>",
+      "solutionCode": "<style>\n  .cards {\n    display: flex;\n  }\n</style>\n<div class=\"cards\">\n  <div class=\"card\">商品A</div>\n  <div class=\"card\">商品B</div>\n  <div class=\"card\">商品C</div>\n</div>",
+      "checkType": "css-property",
+      "checkRule": {
+        "selector": ".cards",
+        "property": "display",
+        "value": "flex"
+      },
+      "hint": "`.cards { display: flex; }` のように書いてみましょう。",
+      "commonMistakes": ["カード自身(`.card`)ではなく、カードをまとめる親(`.cards`)に `display: flex;` を指定する"]
+    }
+  ]
+}

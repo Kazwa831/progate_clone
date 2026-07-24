@@ -1,0 +1,30 @@
+{
+  "id": "ch7-03-form-button",
+  "title": "送信ボタンを作ろう",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "フォームを送信するボタン",
+      "body": "入力欄を作っても、送信するボタンがなければお問い合わせを送ることができません。`<button>` タグを使ってボタンを作りましょう。\nタグで挟んだ文字が、そのままボタンに表示されるテキストになります。",
+      "points": ["本格的なフォームでは `<button type=\"submit\">` のように種類を指定することが多いですが、まずはボタンを作れるようになりましょう"]
+    },
+    {
+      "type": "example",
+      "description": "`<button>` タグで挟んだ文字が、ボタンの中に表示されます。",
+      "code": "<form>\n  <input type=\"email\">\n  <textarea></textarea>\n  <button>送信する</button>\n</form>"
+    },
+    {
+      "type": "exercise",
+      "instruction": "`<form>` の中に、「送信する」と表示される `<button>` タグを追加してみましょう。",
+      "starterCode": "<form>\n  <input type=\"email\">\n  <textarea></textarea>\n  <!-- ここにボタンを追加してください -->\n</form>",
+      "solutionCode": "<form>\n  <input type=\"email\">\n  <textarea></textarea>\n  <button>送信する</button>\n</form>",
+      "checkType": "contains-tag",
+      "checkRule": {
+        "tag": "form button",
+        "textContent": "送信する"
+      },
+      "hint": "`<button>送信する</button>` を追加しましょう。",
+      "commonMistakes": ["`<button>` を `<form>` の外に書いてしまう"]
+    }
+  ]
+}

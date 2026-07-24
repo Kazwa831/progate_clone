@@ -1,0 +1,34 @@
+{
+  "id": "ch1-05-images",
+  "title": "画像を表示しよう",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "画像を表示する",
+      "body": "画像を表示するには `<img>` タグを使います。`src` 属性に画像のURL（またはファイルの場所）を、`alt` 属性に画像の代わりとなる説明テキストを指定します。\n`<img>` タグは他のタグと違い、終了タグを書かない特殊なタグです。",
+      "points": [
+        "`alt` の文章は、画像が表示できなかったときや、目が不自由な方が音声で読み上げるときに使われる大切な情報",
+        "`<img>` には終了タグ `</img>` はいらない"
+      ]
+    },
+    {
+      "type": "example",
+      "description": "`src` に画像の場所、`alt` に説明文を指定します。",
+      "code": "<img src=\"logo.png\" alt=\"サイトのロゴ\">"
+    },
+    {
+      "type": "exercise",
+      "instruction": "src属性に「logo.png」、alt属性に「ロゴ」を指定した `<img>` タグを書いてみましょう。",
+      "starterCode": "<!-- ここにコードを書いてください -->\n",
+      "solutionCode": "<img src=\"logo.png\" alt=\"ロゴ\">",
+      "checkType": "contains-tag",
+      "checkRule": {
+        "tag": "img",
+        "attribute": "alt",
+        "attributeValue": "ロゴ"
+      },
+      "hint": "`<img src=\"logo.png\" alt=\"ロゴ\">` のように書いてみましょう。",
+      "commonMistakes": ["`alt` 属性を書き忘れる（アクセシビリティ上、必ず書く癖をつけましょう）"]
+    }
+  ]
+}

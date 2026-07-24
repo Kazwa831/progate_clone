@@ -1,0 +1,34 @@
+{
+  "id": "ch2-02-text-style",
+  "title": "文字を装飾しよう",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "文字の大きさ・太さを変える",
+      "body": "`font-size` で文字の大きさを、`font-weight` で文字の太さを指定できます。\n見出しを大きく太くしたり、注目してほしい文章を強調したりと、情報の重要度を視覚的に伝えることができます。",
+      "points": [
+        "`font-size` の値には `px`（ピクセル）をよく使う",
+        "`font-weight` は `bold`（太字）や `normal`（通常）のようなキーワードで指定できる"
+      ]
+    },
+    {
+      "type": "example",
+      "description": "文字を大きく・太くすることで、見出しらしい見た目になります。",
+      "code": "<style>\n  p {\n    font-size: 24px;\n    font-weight: bold;\n  }\n</style>\n<p>お知らせ</p>"
+    },
+    {
+      "type": "exercise",
+      "instruction": "`<p>` タグの文字サイズ(font-size)を20pxにしてみましょう。",
+      "starterCode": "<style>\n  /* ここにCSSを書いてください */\n</style>\n<p>お知らせ</p>",
+      "solutionCode": "<style>\n  p {\n    font-size: 20px;\n  }\n</style>\n<p>お知らせ</p>",
+      "checkType": "css-property",
+      "checkRule": {
+        "selector": "p",
+        "property": "font-size",
+        "value": "20px"
+      },
+      "hint": "`p { font-size: 20px; }` のように書いてみましょう。",
+      "commonMistakes": ["`px` の単位を書き忘れる（`font-size: 20;` は正しく反映されません）"]
+    }
+  ]
+}

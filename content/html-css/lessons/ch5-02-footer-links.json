@@ -1,0 +1,30 @@
+{
+  "id": "ch5-02-footer-links",
+  "title": "フッターにリンクを並べよう",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "フッターによく置かれるもの",
+      "body": "フッターには、コピーライト表記だけでなく「プライバシーポリシー」や「利用規約」「お問い合わせ」といったリンクがよく置かれます。\nメインのメニューほど目立たなくてもよいので、フッターの下の方にまとめて配置するのが一般的です。",
+      "points": ["フッターのリンクは、ヘッダーのナビゲーションと同じように `<a>` タグで作る"]
+    },
+    {
+      "type": "example",
+      "description": "フッターの中にリンクを追加すると、こんな見た目になります。",
+      "code": "<footer>\n  <p>© 2026 My Website</p>\n  <a href=\"/privacy\">プライバシーポリシー</a>\n</footer>"
+    },
+    {
+      "type": "exercise",
+      "instruction": "`<footer>` の中に「プライバシーポリシー」というリンクを作ってみましょう。リンク先のURLは自由で構いません。",
+      "starterCode": "<footer>\n  <p>© 2026 My Website</p>\n  <!-- ここにリンクを追加してください -->\n</footer>",
+      "solutionCode": "<footer>\n  <p>© 2026 My Website</p>\n  <a href=\"/privacy\">プライバシーポリシー</a>\n</footer>",
+      "checkType": "contains-tag",
+      "checkRule": {
+        "tag": "footer a",
+        "textContent": "プライバシーポリシー"
+      },
+      "hint": "`<a href=\"/privacy\">プライバシーポリシー</a>` のように、`<footer>` の中にリンクを追加しましょう。",
+      "commonMistakes": ["リンクを `<footer>` の外に書いてしまう"]
+    }
+  ]
+}

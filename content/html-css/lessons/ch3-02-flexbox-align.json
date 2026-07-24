@@ -1,0 +1,35 @@
+{
+  "id": "ch3-02-flexbox-align",
+  "title": "配置を整えよう",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "並んだ要素の位置を調整する",
+      "body": "`display: flex;` で横並びにした要素は、`justify-content` で横方向の配置を、`align-items` で縦方向の配置を調整できます。\n`justify-content: center;` にすると要素全体が中央に、`space-between;` にすると要素同士の間隔が均等に広がります。",
+      "points": [
+        "`justify-content` は横方向（Flexboxの主軸方向）の配置",
+        "よく使う値: `center`（中央寄せ）、`space-between`（均等に離す）、`flex-end`（右寄せ）"
+      ]
+    },
+    {
+      "type": "example",
+      "description": "`justify-content: center;` を指定すると、横並びの要素全体が中央に寄ります。",
+      "code": "<style>\n  .container {\n    display: flex;\n    justify-content: center;\n  }\n</style>\n<div class=\"container\">\n  <div>A</div>\n  <div>B</div>\n</div>"
+    },
+    {
+      "type": "exercise",
+      "instruction": "class「container」の `<div>` に `justify-content: center;` を設定して、中の要素を中央に寄せてみましょう。",
+      "starterCode": "<style>\n  .container {\n    display: flex;\n    /* ここにCSSを追加してください */\n  }\n</style>\n<div class=\"container\">\n  <div>A</div>\n  <div>B</div>\n</div>",
+      "solutionCode": "<style>\n  .container {\n    display: flex;\n    justify-content: center;\n  }\n</style>\n<div class=\"container\">\n  <div>A</div>\n  <div>B</div>\n</div>",
+      "checkType": "css-property",
+      "checkRule": {
+        "selector": ".container",
+        "property": "justify-content",
+        "value": "center"
+      },
+      "hint": "`justify-content: center;` を追加してみましょう。",
+      "commonMistakes": ["`display: flex;` を指定し忘れると、`justify-content` の効果が現れない"],
+      "points": ["縦方向の配置を揃えたいときは `align-items` を使います"]
+    }
+  ]
+}

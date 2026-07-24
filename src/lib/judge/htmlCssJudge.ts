@@ -6,16 +6,40 @@ function checkContainsTag(
 ): JudgeResult {
   const tag = checkRule.tag as string;
   const expectedText = checkRule.textContent as string | undefined;
+  const attribute = checkRule.attribute as string | undefined;
+  const expectedAttributeValue = checkRule.attributeValue as string | undefined;
+  const minCount = checkRule.minCount as number | undefined;
 
-  const element = doc.querySelector(tag);
-  if (!element) {
-    return { correct: false, message: `<${tag}>タグが見つかりません` };
+  const elements = Array.from(doc.querySelectorAll(tag));
+  if (elements.length === 0) {
+    return { correct: false, message: `${tag} が見つかりません` };
   }
 
-  if (expectedText !== undefined && element.textContent?.trim() !== expectedText) {
+  if (minCount !== undefined && elements.length < minCount) {
     return {
       correct: false,
-      message: `<${tag}>タグの中身が「${expectedText}」になっていません`,
+      message: `${tag} が${minCount}個以上見つかりません`,
+    };
+  }
+
+  if (
+    expectedText !== undefined &&
+    !elements.some((el) => el.textContent?.trim() === expectedText)
+  ) {
+    return {
+      correct: false,
+      message: `${tag}の中身が「${expectedText}」になっていません`,
+    };
+  }
+
+  if (
+    attribute !== undefined &&
+    expectedAttributeValue !== undefined &&
+    !elements.some((el) => el.getAttribute(attribute) === expectedAttributeValue)
+  ) {
+    return {
+      correct: false,
+      message: `${tag}の${attribute}属性が「${expectedAttributeValue}」になっていません`,
     };
   }
 

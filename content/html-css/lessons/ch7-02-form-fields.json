@@ -1,0 +1,45 @@
+{
+  "id": "ch7-02-form-fields",
+  "title": "複数の入力欄を作ろう",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "用途に合わせた入力欄",
+      "body": "メールアドレスを入力してもらいたいときは `<input type=\"email\">` を使います。見た目はテキスト入力とほぼ同じですが、スマートフォンではメール用のキーボードが表示されるなど、入力しやすくなる効果があります。\nまた、お問い合わせ内容のように複数行の文章を入力してもらいたいときは、`<textarea>` タグを使います。",
+      "points": [
+        "`type=\"email\"` にすると、送信時に正しいメール形式かどうかをブラウザがチェックしてくれる",
+        "`<textarea>` は `<input>` と違い、開始タグと終了タグの両方が必要"
+      ]
+    },
+    {
+      "type": "example",
+      "description": "メール入力欄と、複数行入力できるお問い合わせ内容の欄を組み合わせたフォームです。",
+      "code": "<form>\n  <input type=\"email\">\n  <textarea></textarea>\n</form>"
+    },
+    {
+      "type": "exercise",
+      "instruction": "`<form>` タグの中に、`type` が「email」の `<input>` タグを書いてみましょう。",
+      "starterCode": "<form>\n  <!-- ここにコードを書いてください -->\n</form>",
+      "solutionCode": "<form>\n  <input type=\"email\">\n</form>",
+      "checkType": "contains-tag",
+      "checkRule": {
+        "tag": "form input",
+        "attribute": "type",
+        "attributeValue": "email"
+      },
+      "hint": "`<input type=\"email\">` を `<form>` の中に書きましょう。"
+    },
+    {
+      "type": "exercise",
+      "instruction": "同じ `<form>` の中に、お問い合わせ内容を入力するための `<textarea>` タグを追加してみましょう。",
+      "starterCode": "<form>\n  <input type=\"email\">\n  <!-- ここにtextareaを追加してください -->\n</form>",
+      "solutionCode": "<form>\n  <input type=\"email\">\n  <textarea></textarea>\n</form>",
+      "checkType": "contains-tag",
+      "checkRule": {
+        "tag": "form textarea"
+      },
+      "hint": "`<textarea></textarea>` を追加しましょう。",
+      "commonMistakes": ["`<textarea>` の終了タグを書き忘れる（`<input>` と違って終了タグが必要）"]
+    }
+  ]
+}

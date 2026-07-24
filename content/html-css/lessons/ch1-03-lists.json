@@ -1,0 +1,37 @@
+{
+  "id": "ch1-03-lists",
+  "title": "リストを作ろう",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "複数の項目を並べよう",
+      "body": "メニューや箇条書きのように、複数の項目を並べたいときは `<ul>` タグと `<li>` タグを組み合わせて使います。\n`<ul>` はリスト全体を表し、その中に項目ごとの `<li>` を並べて書きます。",
+      "points": [
+        "`<li>` は必ず `<ul>`（または `<ol>`）の中に書く",
+        "`ol`（ordered list）を使うと、番号付きのリストになる"
+      ]
+    },
+    {
+      "type": "example",
+      "description": "`<ul>` の中に `<li>` を3つ並べると、箇条書きのリストが表示されます。",
+      "code": "<ul>\n  <li>HTML</li>\n  <li>CSS</li>\n  <li>JavaScript</li>\n</ul>"
+    },
+    {
+      "type": "exercise",
+      "instruction": "「HTML」「CSS」「JavaScript」の3つの項目を、`<ul>` タグと `<li>` タグを使ってリスト表示してみましょう。",
+      "starterCode": "<!-- ここにコードを書いてください -->\n",
+      "solutionCode": "<ul>\n  <li>HTML</li>\n  <li>CSS</li>\n  <li>JavaScript</li>\n</ul>",
+      "checkType": "contains-tag",
+      "checkRule": {
+        "tag": "li",
+        "textContent": "HTML",
+        "minCount": 3
+      },
+      "hint": "`<ul>` タグの中に `<li>` タグを3つ書きましょう。",
+      "commonMistakes": [
+        "`<li>` を `<ul>` の外に書いてしまう",
+        "`<li>` タグを閉じ忘れる"
+      ]
+    }
+  ]
+}

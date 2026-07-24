@@ -1,0 +1,30 @@
+{
+  "id": "ch6-01-section",
+  "title": "セクションを作ろう",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "ページ本体をまとまりで分ける",
+      "body": "ヘッダーとフッターの間にある、ページの本体（メインコンテンツ）は、`<section>` タグを使って意味のあるまとまりごとに分けることができます。\n「会社概要」「サービス紹介」のように、1つの話題ごとに `<section>` で区切ると、ページ全体の構造が整理されます。",
+      "points": ["1つの `<section>` の中には、見出し(`<h2>`など)と本文(`<p>`)を入れるのが基本形"]
+    },
+    {
+      "type": "example",
+      "description": "見出しと本文を `<section>` でまとめると、1つの話題のまとまりになります。",
+      "code": "<section>\n  <h2>About</h2>\n  <p>私たちは学習体験をより良くするために活動しています。</p>\n</section>"
+    },
+    {
+      "type": "exercise",
+      "instruction": "`<section>` タグの中に、`<h2>` で「About」という見出しを書いてみましょう。",
+      "starterCode": "<!-- ここにコードを書いてください -->\n",
+      "solutionCode": "<section>\n  <h2>About</h2>\n  <p>私たちは学習体験をより良くするために活動しています。</p>\n</section>",
+      "checkType": "contains-tag",
+      "checkRule": {
+        "tag": "section h2",
+        "textContent": "About"
+      },
+      "hint": "`<section>` タグの中に `<h2>About</h2>` を書きましょう。",
+      "commonMistakes": ["`<section>` を閉じ忘れる"]
+    }
+  ]
+}

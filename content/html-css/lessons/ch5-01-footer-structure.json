@@ -1,0 +1,29 @@
+{
+  "id": "ch5-01-footer-structure",
+  "title": "フッターの構造を作ろう",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "フッターとは",
+      "body": "ページの一番下にある部分を「フッター」と呼びます。HTMLには専用の `<footer>` タグがあり、コピーライト表記（著作権表示）やリンクなどをまとめるのによく使われます。\nヘッダーと同じく、`<footer>` を使うことで「ここがページの締めくくりだ」という意味を伝えられます。",
+      "points": ["コピーライト表記の `©` は「Option + G」（Mac）や文字コード `&copy;` で入力できます"]
+    },
+    {
+      "type": "example",
+      "description": "`<footer>` の中にコピーライト表記の `<p>` を入れると、シンプルなフッターができます。",
+      "code": "<footer>\n  <p>© 2026 My Website</p>\n</footer>"
+    },
+    {
+      "type": "exercise",
+      "instruction": "`<footer>` タグの中に、「© 2026 My Website」という文章を `<p>` で書いてみましょう。",
+      "starterCode": "<!-- ここにコードを書いてください -->\n",
+      "solutionCode": "<footer>\n  <p>© 2026 My Website</p>\n</footer>",
+      "checkType": "contains-tag",
+      "checkRule": {
+        "tag": "footer p",
+        "textContent": "© 2026 My Website"
+      },
+      "hint": "`<footer>` タグの中に `<p>© 2026 My Website</p>` を書きましょう。"
+    }
+  ]
+}

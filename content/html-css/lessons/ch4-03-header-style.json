@@ -1,0 +1,32 @@
+{
+  "id": "ch4-03-header-style",
+  "title": "ヘッダーを装飾しよう",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "ヘッダーらしい見た目に整える",
+      "body": "背景色をつけると、ヘッダーとページ本体の境目がはっきりして、サイト全体が引き締まった印象になります。\n多くのサイトでは、濃い色の背景に明るい文字色を組み合わせる「ダークヘッダー」がよく使われます。",
+      "points": ["背景色を変えたときは、文字色とのコントラスト（見やすさ）も意識しましょう"]
+    },
+    {
+      "type": "example",
+      "description": "`background-color` を濃い色にすると、引き締まったヘッダーになります。",
+      "code": "<style>\n  header {\n    background-color: navy;\n    color: white;\n    padding: 16px;\n  }\n</style>\n<header>\n  <h1>My Website</h1>\n</header>"
+    },
+    {
+      "type": "exercise",
+      "instruction": "`<header>` タグの背景色(background-color)をnavyにしてみましょう。",
+      "starterCode": "<style>\n  header {\n    /* ここにCSSを書いてください */\n  }\n</style>\n<header>\n  <h1>My Website</h1>\n</header>",
+      "solutionCode": "<style>\n  header {\n    background-color: navy;\n  }\n</style>\n<header>\n  <h1>My Website</h1>\n</header>",
+      "checkType": "css-property",
+      "checkRule": {
+        "selector": "header",
+        "property": "background-color",
+        "value": "navy"
+      },
+      "hint": "`background-color: navy;` のように書いてみましょう。",
+      "commonMistakes": ["背景色だけ変えて文字色を変え忘れ、文字が読みにくくなってしまう"],
+      "points": ["16進数のカラーコード（例: `#1a1a40`）を使うと、より細かく色を指定できます"]
+    }
+  ]
+}

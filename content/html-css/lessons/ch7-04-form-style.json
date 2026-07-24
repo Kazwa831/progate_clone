@@ -1,0 +1,35 @@
+{
+  "id": "ch7-04-form-style",
+  "title": "フォーム全体を装飾しよう",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "入力欄を縦にきれいに並べる",
+      "body": "`<input>` や `<textarea>`、`<button>` は初期状態では詰まって表示されがちです。`<form>` に `display: flex;` を指定した上で `flex-direction: column;` を指定すると、それぞれの要素を縦に整列させることができます。\n横並び用の `display: flex;` を、縦並びにも応用できるのがFlexboxの便利なところです。",
+      "points": [
+        "`flex-direction: row;`（初期値・横並び）と `flex-direction: column;`（縦並び）を切り替えられる",
+        "縦に並べた要素同士の間隔は `gap` プロパティでまとめて指定できる"
+      ]
+    },
+    {
+      "type": "example",
+      "description": "`flex-direction: column;` を指定すると、入力欄が縦にきれいに並びます。",
+      "code": "<style>\n  form {\n    display: flex;\n    flex-direction: column;\n  }\n</style>\n<form>\n  <input type=\"email\">\n  <textarea></textarea>\n  <button>送信する</button>\n</form>"
+    },
+    {
+      "type": "exercise",
+      "instruction": "`<form>` タグに `flex-direction: column;` を設定して、入力欄を縦並びにしてみましょう。",
+      "starterCode": "<style>\n  form {\n    display: flex;\n    /* ここにCSSを追加してください */\n  }\n</style>\n<form>\n  <input type=\"email\">\n  <textarea></textarea>\n  <button>送信する</button>\n</form>",
+      "solutionCode": "<style>\n  form {\n    display: flex;\n    flex-direction: column;\n  }\n</style>\n<form>\n  <input type=\"email\">\n  <textarea></textarea>\n  <button>送信する</button>\n</form>",
+      "checkType": "css-property",
+      "checkRule": {
+        "selector": "form",
+        "property": "flex-direction",
+        "value": "column"
+      },
+      "hint": "`flex-direction: column;` のように書いてみましょう。",
+      "commonMistakes": ["`display: flex;` を指定し忘れると `flex-direction` の効果が現れない"],
+      "points": ["ここまで学んだHTML・CSSを組み合わせると、ヘッダー・コンテンツ・フォーム・フッターを持つ1枚のWebページが完成します"]
+    }
+  ]
+}

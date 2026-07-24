@@ -1,0 +1,36 @@
+{
+  "id": "ch1-04-links",
+  "title": "リンクを作ろう",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "ページ同士をつなげよう",
+      "body": "リンクを作るには `<a>` タグを使います。`href` 属性にリンク先のURLを指定すると、そのタグの内容をクリックしたときに指定したページへ移動できます。\nWebページ同士がリンクでつながっているからこそ、私たちは色々なサイトを行き来できます。",
+      "points": [
+        "`href` は `hyperreference` の略で、リンク先を表す属性",
+        "属性は開始タグの中に `属性名=\"値\"` の形で書く"
+      ]
+    },
+    {
+      "type": "example",
+      "description": "`href` にURLを指定し、タグで挟んだ文字がリンクの文字（表示テキスト）になります。",
+      "code": "<a href=\"https://example.com\">公式サイトへ</a>"
+    },
+    {
+      "type": "exercise",
+      "instruction": "「https://example.com」へのリンクを作り、リンクの文字を「公式サイト」にしてみましょう。",
+      "starterCode": "<!-- ここにコードを書いてください -->\n",
+      "solutionCode": "<a href=\"https://example.com\">公式サイト</a>",
+      "checkType": "contains-tag",
+      "checkRule": {
+        "tag": "a",
+        "textContent": "公式サイト"
+      },
+      "hint": "`<a href=\"https://example.com\">公式サイト</a>` のように書いてみましょう。",
+      "commonMistakes": [
+        "`href` の値を引用符（ダブルクォート）で囲み忘れる",
+        "`href=` を書き忘れて `<a https://example.com>` のように書いてしまう"
+      ]
+    }
+  ]
+}

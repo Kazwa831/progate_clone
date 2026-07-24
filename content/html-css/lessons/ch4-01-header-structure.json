@@ -1,0 +1,33 @@
+{
+  "id": "ch4-01-header-structure",
+  "title": "ヘッダーの構造を作ろう",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "ヘッダーとは",
+      "body": "多くのWebサイトの一番上には「ヘッダー」と呼ばれる、サイト名やメニューが並んだ部分があります。\nHTMLには、そのための専用タグ `<header>` が用意されています。`<div>` でも同じ見た目は作れますが、`<header>` を使うことで「ここがヘッダーだ」という意味をコンピュータや検索エンジンに伝えられます。",
+      "points": [
+        "`<header>` のように、意味を持ったタグを使うことを「セマンティックなHTML」と呼ぶ",
+        "ページ内に複数の `<header>` を使うこともできる（例: 記事ごとのヘッダー）"
+      ]
+    },
+    {
+      "type": "example",
+      "description": "`<header>` の中にサイト名の見出しを入れると、ヘッダーの土台ができます。",
+      "code": "<header>\n  <h1>My Website</h1>\n</header>"
+    },
+    {
+      "type": "exercise",
+      "instruction": "`<header>` タグの中に、サイト名「My Website」を `<h1>` で書いてみましょう。",
+      "starterCode": "<!-- ここにコードを書いてください -->\n",
+      "solutionCode": "<header>\n  <h1>My Website</h1>\n</header>",
+      "checkType": "contains-tag",
+      "checkRule": {
+        "tag": "header h1",
+        "textContent": "My Website"
+      },
+      "hint": "`<header>` タグの中に `<h1>My Website</h1>` を書きましょう。",
+      "commonMistakes": ["`<h1>` を `<header>` の外に書いてしまう"]
+    }
+  ]
+}

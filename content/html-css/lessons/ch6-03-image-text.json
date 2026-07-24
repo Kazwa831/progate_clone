@@ -1,0 +1,31 @@
+{
+  "id": "ch6-03-image-text",
+  "title": "画像とテキストを組み合わせよう",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "画像とテキストを横に並べる",
+      "body": "プロフィール紹介やニュース記事のように、画像とテキストを横に並べるレイアウトもよく使われます。\n`<img>` と `<p>`（や見出し）を1つの `<div>` でまとめ、その `<div>` に `display: flex;` を指定すれば、横並びで表示できます。",
+      "points": ["Flexboxは文字と画像の組み合わせなど、種類の違う要素同士を並べるときにも使えます"]
+    },
+    {
+      "type": "example",
+      "description": "画像と文章をまとめた `<div>` に `display: flex;` を指定すると、横に並びます。",
+      "code": "<style>\n  .profile {\n    display: flex;\n  }\n</style>\n<div class=\"profile\">\n  <img src=\"avatar.png\" alt=\"プロフィール画像\">\n  <p>プログラミングが好きなエンジニアです。</p>\n</div>"
+    },
+    {
+      "type": "exercise",
+      "instruction": "class「profile」の `<div>` に `display: flex;` を設定して、画像とテキストを横並びにしてみましょう。",
+      "starterCode": "<style>\n  .profile {\n    /* ここにCSSを書いてください */\n  }\n</style>\n<div class=\"profile\">\n  <img src=\"avatar.png\" alt=\"プロフィール画像\">\n  <p>プログラミングが好きなエンジニアです。</p>\n</div>",
+      "solutionCode": "<style>\n  .profile {\n    display: flex;\n  }\n</style>\n<div class=\"profile\">\n  <img src=\"avatar.png\" alt=\"プロフィール画像\">\n  <p>プログラミングが好きなエンジニアです。</p>\n</div>",
+      "checkType": "css-property",
+      "checkRule": {
+        "selector": ".profile",
+        "property": "display",
+        "value": "flex"
+      },
+      "hint": "`.profile { display: flex; }` のように書いてみましょう。",
+      "commonMistakes": ["画像に `alt` 属性をつけ忘れる"]
+    }
+  ]
+}

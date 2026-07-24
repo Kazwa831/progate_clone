@@ -1,0 +1,38 @@
+{
+  "id": "ch2-01-css-structure",
+  "title": "CSSの仕組み",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "CSSとは何か",
+      "body": "HTMLが文章の「構造」を作るのに対し、CSSは「見た目」を装飾するための言語です。\nCSSは `セレクタ { プロパティ: 値; }` という形で書きます。セレクタで「どの要素を」装飾するかを指定し、プロパティと値で「どう」装飾するかを指定します。\n`<style>` タグの中にCSSを書くことで、HTMLに適用できます。",
+      "points": [
+        "1行の最後には `;`（セミコロン）を忘れずに書く",
+        "HTML（構造）とCSS（見た目）を分けて考えると管理しやすくなる"
+      ]
+    },
+    {
+      "type": "example",
+      "description": "`h1` セレクタに対して `color` プロパティを指定すると、すべての `<h1>` の文字色が変わります。",
+      "code": "<style>\n  h1 {\n    color: blue;\n  }\n</style>\n<h1>Hello World</h1>"
+    },
+    {
+      "type": "exercise",
+      "instruction": "`<h1>` タグの文字色を青色(blue)にしてみましょう。",
+      "starterCode": "<style>\n  /* ここにCSSを書いてください */\n</style>\n<h1>Hello World</h1>",
+      "solutionCode": "<style>\n  h1 {\n    color: blue;\n  }\n</style>\n<h1>Hello World</h1>",
+      "checkType": "css-property",
+      "checkRule": {
+        "selector": "h1",
+        "property": "color",
+        "value": "blue"
+      },
+      "hint": "`h1 { color: blue; }` のように書いてみましょう。",
+      "commonMistakes": [
+        "`;`（セミコロン）を書き忘れる",
+        "`{` `}`（波括弧）を書き忘れる",
+        "プロパティ名のスペルを間違える（`colour` ではなく `color`）"
+      ]
+    }
+  ]
+}

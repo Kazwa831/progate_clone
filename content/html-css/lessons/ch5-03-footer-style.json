@@ -1,0 +1,31 @@
+{
+  "id": "ch5-03-footer-style",
+  "title": "フッターを装飾しよう",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "フッターで締めくくる",
+      "body": "フッターの背景色をヘッダーと同じように濃い色にすると、ページ全体が「ヘッダーからフッターまで」きれいに囲まれた印象になります。\nヘッダーとフッターで統一感のある配色にすることは、サイト全体のデザインをまとめる上でとても大切なポイントです。",
+      "points": ["ヘッダーとフッターに同じ背景色を使うと、サイト全体に統一感が生まれます"]
+    },
+    {
+      "type": "example",
+      "description": "フッターの背景色を濃くし、文字色を白にすると、落ち着いた締めくくりになります。",
+      "code": "<style>\n  footer {\n    background-color: black;\n    color: white;\n    padding: 16px;\n  }\n</style>\n<footer>\n  <p>© 2026 My Website</p>\n</footer>"
+    },
+    {
+      "type": "exercise",
+      "instruction": "`<footer>` タグの背景色(background-color)をblackにしてみましょう。",
+      "starterCode": "<style>\n  footer {\n    /* ここにCSSを書いてください */\n  }\n</style>\n<footer>\n  <p>© 2026 My Website</p>\n</footer>",
+      "solutionCode": "<style>\n  footer {\n    background-color: black;\n  }\n</style>\n<footer>\n  <p>© 2026 My Website</p>\n</footer>",
+      "checkType": "css-property",
+      "checkRule": {
+        "selector": "footer",
+        "property": "background-color",
+        "value": "black"
+      },
+      "hint": "`background-color: black;` のように書いてみましょう。",
+      "commonMistakes": ["背景を黒にした後、文字色を白などに変えないと文字が見えなくなってしまう"]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "id": "ch3-01-flexbox-row",
+  "title": "Flexboxで横並びにしよう",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "要素を横に並べる",
+      "body": "何も指定しないと、`<div>` のような要素は上から下へ縦に並びます。\n`display: flex;` を親要素に指定すると、その中の子要素を横並びに配置できます。この仕組みを「Flexbox」と呼び、ヘッダーのメニューやカードの一覧など、現代のWebサイトのレイアウトに広く使われています。",
+      "points": ["`display: flex;` を指定するのは「並べたい要素をまとめている親」の方"]
+    },
+    {
+      "type": "example",
+      "description": "`.container` に `display: flex;` を指定すると、中の `A` `B` `C` が横並びになります。",
+      "code": "<style>\n  .container {\n    display: flex;\n  }\n</style>\n<div class=\"container\">\n  <div>A</div>\n  <div>B</div>\n  <div>C</div>\n</div>"
+    },
+    {
+      "type": "exercise",
+      "instruction": "class「container」の `<div>` に `display: flex;` を設定して、中の要素を横並びにしてみましょう。",
+      "starterCode": "<style>\n  .container {\n    /* ここにCSSを書いてください */\n  }\n</style>\n<div class=\"container\">\n  <div>A</div>\n  <div>B</div>\n</div>",
+      "solutionCode": "<style>\n  .container {\n    display: flex;\n  }\n</style>\n<div class=\"container\">\n  <div>A</div>\n  <div>B</div>\n</div>",
+      "checkType": "css-property",
+      "checkRule": {
+        "selector": ".container",
+        "property": "display",
+        "value": "flex"
+      },
+      "hint": "`display: flex;` のように書いてみましょう。",
+      "commonMistakes": ["並べたい要素自身ではなく、その「親要素」に `display: flex;` を指定する点に注意"]
+    }
+  ]
+}

@@ -1,23 +1,60 @@
 {
   "id": "html-css",
   "title": "HTML/CSS基礎コース",
-  "description": "Webページの基本構造とスタイリングを学びます",
+  "description": "HTMLとCSSに触れながら、ヘッダー・フッター・お問い合わせフォームまで一通り作れるようになるコースです",
   "language": "html-css",
   "chapters": [
     {
       "id": "chapter-1",
-      "title": "第1章: HTMLの基本",
+      "title": "1章：HTMLに触れてみよう！",
       "lessonIds": [
-        "01-html-basic",
-        "02-html-tags",
-        "04-html-links-images",
-        "05-html-div-class"
+        "ch1-01-html-structure",
+        "ch1-02-headings-paragraphs",
+        "ch1-03-lists",
+        "ch1-04-links",
+        "ch1-05-images"
       ]
     },
     {
       "id": "chapter-2",
-      "title": "第2章: CSSで装飾する",
-      "lessonIds": ["03-css-basic", "06-css-box-model", "07-css-flexbox"]
+      "title": "2章：CSSに触れてみよう！",
+      "lessonIds": [
+        "ch2-01-css-structure",
+        "ch2-02-text-style",
+        "ch2-03-background-spacing",
+        "ch2-04-border-radius",
+        "ch2-05-class-selector"
+      ]
+    },
+    {
+      "id": "chapter-3",
+      "title": "3章：レイアウトを作ろう！",
+      "lessonIds": ["ch3-01-flexbox-row", "ch3-02-flexbox-align", "ch3-03-sizing"]
+    },
+    {
+      "id": "chapter-4",
+      "title": "4章：ヘッダーを作ろう！",
+      "lessonIds": ["ch4-01-header-structure", "ch4-02-header-nav-flex", "ch4-03-header-style"]
+    },
+    {
+      "id": "chapter-5",
+      "title": "5章：フッターを作ろう！",
+      "lessonIds": ["ch5-01-footer-structure", "ch5-02-footer-links", "ch5-03-footer-style"]
+    },
+    {
+      "id": "chapter-6",
+      "title": "6章：コンテンツを作ろう！",
+      "lessonIds": ["ch6-01-section", "ch6-02-card-layout", "ch6-03-image-text"]
+    },
+    {
+      "id": "chapter-7",
+      "title": "7章：お問い合わせフォームを作ろう！",
+      "lessonIds": [
+        "ch7-01-form-basic",
+        "ch7-02-form-fields",
+        "ch7-03-form-button",
+        "ch7-04-form-style"
+      ]
     }
   ]
 }

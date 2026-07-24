@@ -1,0 +1,37 @@
+{
+  "id": "ch2-05-class-selector",
+  "title": "クラスで指定しよう",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "class属性で自由に名前をつける",
+      "body": "ここまでは `h1` や `p` のようにタグ名でスタイルを指定してきましたが、これだと「特定の1つの `<p>` だけ」色を変えるようなことができません。\nそこで使うのが `class` 属性です。要素に好きな名前をつけておき、CSS側で `.クラス名 { ... }` のように指定すると、そのクラスがついた要素だけにスタイルを適用できます。",
+      "points": [
+        "class名を指定するCSSセレクタの先頭には `.`（ドット）をつける",
+        "同じclass名を複数の要素につければ、まとめて同じスタイルを適用できる"
+      ]
+    },
+    {
+      "type": "example",
+      "description": "`highlight` というclassをつけた要素だけ、文字色がオレンジになります。他の `<p>` には影響しません。",
+      "code": "<style>\n  .highlight {\n    color: orange;\n  }\n</style>\n<p>ふつうの文章です。</p>\n<p class=\"highlight\">注目してほしい文章です。</p>"
+    },
+    {
+      "type": "exercise",
+      "instruction": "class名が「highlight」の要素の文字色をオレンジ色(orange)にしてみましょう。",
+      "starterCode": "<style>\n  /* ここにCSSを書いてください */\n</style>\n<p>ふつうの文章です。</p>\n<p class=\"highlight\">注目してほしい文章です。</p>",
+      "solutionCode": "<style>\n  .highlight {\n    color: orange;\n  }\n</style>\n<p>ふつうの文章です。</p>\n<p class=\"highlight\">注目してほしい文章です。</p>",
+      "checkType": "css-property",
+      "checkRule": {
+        "selector": ".highlight",
+        "property": "color",
+        "value": "orange"
+      },
+      "hint": "`.highlight { color: orange; }` のように書いてみましょう。",
+      "commonMistakes": [
+        "セレクタの `.`（ドット）を書き忘れて `highlight { ... }` と書いてしまう（タグ名の指定と間違えやすい）"
+      ],
+      "points": ["同じCSSファイルの中に複数のクラスを定義して、要素ごとに使い分けることができます"]
+    }
+  ]
+}

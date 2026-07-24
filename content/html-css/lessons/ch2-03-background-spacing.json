@@ -1,0 +1,47 @@
+{
+  "id": "ch2-03-background-spacing",
+  "title": "背景色と余白",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "背景色と余白でメリハリをつける",
+      "body": "`background-color` で要素の背景色を、`padding` で要素の内側の余白を指定できます。\n背景色と余白を組み合わせることで、文章のかたまりを目立たせたり、読みやすくしたりできます。",
+      "points": [
+        "余白には「内側の余白(`padding`)」と「外側の余白(`margin`)」の2種類がある",
+        "余白を適切に取ると、詰まった印象がなくなり読みやすくなる"
+      ]
+    },
+    {
+      "type": "example",
+      "description": "背景色をつけて、内側に余白を入れると、カードのような見た目になります。",
+      "code": "<style>\n  .box {\n    background-color: lightgray;\n    padding: 20px;\n  }\n</style>\n<div class=\"box\">お知らせ</div>"
+    },
+    {
+      "type": "exercise",
+      "instruction": "class「box」の `<div>` の背景色(background-color)をlightgrayにしてみましょう。",
+      "starterCode": "<style>\n  .box {\n    /* ここにCSSを書いてください */\n  }\n</style>\n<div class=\"box\">お知らせ</div>",
+      "solutionCode": "<style>\n  .box {\n    background-color: lightgray;\n  }\n</style>\n<div class=\"box\">お知らせ</div>",
+      "checkType": "css-property",
+      "checkRule": {
+        "selector": ".box",
+        "property": "background-color",
+        "value": "lightgray"
+      },
+      "hint": "`background-color: lightgray;` のように書いてみましょう。"
+    },
+    {
+      "type": "exercise",
+      "instruction": "同じ `<div>` に、内側の余白(padding)を20pxに設定してみましょう。",
+      "starterCode": "<style>\n  .box {\n    background-color: lightgray;\n    /* ここにCSSを追加してください */\n  }\n</style>\n<div class=\"box\">お知らせ</div>",
+      "solutionCode": "<style>\n  .box {\n    background-color: lightgray;\n    padding: 20px;\n  }\n</style>\n<div class=\"box\">お知らせ</div>",
+      "checkType": "css-property",
+      "checkRule": {
+        "selector": ".box",
+        "property": "padding",
+        "value": "20px"
+      },
+      "hint": "`padding: 20px;` を追加してみましょう。",
+      "commonMistakes": ["`padding` と `margin` を混同してしまう（`padding`は内側、`margin`は外側の余白）"]
+    }
+  ]
+}

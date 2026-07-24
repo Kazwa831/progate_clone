@@ -1,0 +1,31 @@
+{
+  "id": "ch3-03-sizing",
+  "title": "サイズを指定しよう",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "幅と高さを指定する",
+      "body": "`width` で要素の幅を、`height` で要素の高さを指定できます。\nカードの大きさを揃えたり、画像のサイズを調整したりと、レイアウトを整える上で欠かせないプロパティです。",
+      "points": ["数値の後ろには必ず `px` などの単位をつける"]
+    },
+    {
+      "type": "example",
+      "description": "幅を指定すると、要素の横幅が固定されます。",
+      "code": "<style>\n  .box {\n    width: 300px;\n    background-color: lightgray;\n  }\n</style>\n<div class=\"box\">お知らせ</div>"
+    },
+    {
+      "type": "exercise",
+      "instruction": "class「box」の `<div>` の幅(width)を300pxに設定してみましょう。",
+      "starterCode": "<style>\n  .box {\n    background-color: lightgray;\n    /* ここにCSSを追加してください */\n  }\n</style>\n<div class=\"box\">お知らせ</div>",
+      "solutionCode": "<style>\n  .box {\n    background-color: lightgray;\n    width: 300px;\n  }\n</style>\n<div class=\"box\">お知らせ</div>",
+      "checkType": "css-property",
+      "checkRule": {
+        "selector": ".box",
+        "property": "width",
+        "value": "300px"
+      },
+      "hint": "`width: 300px;` のように書いてみましょう。",
+      "commonMistakes": ["単位を書き忘れる（`width: 300;` は反映されません）"]
+    }
+  ]
+}
