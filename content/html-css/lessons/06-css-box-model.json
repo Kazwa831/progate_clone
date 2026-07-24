@@ -1,0 +1,36 @@
+{
+  "id": "06-css-box-model",
+  "title": "余白と枠線（ボックスモデル）",
+  "slides": [
+    {
+      "type": "explanation",
+      "body": "CSSの要素は、内側の余白(padding)・枠線(border)・外側の余白(margin)という箱構造(ボックスモデル)を持っています。\nこれらを組み合わせることでレイアウトの間隔を調整できます。"
+    },
+    {
+      "type": "exercise",
+      "instruction": "class「box」の<div>に、内側の余白(padding)を20pxに設定してみましょう。",
+      "starterCode": "<style>\n  .box {\n    /* ここにCSSを書いてください */\n  }\n</style>\n<div class=\"box\">Box</div>",
+      "solutionCode": "<style>\n  .box {\n    padding: 20px;\n  }\n</style>\n<div class=\"box\">Box</div>",
+      "checkType": "css-property",
+      "checkRule": {
+        "selector": ".box",
+        "property": "padding",
+        "value": "20px"
+      },
+      "hint": "padding: 20px; のように書いてみましょう"
+    },
+    {
+      "type": "exercise",
+      "instruction": "class「box」の<div>に、枠線(border)を「1px solid black」に設定してみましょう。",
+      "starterCode": "<style>\n  .box {\n    /* ここにCSSを書いてください */\n  }\n</style>\n<div class=\"box\">Box</div>",
+      "solutionCode": "<style>\n  .box {\n    border: 1px solid black;\n  }\n</style>\n<div class=\"box\">Box</div>",
+      "checkType": "css-property",
+      "checkRule": {
+        "selector": ".box",
+        "property": "border",
+        "value": "1px solid black"
+      },
+      "hint": "border: 1px solid black; のように書いてみましょう"
+    }
+  ]
+}

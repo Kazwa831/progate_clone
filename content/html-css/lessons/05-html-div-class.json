@@ -1,0 +1,22 @@
+{
+  "id": "05-html-div-class",
+  "title": "divタグとclass属性でグループ化する",
+  "slides": [
+    {
+      "type": "explanation",
+      "body": "<div>タグは複数の要素をひとまとまりにグループ化するための箱のようなタグです。\nclass属性を付けると、そのグループにCSSでスタイルを設定したり、後から特定できるようになります。"
+    },
+    {
+      "type": "exercise",
+      "instruction": "class属性に「box」を指定した<div>タグの中に「Hello」と書いてみましょう。",
+      "starterCode": "<!-- ここにコードを書いてください -->\n",
+      "solutionCode": "<div class=\"box\">Hello</div>",
+      "checkType": "contains-tag",
+      "checkRule": {
+        "tag": "div.box",
+        "textContent": "Hello"
+      },
+      "hint": "<div class=\"box\">Hello</div> のように書きましょう"
+    }
+  ]
+}

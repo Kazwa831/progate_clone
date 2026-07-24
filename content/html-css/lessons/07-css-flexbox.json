@@ -1,0 +1,23 @@
+{
+  "id": "07-css-flexbox",
+  "title": "Flexboxで横並びレイアウトを作る",
+  "slides": [
+    {
+      "type": "explanation",
+      "body": "display: flex; を指定すると、その要素の中の子要素を横並びに配置できます。\nProgateなどのモダンなWebサイトのレイアウトにも広く使われている仕組みです。"
+    },
+    {
+      "type": "exercise",
+      "instruction": "class「container」の<div>に、display: flex; を設定して中の要素を横並びにしてみましょう。",
+      "starterCode": "<style>\n  .container {\n    /* ここにCSSを書いてください */\n  }\n</style>\n<div class=\"container\">\n  <div>A</div>\n  <div>B</div>\n</div>",
+      "solutionCode": "<style>\n  .container {\n    display: flex;\n  }\n</style>\n<div class=\"container\">\n  <div>A</div>\n  <div>B</div>\n</div>",
+      "checkType": "css-property",
+      "checkRule": {
+        "selector": ".container",
+        "property": "display",
+        "value": "flex"
+      },
+      "hint": "display: flex; のように書いてみましょう"
+    }
+  ]
+}

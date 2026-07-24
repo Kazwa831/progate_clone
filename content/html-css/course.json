@@ -7,12 +7,17 @@
     {
       "id": "chapter-1",
       "title": "第1章: HTMLの基本",
-      "lessonIds": ["01-html-basic", "02-html-tags"]
+      "lessonIds": [
+        "01-html-basic",
+        "02-html-tags",
+        "04-html-links-images",
+        "05-html-div-class"
+      ]
     },
     {
       "id": "chapter-2",
       "title": "第2章: CSSで装飾する",
-      "lessonIds": ["03-css-basic"]
+      "lessonIds": ["03-css-basic", "06-css-box-model", "07-css-flexbox"]
     }
   ]
 }

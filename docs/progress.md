@@ -408,3 +408,57 @@ progate_clone/
 - 設計書10節のMVPスコープに沿って、実際に学習に使える分量までレッスン数を拡充
 - 設計書11節の「レッスンの粒度・数」をどの程度まで拡充するか、方針を確認しながら進める
 - 拡充した内容でも判定ロジック・進捗保存が問題なく動作することを回帰確認する
+
+---
+
+## 2026-07-24: ステップ7 HTML/CSSコースの中身を拡充
+
+### レッスン粒度・数についての判断（設計書11節）
+既存3レッスンに加え、初学者向けHTML/CSSコースとして最低限押さえておきたい基本トピック
+（リンク・画像、div/class によるグループ化、ボックスモデル、Flexbox）をカバーする4レッスンを
+追加し、合計7レッスン・2章構成とした。無制限に増やすのではなく「就活ポートフォリオとして
+一通りの基礎が触れられる」範囲に抑え、量よりも一つ一つの判定が正確に動作することを優先した。
+
+### 実施内容
+- `content/html-css/lessons/04-html-links-images.json`（新規、第1章）:
+  `<a href>`によるリンク、`<img src alt>`による画像表示
+- `content/html-css/lessons/05-html-div-class.json`（新規、第1章）:
+  `<div>`と`class`属性によるグループ化
+- `content/html-css/lessons/06-css-box-model.json`（新規、第2章）:
+  `padding`・`border`によるボックスモデルの基本
+- `content/html-css/lessons/07-css-flexbox.json`（新規、第2章）:
+  `display: flex`による横並びレイアウト
+- `content/html-css/course.json`を更新し、上記4レッスンを章立てに追加
+  （第1章4レッスン、第2章3レッスンの計7レッスン）
+
+### 実装前の検証（判定ロジックの前提確認）
+`padding`/`border`のようなCSSショートハンドプロパティは、ブラウザによっては
+`getComputedStyle().getPropertyValue()`で空文字が返り判定不能になる懸念があったため、
+レッスンJSONを書く前にPlaywright+Chromiumで実際の挙動を検証した。Chromiumでは
+`padding`→`"20px"`、`border`→`"1px solid rgb(255, 0, 0)"`のように正しく解決されることを
+確認できたため、既存の`css-property`判定ロジック（ステップ5で実装したprobe正規化方式）を
+そのまま流用できると判断した。
+
+### 変更・作成したファイル
+- 新規: `content/html-css/lessons/04-html-links-images.json`, `05-html-div-class.json`,
+  `06-css-box-model.json`, `07-css-flexbox.json`
+- 変更: `content/html-css/course.json`
+
+### 動作確認結果
+- 全JSONファイルを`python3 -m json.tool`で構文チェック → 全て正常
+- `npm run lint` / `npm run build` → いずれも成功
+- `GET /api/courses/html-css`で章立て(7レッスン)が正しく返ることを確認
+- **実ブラウザでの動作確認**（Playwright + Chromium）: 追加した4レッスン・6つの演習すべてで
+  正解コードを入力し「正解です」の判定が出ることを確認
+  - リンク（`<a>`のテキスト判定）、画像（`<img>`タグの存在判定）
+  - div+class（`div.box`セレクタでのテキスト判定）
+  - padding, border（ショートハンドCSSプロパティの判定）
+  - display: flex（Flexboxレイアウトの判定）
+  - ブラウザコンソールエラー: 1件（`<img src="logo.png">`が実在しない画像パスのため
+    ブラウザが404を出すもので、演習用のダミーパスによる想定内の挙動。アプリの不具合ではない）
+  - 検証で作成したテスト用進捗データはコミット前にクリア済み
+
+### 次回やること（ステップ8: 将来のJavaScriptコース追加の設計確認）
+- 設計書9節の最終ステップ。`content/javascript/`を追加し、`judge`にJS用ロジックを追加する
+  だけで拡張できることを実証する（設計段階の確認が主目的で、フル実装はスコープ外）
+- 拡張性の検証が目的のため、実装範囲についてユーザーと相談してから着手する
