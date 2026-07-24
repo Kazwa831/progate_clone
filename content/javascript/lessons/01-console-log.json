@@ -1,0 +1,21 @@
+{
+  "id": "01-console-log",
+  "title": "console.logで出力する",
+  "slides": [
+    {
+      "type": "explanation",
+      "body": "JavaScriptでは console.log() を使うと、値をコンソールに出力できます。\nこのアプリでは、出力された内容をもとに正誤判定を行います。"
+    },
+    {
+      "type": "exercise",
+      "instruction": "1 + 2 の計算結果を console.log で出力してみましょう。",
+      "starterCode": "// ここにコードを書いてください\n",
+      "solutionCode": "console.log(1 + 2);",
+      "checkType": "js-output-equals",
+      "checkRule": {
+        "expectedOutput": "3"
+      },
+      "hint": "console.log(1 + 2); のように書いてみましょう"
+    }
+  ]
+}

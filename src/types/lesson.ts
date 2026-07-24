@@ -8,7 +8,7 @@ export type SlideExercise = {
   instruction: string;
   starterCode: string;
   solutionCode: string;
-  checkType: "contains-tag" | "css-property" | "regex-match";
+  checkType: "contains-tag" | "css-property" | "regex-match" | "js-output-equals";
   checkRule: Record<string, unknown>;
   hint?: string;
 };

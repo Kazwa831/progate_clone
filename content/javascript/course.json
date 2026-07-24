@@ -1,0 +1,13 @@
+{
+  "id": "javascript",
+  "title": "JavaScript基礎コース",
+  "description": "JavaScriptの基本的な文法とconsole出力を学びます（拡張性検証用の最小コース）",
+  "language": "javascript",
+  "chapters": [
+    {
+      "id": "chapter-1",
+      "title": "第1章: JavaScriptの基本",
+      "lessonIds": ["01-console-log"]
+    }
+  ]
+}

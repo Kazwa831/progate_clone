@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getLessonById } from "@/lib/contentLoader";
+import { getCourseById, getLessonById } from "@/lib/contentLoader";
 import { LessonWorkspace } from "@/components/LessonWorkspace";
 
 type LessonPageProps = {
@@ -8,9 +8,10 @@ type LessonPageProps = {
 
 export default async function LessonPage({ params }: LessonPageProps) {
   const { courseId, lessonId } = await params;
+  const course = getCourseById(courseId);
   const lesson = getLessonById(courseId, lessonId);
 
-  if (!lesson) {
+  if (!course || !lesson) {
     notFound();
   }
 
@@ -22,7 +23,11 @@ export default async function LessonPage({ params }: LessonPageProps) {
         </h1>
       </header>
       <div className="min-h-0 flex-1">
-        <LessonWorkspace courseId={courseId} lesson={lesson} />
+        <LessonWorkspace
+          courseId={courseId}
+          courseLanguage={course.language}
+          lesson={lesson}
+        />
       </div>
     </div>
   );

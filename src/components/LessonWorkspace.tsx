@@ -4,6 +4,11 @@ import { useEffect, useRef, useState } from "react";
 import type { Lesson } from "@/types/lesson";
 import type { JudgeResult } from "@/lib/judge/types";
 import { judgeExercise } from "@/lib/judge/htmlCssJudge";
+import {
+  JS_RESULT_MESSAGE_TYPE,
+  judgeJavaScriptOutput,
+  type JsRunResult,
+} from "@/lib/judge/javascriptJudge";
 import { SlidePanel } from "@/components/SlidePanel";
 import { CodeEditor } from "@/components/CodeEditor";
 import { PreviewPane } from "@/components/PreviewPane";
@@ -11,6 +16,7 @@ import { ResultChecker } from "@/components/ResultChecker";
 
 type LessonWorkspaceProps = {
   courseId: string;
+  courseLanguage: string;
   lesson: Lesson;
 };
 
@@ -38,13 +44,19 @@ function reportProgress(
   });
 }
 
-export function LessonWorkspace({ courseId, lesson }: LessonWorkspaceProps) {
+export function LessonWorkspace({
+  courseId,
+  courseLanguage,
+  lesson,
+}: LessonWorkspaceProps) {
   const [slideIndex, setSlideIndex] = useState(0);
   const [code, setCode] = useState(() => initialCodeFor(lesson, 0));
   const [result, setResult] = useState<JudgeResult | null>(null);
+  const [jsRunResult, setJsRunResult] = useState<JsRunResult | null>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
   const currentSlide = lesson.slides[slideIndex];
+  const isJavaScript = courseLanguage === "javascript";
 
   useEffect(() => {
     reportProgress(courseId, lesson.id, 0, lesson.slides.length);
@@ -52,30 +64,55 @@ export function LessonWorkspace({ courseId, lesson }: LessonWorkspaceProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // JavaScriptコースのiframeはallow-same-originを持たないため、実行結果は
+  // postMessage経由でのみ受け取れる（htmlCssJudgeのようなcontentDocument直接参照はできない）
+  useEffect(() => {
+    if (!isJavaScript) return;
+
+    function handleMessage(event: MessageEvent) {
+      if (event.data?.type !== JS_RESULT_MESSAGE_TYPE) return;
+      setJsRunResult({ logs: event.data.logs ?? [], error: event.data.error ?? null });
+    }
+
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  }, [isJavaScript]);
+
   function goToSlide(nextIndex: number) {
     setSlideIndex(nextIndex);
     setCode(initialCodeFor(lesson, nextIndex));
     setResult(null);
+    setJsRunResult(null);
     reportProgress(courseId, lesson.id, nextIndex, lesson.slides.length);
   }
 
   function handleCheck() {
     if (currentSlide.type !== "exercise") return;
 
-    const iframeDoc = iframeRef.current?.contentDocument;
-    if (!iframeDoc) return;
-
-    const judged = judgeExercise(
-      iframeDoc,
-      currentSlide.checkType,
-      currentSlide.checkRule
-    );
-    setResult(judged);
-
-    if (judged.correct && slideIndex < lesson.slides.length - 1) {
-      setTimeout(() => goToSlide(slideIndex + 1), ADVANCE_DELAY_MS);
+    if (isJavaScript) {
+      setResult(
+        judgeJavaScriptOutput(
+          jsRunResult,
+          currentSlide.checkType,
+          currentSlide.checkRule
+        )
+      );
+    } else {
+      const iframeDoc = iframeRef.current?.contentDocument;
+      if (!iframeDoc) return;
+      setResult(
+        judgeExercise(iframeDoc, currentSlide.checkType, currentSlide.checkRule)
+      );
     }
   }
+
+  // 正解判定後に次のスライドへ自動遷移する（判定方式に関わらず共通の処理）
+  useEffect(() => {
+    if (!result?.correct || slideIndex >= lesson.slides.length - 1) return;
+    const timer = setTimeout(() => goToSlide(slideIndex + 1), ADVANCE_DELAY_MS);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [result]);
 
   return (
     <div className="grid h-full grid-cols-1 md:grid-cols-2">
@@ -92,11 +129,11 @@ export function LessonWorkspace({ courseId, lesson }: LessonWorkspaceProps) {
       </div>
       <div className="grid min-h-0 grid-rows-2">
         <div className="min-h-0 border-b border-gray-200">
-          <CodeEditor value={code} onChange={setCode} />
+          <CodeEditor value={code} language={courseLanguage} onChange={setCode} />
         </div>
         <div className="flex min-h-0 flex-col">
           <div className="min-h-0 flex-1">
-            <PreviewPane code={code} ref={iframeRef} />
+            <PreviewPane code={code} language={courseLanguage} ref={iframeRef} />
           </div>
           {currentSlide.type === "exercise" && (
             <div className="shrink-0 border-t border-gray-200 p-4">

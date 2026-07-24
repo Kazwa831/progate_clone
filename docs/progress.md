@@ -462,3 +462,66 @@ progate_clone/
 - 設計書9節の最終ステップ。`content/javascript/`を追加し、`judge`にJS用ロジックを追加する
   だけで拡張できることを実証する（設計段階の確認が主目的で、フル実装はスコープ外）
 - 拡張性の検証が目的のため、実装範囲についてユーザーと相談してから着手する
+
+---
+
+## 2026-07-24: ステップ8 将来のJavaScriptコース拡張性検証
+
+設計書10節で「将来拡張（設計だけ考慮）」と明確に位置づけられているステップのため、
+「最小限の拡張性検証のみ」で実装する方針をユーザーに確認した上で着手した。
+
+### 新規ライブラリ導入
+- **`@codemirror/lang-javascript`**: JavaScriptコースのコードエディタにJS向けシンタックス
+  ハイライトを提供するため。ステップ4で導入した`@codemirror/lang-html`と同じ位置づけの
+  言語モードパッケージで、コースの`language`に応じて`CodeEditor`が使用する言語拡張を
+  切り替えられるようにした。
+
+### 設計上の判断（iframeサンドボックスとpostMessage）
+設計書7.3節の指示通り、JavaScript実行は「iframe内で`<script>`を実行し、`console.log`を
+フックしてpostMessageで結果を親ウィンドウに送信」という方式で実装した。HTML/CSSコースのように
+`sandbox="allow-same-origin"`にして`contentDocument`を直接読む案も検討したが、
+`allow-scripts`と`allow-same-origin`を同一iframeに同時に付与するのはサンドボックスを
+回避されうる既知のリスクがあるため避け、`allow-scripts`のみを付与しpostMessageで結果を
+受け渡す設計とした。これにより「HTML/CSSコースはDOM直接検証、JSコースはpostMessage」という、
+言語ごとに適切な検証方式を選べる構造になった。
+
+### 実施内容
+- `src/types/lesson.ts`: `checkType`に`"js-output-equals"`を追加
+- `src/lib/judge/javascriptJudge.ts`（新規）:
+  - `buildJsRunnerHtml(code)`: ユーザーのJSコードを、`console.log`フック＋実行結果の
+    `postMessage`送信＋出力のiframe内テキスト表示を行うHTMLでラップする
+  - `judgeJavaScriptOutput(result, checkType, checkRule)`: 受け取ったログ配列から
+    `checkType: "js-output-equals"`を判定する純粋関数（iframeへの直接アクセス不要）
+- `src/components/PreviewPane.tsx`: `language`propsを追加し、JavaScriptコースの場合のみ
+  `buildJsRunnerHtml`でラップ、`sandbox`属性も`allow-scripts`のみに切り替え
+- `src/components/CodeEditor.tsx`: `language`propsに応じて`html()`/`javascript()`の
+  CodeMirror拡張を切り替え
+- `src/components/LessonWorkspace.tsx`: `courseLanguage`propsを追加。JSコースの場合のみ
+  `window`の`message`イベントを購読して実行結果をStateに保持し、`handleCheck`は
+  コース言語に応じて`htmlCssJudge`（DOM直接検証）と`javascriptJudge`（postMessage結果の
+  純粋関数判定）を出し分ける。正解時の自動遷移は判定方式に依らない共通のuseEffectに整理
+- `src/app/courses/[courseId]/lessons/[lessonId]/page.tsx`: コース情報も取得し
+  `courseLanguage`を`LessonWorkspace`に渡すよう変更
+- `content/javascript/course.json` + `content/javascript/lessons/01-console-log.json`
+  （新規）: `console.log(1 + 2);`の出力を判定する最小限の1レッスンを追加
+
+### 動作確認結果（拡張性の実証）
+- `contentLoader.ts`・APIルート・コース一覧/詳細ページには**一切コード変更を加えていない**が、
+  `content/javascript/`を追加しただけでJavaScriptコースがトップページ・API
+  (`GET /api/courses`)に自動的に表示されることを確認 → 設計書が意図した拡張性
+  （コンテンツ追加のみでコース追加可能）を実証できた
+- `npm run lint` / `npm run build` → いずれも成功
+- **実ブラウザでの動作確認**（Playwright + Chromium）:
+  - トップページにJavaScript基礎コースのカードが表示されることを確認
+  - `console.log(1 + 1);`（不正解）を入力して実行 →
+    「出力結果が「3」になっていません」の表示を確認
+  - `console.log(1 + 2);`（正解）を入力して実行 → 「正解です」の表示を確認
+  - ブラウザコンソールエラー: **0件**
+  - 検証で作成したテスト用進捗データはコミット前にクリア済み
+
+### 今回のスコープ外（design doc通り将来拡張として残す部分）
+- JavaScriptコースのレッスン拡充（現在1レッスンのみ、拡張性の実証が目的のため）
+- Pyodideを使ったPythonコース
+- SQLコース
+
+これで設計書「9. 開発ステップ」の全8ステップが完了した。
