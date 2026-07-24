@@ -17,8 +17,8 @@ export default async function LessonPage({ params }: LessonPageProps) {
 
   return (
     <div className="flex h-screen flex-col">
-      <header className="shrink-0 border-b border-gray-200 px-6 py-3">
-        <h1 className="text-lg font-semibold text-gray-900">
+      <header className="shrink-0 border-b border-border bg-card px-6 py-3">
+        <h1 className="text-lg font-semibold text-card-foreground">
           {lesson.title}
         </h1>
       </header>

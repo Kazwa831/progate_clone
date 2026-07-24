@@ -14,8 +14,10 @@ export default async function Home() {
 
   return (
     <div className="mx-auto max-w-4xl px-6 py-12">
-      <h1 className="text-3xl font-bold text-gray-900">Progate Clone</h1>
-      <p className="mt-2 text-gray-600">学習したいコースを選んでください。</p>
+      <h1 className="text-3xl font-bold text-foreground">Progate Clone</h1>
+      <p className="mt-2 text-muted-foreground">
+        学習したいコースを選んでください。
+      </p>
 
       <div className="mt-8 grid gap-6 sm:grid-cols-2">
         {courses.map((course) => {

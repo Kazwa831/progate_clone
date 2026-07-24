@@ -16,17 +16,17 @@ export function SlidePanel({
   onNext,
 }: SlidePanelProps) {
   return (
-    <div className="flex h-full flex-col justify-between overflow-y-auto p-6">
+    <div className="flex h-full flex-col justify-between overflow-y-auto bg-card p-6">
       <div>
-        <p className="text-xs text-gray-400">
+        <p className="text-xs text-muted-foreground">
           {currentIndex + 1} / {totalSlides}
         </p>
         {slide.type === "explanation" ? (
-          <p className="mt-4 whitespace-pre-line text-gray-800">
+          <p className="mt-4 whitespace-pre-line leading-relaxed text-foreground">
             {slide.body}
           </p>
         ) : (
-          <p className="mt-4 whitespace-pre-line text-gray-800">
+          <p className="mt-4 whitespace-pre-line leading-relaxed text-foreground">
             {slide.instruction}
           </p>
         )}
@@ -36,7 +36,7 @@ export function SlidePanel({
           type="button"
           onClick={onPrev}
           disabled={currentIndex === 0}
-          className="rounded-md border border-gray-300 px-4 py-2 text-sm text-gray-700 disabled:opacity-40"
+          className="rounded-md border border-border bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground transition-colors hover:bg-secondary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-secondary"
         >
           ← 前へ
         </button>
@@ -44,7 +44,7 @@ export function SlidePanel({
           type="button"
           onClick={onNext}
           disabled={currentIndex === totalSlides - 1}
-          className="rounded-md bg-blue-600 px-4 py-2 text-sm text-white disabled:opacity-40"
+          className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-primary"
         >
           次へ →
         </button>

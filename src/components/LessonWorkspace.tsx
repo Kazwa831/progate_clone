@@ -115,8 +115,8 @@ export function LessonWorkspace({
   }, [result]);
 
   return (
-    <div className="grid h-full grid-cols-1 md:grid-cols-2">
-      <div className="min-h-0 border-b border-gray-200 md:border-b-0 md:border-r">
+    <div className="grid h-full grid-cols-1 bg-background md:grid-cols-2">
+      <div className="min-h-0 border-b border-border md:border-b-0 md:border-r">
         <SlidePanel
           slide={currentSlide}
           currentIndex={slideIndex}
@@ -128,15 +128,15 @@ export function LessonWorkspace({
         />
       </div>
       <div className="grid min-h-0 grid-rows-2">
-        <div className="min-h-0 border-b border-gray-200">
+        <div className="min-h-0 border-b border-border">
           <CodeEditor value={code} language={courseLanguage} onChange={setCode} />
         </div>
-        <div className="flex min-h-0 flex-col">
+        <div className="flex min-h-0 flex-col bg-card">
           <div className="min-h-0 flex-1">
             <PreviewPane code={code} language={courseLanguage} ref={iframeRef} />
           </div>
           {currentSlide.type === "exercise" && (
-            <div className="shrink-0 border-t border-gray-200 p-4">
+            <div className="shrink-0 border-t border-border p-4">
               <ResultChecker
                 onCheck={handleCheck}
                 result={result}

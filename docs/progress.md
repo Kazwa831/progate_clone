@@ -525,3 +525,93 @@ progate_clone/
 - SQLコース
 
 これで設計書「9. 開発ステップ」の全8ステップが完了した。
+
+---
+
+## 2026-07-25: UI可読性・配色統一の改善（ダークモード対応）
+
+### 背景
+ユーザーからダークモードでスクリーンショット2枚の提供を受け、`text-gray-900`のような
+ハードコードされたTailwindクラスが、CSS変数駆動で暗くなる背景色にまったく追従しておらず、
+タイトルや本文がほぼ不可視になっていることが判明した。トップページ・学習画面の両方で発生。
+
+### 実施内容
+
+**1. デザイントークン基盤の整備 (`src/app/globals.css`)**
+`background` / `foreground` の2値しかなかった状態から、以下のセマンティックトークンを追加し、
+ライト/ダークそれぞれで値を定義（`@theme inline`でTailwindユーティリティ化）:
+- `card` / `card-foreground`（パネル・ヘッダー等の面）
+- `muted` / `muted-foreground`（補助テキスト、hover背景）
+- `border` / `ring`（境界線・フォーカスリング）
+- `primary` / `primary-hover` / `primary-foreground` / `primary-text`（進むボタン・リンク）
+- `secondary` / `secondary-hover` / `secondary-foreground`（戻るボタン等）
+- `destructive-foreground` / `destructive-text`（エラー表示）
+- `success` / `success-hover` / `success-foreground` / `success-text`（正解・実行ボタン）
+
+`primary`/`destructive`/`success`の「ボタン塗り」用の値は白文字とのコントラストが
+ライト/ダーク双方で十分（目安WCAG AA 4.5:1以上）なため共通の値を採用し、一方
+「地の背景に直接乗るテキスト」用の`-text`系トークンのみライト/ダークで別値にした
+（例: `success-text`はライトで緑700・ダークで緑400など、背景の明暗に応じて可読性を確保）。
+
+**2. 全コンポーネントの色トークン化**
+`layout.tsx`, `page.tsx`, `courses/[courseId]/page.tsx`,
+`courses/[courseId]/lessons/[lessonId]/page.tsx`, `CourseCard.tsx`, `SlidePanel.tsx`,
+`ResultChecker.tsx`, `LessonWorkspace.tsx`の`text-gray-*`/`bg-gray-*`/`text-blue-*`/
+`bg-green-*`等のハードコード値をすべて上記トークンに置き換え。HTML/CSSコースの
+プレビューiframeのみ`bg-white`を意図的に維持（素のHTMLページの実際のデフォルト背景を
+再現するため。この点は変更していない）。
+
+**3. コードエディタのダークモード対応**
+`CodeEditor.tsx`に`window.matchMedia("(prefers-color-scheme: dark)")`での検知を追加し、
+ダークモード時のみステップ4で導入済みだった`@codemirror/theme-one-dark`を適用
+（それまで未使用のまま放置されていた）。これによりエディタが常に白背景のまま
+周囲のダークUIから浮いていた状態を解消。
+
+**4. hover / focus / active / disabled 状態の整備**
+- 全ボタン・リンクに`focus-visible:ring-2 focus-visible:ring-ring`を追加
+  （キーボード操作時のフォーカス表示が実質無かった状態を解消）
+- 無効化ボタン（前へ/次へ）に`disabled:cursor-not-allowed`を追加
+- ボタンに`transition-colors`を追加しhover時の変化を滑らかに
+
+**5. 配色以外のUI/UX改善（機能・画面遷移は変更なし）**
+- コースカードに進捗バー（視覚的なバー表示）を追加。設計書6.1節で当初から
+  「進捗バー」の表示が指定されていたが、これまでテキストのみだったため実装を補完
+- コース詳細ページの完了レッスンにチェックマークアイコンを追加。こちらも設計書6.2節
+  「完了レッスンにはチェックマーク」の指定を満たす形に補完
+- `ResultChecker`の正誤フィードバックに色付き背景枠＋アイコン（✓/⚠）を追加し、
+  一目で正誤がわかるように改善
+- `<html lang="en">` → `lang="ja"`に修正（内容は全て日本語のため）
+- ページタイトル/descriptionをcreate-next-appのデフォルト（"Create Next App"）から
+  アプリの実際の名前・説明に修正
+- `body`のfont-familyが`Arial, Helvetica, sans-serif`に決め打ちされており、
+  実際に読み込んでいるGeistフォントが適用されていなかった不具合を修正
+  （`font-sans`ユーティリティ経由でGeistが正しく反映されるように）
+- スライド本文・説明文に`leading-relaxed`を追加し行間を改善
+
+### 変更したファイル一覧
+- `src/app/globals.css`（トークン全面刷新）
+- `src/app/layout.tsx`（lang, metadata, フォント適用修正）
+- `src/app/page.tsx`
+- `src/app/courses/[courseId]/page.tsx`
+- `src/app/courses/[courseId]/lessons/[lessonId]/page.tsx`
+- `src/components/CourseCard.tsx`（進捗バー追加）
+- `src/components/SlidePanel.tsx`
+- `src/components/ResultChecker.tsx`（フィードバックデザイン改善）
+- `src/components/CodeEditor.tsx`（ダークテーマ対応）
+- `src/components/LessonWorkspace.tsx`
+- `src/components/icons.tsx`（新規、Check/Alert/Playアイコン）
+
+### 動作確認結果
+- `npm run lint` → エラーなし
+- `npm run build` → ビルド成功
+- **実ブラウザでの確認**（Playwright、`colorScheme: "light"`と`"dark"`の両方でテスト）:
+  - トップページ・コース詳細ページ・学習画面（HTML/CSS・JavaScript双方）を
+    ライト/ダーク両方でスクリーンショット撮影し、全てのテキストが背景に対して
+    十分なコントラストで表示されることを目視確認
+  - ダークモードでコードエディタがoneDarkテーマで表示されることを確認
+  - 正解・不正解のフィードバック表示（アイコン＋色付き背景）がライト/ダーク両方で
+    見やすく表示されることを確認
+  - 完了レッスンのチェックマーク表示を確認
+  - ブラウザコンソールエラー: **0件**（ライト・ダークとも）
+  - 機能・画面遷移（ルーティング、判定ロジック、進捗保存API）には一切手を加えておらず、
+    既存の動作に影響がないことを確認

@@ -1,8 +1,10 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { html } from "@codemirror/lang-html";
 import { javascript } from "@codemirror/lang-javascript";
+import { oneDark } from "@codemirror/theme-one-dark";
 
 type CodeEditorProps = {
   value: string;
@@ -11,13 +13,28 @@ type CodeEditorProps = {
 };
 
 export function CodeEditor({ value, language, onChange }: CodeEditorProps) {
-  const extensions = language === "javascript" ? [javascript()] : [html()];
+  const [isDark, setIsDark] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    setIsDark(mediaQuery.matches);
+
+    function handleChange(event: MediaQueryListEvent) {
+      setIsDark(event.matches);
+    }
+
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, []);
+
+  const languageExtension = language === "javascript" ? javascript() : html();
 
   return (
     <CodeMirror
       value={value}
       onChange={onChange}
-      extensions={extensions}
+      extensions={[languageExtension]}
+      theme={isDark ? oneDark : "light"}
       height="100%"
       className="h-full text-sm"
     />
