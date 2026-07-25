@@ -1,0 +1,32 @@
+{
+  "id": "js2-01-if-statement",
+  "title": "if文で条件分岐する",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "条件によって処理を変える",
+      "body": "プログラムでは「点数が60点以上なら合格」のように、条件によって処理を分けたい場面がよくあります。そんなときに使うのが `if` 文です。\n`if (条件) { 処理 }` と書くと、条件が「真（true）」のときだけ、`{ }` の中の処理が実行されます。",
+      "points": ["条件式には `>=`（以上）、`<=`（以下）、`===`（等しい）などの比較演算子を使います"]
+    },
+    {
+      "type": "example",
+      "description": "`score` が60以上のときだけ「合格」と出力されます。",
+      "code": "const score = 80;\nif (score >= 60) {\n  console.log(\"合格\");\n}"
+    },
+    {
+      "type": "exercise",
+      "instruction": "変数 `score` が80のとき、`score` が60以上なら「合格」と `console.log` で出力する `if` 文を書いてみましょう。",
+      "starterCode": "const score = 80;\n// ここにif文を書いてください\n",
+      "solutionCode": "const score = 80;\nif (score >= 60) {\n  console.log(\"合格\");\n}",
+      "checkType": "js-output-equals",
+      "checkRule": {
+        "expectedOutput": "合格"
+      },
+      "hint": "`if (score >= 60) {\\n  console.log(\"合格\");\\n}` のように書いてみましょう。",
+      "commonMistakes": [
+        "`if` の条件を `()`（丸括弧）ではなく `{}`（波括弧）で囲んでしまう",
+        "処理を囲む `{}` を書き忘れる"
+      ]
+    }
+  ]
+}

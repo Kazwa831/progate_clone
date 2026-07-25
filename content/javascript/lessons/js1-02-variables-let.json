@@ -1,0 +1,32 @@
+{
+  "id": "js1-02-variables-let",
+  "title": "変数とlet",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "変数に値を入れる",
+      "body": "プログラムの中で何度も使う値には、名前をつけて保管しておくと便利です。この「名前をつけた入れ物」のことを変数と呼びます。\n`let 変数名 = 値;` のように書くと、変数を作成（宣言）して値を代入できます。`let` で作った変数は、後から別の値に入れ直す（再代入する）ことができます。",
+      "points": ["変数名には日本語も使えますが、基本的には英単語で分かりやすい名前をつけます"]
+    },
+    {
+      "type": "example",
+      "description": "変数 `name` に文字列を入れて、`console.log` で出力します。",
+      "code": "let name = \"Progate\";\nconsole.log(name);"
+    },
+    {
+      "type": "exercise",
+      "instruction": "`let` で変数 `message` を宣言し、「Hello」という文字列を代入して、`console.log` で出力してみましょう。",
+      "starterCode": "// ここにコードを書いてください\n",
+      "solutionCode": "let message = \"Hello\";\nconsole.log(message);",
+      "checkType": "js-output-equals",
+      "checkRule": {
+        "expectedOutput": "Hello"
+      },
+      "hint": "`let message = \"Hello\";` と書いた後、`console.log(message);` で出力しましょう。",
+      "commonMistakes": [
+        "文字列を `\"`（ダブルクォート）で囲み忘れる",
+        "`console.log(\"message\")` のように、変数名まで文字列にしてしまう（それだと文字通り「message」と出力されてしまいます）"
+      ]
+    }
+  ]
+}

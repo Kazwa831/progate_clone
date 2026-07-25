@@ -1,0 +1,35 @@
+{
+  "id": "js4-01-for-loop",
+  "title": "for文で繰り返す",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "同じ処理を何度も繰り返す",
+      "body": "「1から5まで数字を出力する」ように、同じような処理を繰り返したいときは `for` 文を使います。\n`for (初期化; 条件; 更新) { 処理 }` という3つの部分から構成されます。初期化でカウンタ用の変数を用意し、条件が真の間、処理と更新を繰り返します。",
+      "points": [
+        "`for (let i = 1; i <= 5; i++)` は「iを1から始めて、5以下の間、1ずつ増やしながら繰り返す」という意味です",
+        "`i++` は `i = i + 1` の省略形で、iを1増やします"
+      ]
+    },
+    {
+      "type": "example",
+      "description": "1から3までの数字を1つずつ出力します。",
+      "code": "for (let i = 1; i <= 3; i++) {\n  console.log(i);\n}"
+    },
+    {
+      "type": "exercise",
+      "instruction": "`for` 文を使って、1から5までの数字を `console.log` で出力してみましょう。",
+      "starterCode": "// ここにfor文を書いてください\n",
+      "solutionCode": "for (let i = 1; i <= 5; i++) {\n  console.log(i);\n}",
+      "checkType": "js-output-equals",
+      "checkRule": {
+        "expectedOutput": "5"
+      },
+      "hint": "`for (let i = 1; i <= 5; i++) { console.log(i); }` のように書いてみましょう。",
+      "commonMistakes": [
+        "条件を `<=` ではなく `<` にしてしまい、最後の数字が出力されない",
+        "`i++`（更新処理）を書き忘れると、条件が永遠に真のままになり「無限ループ」になってしまいます。無限ループになるとページが固まってしまうので注意しましょう"
+      ]
+    }
+  ]
+}

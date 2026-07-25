@@ -1,0 +1,29 @@
+{
+  "id": "js5-03-arrow-function",
+  "title": "アロー関数を使ってみよう",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "関数を短く書く",
+      "body": "`function` を使った書き方の他に、「アロー関数」という短く書ける記法があります。`const 関数名 = (引数) => { 処理 };` のように書きます。\n矢印（`=>`）が特徴的な記法で、モダンなJavaScriptのコードではよく使われています。動きは `function` を使った関数と同じです。",
+      "points": ["`=>` は「アロー（矢）」と呼ばれ、アロー関数という名前の由来になっています"]
+    },
+    {
+      "type": "example",
+      "description": "アロー関数で `add` を定義し、呼び出します。",
+      "code": "const add = (a, b) => {\n  return a + b;\n};\nconsole.log(add(2, 3));"
+    },
+    {
+      "type": "exercise",
+      "instruction": "アロー関数を使って、受け取った数値を3倍にして返す関数 `triple` を作り、`triple(4)` の結果を `console.log` で出力してみましょう。",
+      "starterCode": "// ここにアロー関数を定義してください\n",
+      "solutionCode": "const triple = (n) => {\n  return n * 3;\n};\nconsole.log(triple(4));",
+      "checkType": "js-output-equals",
+      "checkRule": {
+        "expectedOutput": "12"
+      },
+      "hint": "`const triple = (n) => { return n * 3; };` と定義した後、`console.log(triple(4));` を書きましょう。",
+      "commonMistakes": ["アロー関数の定義の最後に `;`（セミコロン）を書き忘れる"]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "id": "js3-03-array-length",
+  "title": "配列の要素数を調べる",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "配列の中身がいくつあるか調べる",
+      "body": "配列に入っている要素の数を知りたいときは `.length` を使います。`配列名.length` と書くだけで、要素の個数が取得できます。\nこれから学ぶ繰り返し処理（for文など）でも、「配列の要素数だけ繰り返す」という形でよく使われる、重要なプロパティです。",
+      "points": ["`.length` の後ろに `()` はつけません（関数ではなくプロパティです）"]
+    },
+    {
+      "type": "example",
+      "description": "配列 `fruits` の要素数を出力します。",
+      "code": "const fruits = [\"apple\", \"banana\", \"orange\"];\nconsole.log(fruits.length);"
+    },
+    {
+      "type": "exercise",
+      "instruction": "4つの果物が入った配列 `fruits` を用意し、`fruits.length` を `console.log` で出力してみましょう。",
+      "starterCode": "// ここにコードを書いてください\n",
+      "solutionCode": "const fruits = [\"apple\", \"banana\", \"orange\", \"grape\"];\nconsole.log(fruits.length);",
+      "checkType": "js-output-equals",
+      "checkRule": {
+        "expectedOutput": "4"
+      },
+      "hint": "配列に4つの要素を入れてから、`console.log(fruits.length);` としましょう。",
+      "commonMistakes": ["`fruits.length()` のように `()` をつけてしまう"]
+    }
+  ]
+}

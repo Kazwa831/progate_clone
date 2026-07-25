@@ -1,0 +1,32 @@
+{
+  "id": "js5-01-function-declaration",
+  "title": "関数を作ろう",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "処理をひとまとめにする",
+      "body": "同じような処理を何度も書くのは大変です。そんなとき、処理を「関数」としてひとまとめにしておくと、必要なときに呼び出すだけで済みます。\n`function 関数名(引数) { return 戻り値; }` のように定義します。引数は関数に渡す値、戻り値（`return`）は関数から返ってくる値です。",
+      "points": [
+        "`return` を書くと、そこで関数の処理は終了し、指定した値が呼び出し元に返されます",
+        "`return` を書き忘れると、関数は自動的に `undefined` を返します"
+      ]
+    },
+    {
+      "type": "example",
+      "description": "2つの引数を受け取り、合計を返す関数 `add` を定義して呼び出します。",
+      "code": "function add(a, b) {\n  return a + b;\n}\nconsole.log(add(2, 3));"
+    },
+    {
+      "type": "exercise",
+      "instruction": "2つの引数を受け取り、その合計を返す関数 `add` を作り、`add(4, 5)` の結果を `console.log` で出力してみましょう。",
+      "starterCode": "// ここに関数を定義してください\n",
+      "solutionCode": "function add(a, b) {\n  return a + b;\n}\nconsole.log(add(4, 5));",
+      "checkType": "js-output-equals",
+      "checkRule": {
+        "expectedOutput": "9"
+      },
+      "hint": "`function add(a, b) { return a + b; }` と定義した後、`console.log(add(4, 5));` を書きましょう。",
+      "commonMistakes": ["`return` を書き忘れて `undefined` が出力されてしまう"]
+    }
+  ]
+}

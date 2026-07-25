@@ -1,0 +1,29 @@
+{
+  "id": "js2-02-if-else",
+  "title": "elseで両方のパターンを扱う",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "条件に当てはまらないときの処理も書く",
+      "body": "`if` だけだと「条件に当てはまるときの処理」しか書けません。「当てはまらないときは別の処理をしたい」場合は `else` を使います。\n`if (条件) { ... } else { ... }` と書くと、条件が真ならif側、偽ならelse側の処理が実行されます。必ずどちらか一方だけが実行されます。",
+      "points": ["`if` と `else` はセットで使い、`else` だけを単独では書けません"]
+    },
+    {
+      "type": "example",
+      "description": "`score` が60未満なので、`else` 側の「不合格」が出力されます。",
+      "code": "const score = 40;\nif (score >= 60) {\n  console.log(\"合格\");\n} else {\n  console.log(\"不合格\");\n}"
+    },
+    {
+      "type": "exercise",
+      "instruction": "変数 `score` が40のとき、60以上なら「合格」、そうでなければ「不合格」と出力する `if`-`else` 文を書いてみましょう。",
+      "starterCode": "const score = 40;\n// ここにif-else文を書いてください\n",
+      "solutionCode": "const score = 40;\nif (score >= 60) {\n  console.log(\"合格\");\n} else {\n  console.log(\"不合格\");\n}",
+      "checkType": "js-output-equals",
+      "checkRule": {
+        "expectedOutput": "不合格"
+      },
+      "hint": "`if (score >= 60) { ... } else { ... }` のように書いてみましょう。",
+      "commonMistakes": ["`else if` と `else` を混同してしまう（今回は単純な二択なので `else` だけで十分です）"]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "id": "js5-02-function-reuse",
+  "title": "関数を何度も使い回す",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "関数は繰り返し呼び出せる",
+      "body": "一度作った関数は、引数を変えながら何度でも呼び出せます。これが関数の一番の利点です。同じ計算を毎回書く代わりに、関数を定義しておけば1行呼び出すだけで済みます。\n呼び出すたびに異なる引数を渡すことで、そのときどきに応じた結果を得られます。",
+      "points": ["関数はいわば「値を渡すと、決まった処理をして結果を返してくれる機械」のようなものです"]
+    },
+    {
+      "type": "example",
+      "description": "引数を2乗して返す関数 `square` を、異なる引数で2回呼び出しています。",
+      "code": "function square(n) {\n  return n * n;\n}\nconsole.log(square(3));\nconsole.log(square(5));"
+    },
+    {
+      "type": "exercise",
+      "instruction": "受け取った数値を2倍にして返す関数 `double` を作り、`double(10)` の結果を `console.log` で出力してみましょう。",
+      "starterCode": "// ここに関数を定義してください\n",
+      "solutionCode": "function double(n) {\n  return n * 2;\n}\nconsole.log(double(10));",
+      "checkType": "js-output-equals",
+      "checkRule": {
+        "expectedOutput": "20"
+      },
+      "hint": "`function double(n) { return n * 2; }` と定義した後、`console.log(double(10));` を書きましょう。"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "id": "js4-02-while-loop",
+  "title": "while文で繰り返す",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "条件が真の間、繰り返す",
+      "body": "`while` 文も繰り返し処理を行うための構文です。`for` 文と違い、`while (条件) { 処理 }` という形で、条件と処理だけを書きます。\nカウンタ変数の初期化や更新は、自分で用意して自分で書く必要があります。「繰り返す回数があらかじめ決まっていないとき」によく使われます。",
+      "points": ["`while` 文では、更新処理（カウンタを増やす処理）を`{ }`の中に自分で書き忘れないよう特に注意しましょう"]
+    },
+    {
+      "type": "example",
+      "description": "変数 `i` が3以下の間、`i` を出力して1ずつ増やします。",
+      "code": "let i = 1;\nwhile (i <= 3) {\n  console.log(i);\n  i++;\n}"
+    },
+    {
+      "type": "exercise",
+      "instruction": "`while` 文を使って、1から3までの数字を `console.log` で出力してみましょう。",
+      "starterCode": "let i = 1;\n// ここにwhile文を書いてください\n",
+      "solutionCode": "let i = 1;\nwhile (i <= 3) {\n  console.log(i);\n  i++;\n}",
+      "checkType": "js-output-equals",
+      "checkRule": {
+        "expectedOutput": "3"
+      },
+      "hint": "`while (i <= 3) { console.log(i); i++; }` のように書いてみましょう。",
+      "commonMistakes": [
+        "`{ }` の中で `i++` を書き忘れると、`i` がずっと1のままになり、条件が永遠に真になる「無限ループ」が発生してページが固まってしまいます"
+      ],
+      "points": ["次のレッスンで紹介する `forEach` は、この無限ループの心配がない安全な繰り返し方法です"]
+    }
+  ]
+}

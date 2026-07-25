@@ -1,0 +1,29 @@
+{
+  "id": "js4-03-array-foreach",
+  "title": "forEachで配列を繰り返す",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "配列の要素すべてに処理を行う",
+      "body": "配列のすべての要素に同じ処理をしたいときは `forEach` がとても便利です。`配列名.forEach(function (要素) { 処理 });` のように書くと、配列の要素数ぶんだけ自動的に繰り返してくれます。\n`for` や `while` と違ってカウンタの初期化・条件・更新を自分で書く必要がないため、書き間違いによる無限ループが起こりません。",
+      "points": ["`function (要素) { ... }` の部分は「配列の中身を1つずつ受け取って処理する」ための関数です"]
+    },
+    {
+      "type": "example",
+      "description": "配列 `fruits` の要素を1つずつ出力します。",
+      "code": "const fruits = [\"apple\", \"banana\"];\nfruits.forEach(function (fruit) {\n  console.log(fruit);\n});"
+    },
+    {
+      "type": "exercise",
+      "instruction": "配列 `fruits` に「apple」「banana」「orange」を入れて、`forEach` で1つずつ `console.log` してみましょう。",
+      "starterCode": "const fruits = [\"apple\", \"banana\", \"orange\"];\n// ここにforEachを書いてください\n",
+      "solutionCode": "const fruits = [\"apple\", \"banana\", \"orange\"];\nfruits.forEach(function (fruit) {\n  console.log(fruit);\n});",
+      "checkType": "js-output-equals",
+      "checkRule": {
+        "expectedOutput": "orange"
+      },
+      "hint": "`fruits.forEach(function (fruit) { console.log(fruit); });` のように書いてみましょう。",
+      "commonMistakes": ["`forEach` の引数に渡す関数の `{ }` を書き忘れる"]
+    }
+  ]
+}

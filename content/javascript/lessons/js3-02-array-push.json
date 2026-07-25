@@ -1,0 +1,29 @@
+{
+  "id": "js3-02-array-push",
+  "title": "配列に要素を追加する",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "あとから要素を追加する",
+      "body": "配列は最初に決めた要素数から変わらないわけではありません。`push()` を使うと、配列の末尾に新しい要素を追加できます。\n`配列名.push(追加したい値)` のように書きます。買い物リストにあとから商品を追加するようなイメージです。",
+      "points": ["`push()` は元の配列そのものを変更します（新しい配列を作るわけではありません）"]
+    },
+    {
+      "type": "example",
+      "description": "配列 `fruits` に `\"orange\"` を追加してから、配列全体を出力します。",
+      "code": "const fruits = [\"apple\", \"banana\"];\nfruits.push(\"orange\");\nconsole.log(fruits);"
+    },
+    {
+      "type": "exercise",
+      "instruction": "配列 `fruits` に「apple」「banana」を用意し、`push()` で「orange」を追加して、`console.log` で配列全体を出力してみましょう。",
+      "starterCode": "const fruits = [\"apple\", \"banana\"];\n// ここにpushとconsole.logを書いてください\n",
+      "solutionCode": "const fruits = [\"apple\", \"banana\"];\nfruits.push(\"orange\");\nconsole.log(fruits);",
+      "checkType": "js-output-equals",
+      "checkRule": {
+        "expectedOutput": "apple,banana,orange"
+      },
+      "hint": "`fruits.push(\"orange\");` の後に `console.log(fruits);` を書きましょう。",
+      "commonMistakes": ["`fruits.push(\"orange\")` の結果を変数に代入しようとしてしまう（`push`は配列自体を書き換えるので代入は不要です）"]
+    }
+  ]
+}

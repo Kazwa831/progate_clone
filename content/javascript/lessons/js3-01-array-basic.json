@@ -1,0 +1,29 @@
+{
+  "id": "js3-01-array-basic",
+  "title": "配列を使ってみよう",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "複数の値をまとめて扱う",
+      "body": "変数は1つの値しか入れられませんが、複数の値をまとめて扱いたいときは配列を使います。`[値1, 値2, 値3]` のように `[]`（角括弧）で値をカンマ区切りに並べます。\n配列の中の値には「インデックス（番号）」でアクセスします。重要な注意点として、インデックスは1からではなく **0から** 数えます。",
+      "points": ["最初の要素は `配列名[0]`、2番目の要素は `配列名[1]` のようにアクセスします"]
+    },
+    {
+      "type": "example",
+      "description": "配列 `fruits` の0番目（先頭）の要素を出力します。",
+      "code": "const fruits = [\"apple\", \"banana\", \"orange\"];\nconsole.log(fruits[0]);"
+    },
+    {
+      "type": "exercise",
+      "instruction": "配列 `fruits` に「apple」「banana」「orange」を入れて、1番目の要素（インデックス1）を `console.log` で出力してみましょう。",
+      "starterCode": "// ここにコードを書いてください\n",
+      "solutionCode": "const fruits = [\"apple\", \"banana\", \"orange\"];\nconsole.log(fruits[1]);",
+      "checkType": "js-output-equals",
+      "checkRule": {
+        "expectedOutput": "banana"
+      },
+      "hint": "`const fruits = [\"apple\", \"banana\", \"orange\"];` の後、`console.log(fruits[1]);` としましょう。",
+      "commonMistakes": ["インデックスを1から数えてしまい、`fruits[1]` を「1番目」ではなく「2番目」だと勘違いする"]
+    }
+  ]
+}

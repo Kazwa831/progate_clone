@@ -1,0 +1,29 @@
+{
+  "id": "js1-03-variables-const",
+  "title": "定数とconst",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "再代入できない変数",
+      "body": "`let` は後から値を入れ直せる変数でしたが、`const` を使うと「一度決めたら変わらない値」を表せます。円周率のような、途中で変える必要のない値には `const` を使うのが基本です。\n変わらない値だと分かっていると、コードを読む人も安心して扱えます。実務では `let` よりも `const` を使う場面の方が多いです。",
+      "points": ["迷ったらまず `const` を使い、後から値を変える必要が出てきたときだけ `let` に変える、という考え方もあります"]
+    },
+    {
+      "type": "example",
+      "description": "`const` で定数 `pi` を宣言し、出力します。",
+      "code": "const pi = 3.14;\nconsole.log(pi);"
+    },
+    {
+      "type": "exercise",
+      "instruction": "`const` で定数 `age` を宣言し、20 を代入して、`console.log` で出力してみましょう。",
+      "starterCode": "// ここにコードを書いてください\n",
+      "solutionCode": "const age = 20;\nconsole.log(age);",
+      "checkType": "js-output-equals",
+      "checkRule": {
+        "expectedOutput": "20"
+      },
+      "hint": "`const age = 20;` と書いた後、`console.log(age);` で出力しましょう。",
+      "commonMistakes": ["`const` で宣言した変数に後から再代入しようとすると、エラーになります"]
+    }
+  ]
+}

@@ -1,13 +1,33 @@
 {
   "id": "javascript",
   "title": "JavaScript基礎コース",
-  "description": "JavaScriptの基本的な文法とconsole出力を学びます（拡張性検証用の最小コース）",
+  "description": "変数・条件分岐・配列・繰り返し・関数など、JavaScriptの基礎を一通り学びます",
   "language": "javascript",
   "chapters": [
     {
       "id": "chapter-1",
-      "title": "第1章: JavaScriptの基本",
-      "lessonIds": ["01-console-log"]
+      "title": "1章：JavaScriptに触れてみよう",
+      "lessonIds": ["js1-01-console-log", "js1-02-variables-let", "js1-03-variables-const"]
+    },
+    {
+      "id": "chapter-2",
+      "title": "2章：条件分岐をマスターしよう",
+      "lessonIds": ["js2-01-if-statement", "js2-02-if-else", "js2-03-comparison-logical"]
+    },
+    {
+      "id": "chapter-3",
+      "title": "3章：配列を使ってみよう",
+      "lessonIds": ["js3-01-array-basic", "js3-02-array-push", "js3-03-array-length"]
+    },
+    {
+      "id": "chapter-4",
+      "title": "4章：繰り返し処理をしよう",
+      "lessonIds": ["js4-01-for-loop", "js4-02-while-loop", "js4-03-array-foreach"]
+    },
+    {
+      "id": "chapter-5",
+      "title": "5章：関数を作ろう",
+      "lessonIds": ["js5-01-function-declaration", "js5-02-function-reuse", "js5-03-arrow-function"]
     }
   ]
 }
