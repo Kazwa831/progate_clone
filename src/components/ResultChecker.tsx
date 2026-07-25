@@ -12,6 +12,7 @@ type ResultCheckerProps = {
   hint?: string;
   commonMistakes?: string[];
   solutionCode: string;
+  checkDisabled?: boolean;
 };
 
 export function ResultChecker({
@@ -21,6 +22,7 @@ export function ResultChecker({
   hint,
   commonMistakes,
   solutionCode,
+  checkDisabled = false,
 }: ResultCheckerProps) {
   const [showAnswer, setShowAnswer] = useState(false);
 
@@ -30,11 +32,17 @@ export function ResultChecker({
         <button
           type="button"
           onClick={onCheck}
-          className="inline-flex items-center gap-2 rounded-md bg-success px-4 py-2 text-sm font-medium text-success-foreground transition-colors hover:bg-success-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          disabled={checkDisabled}
+          className="inline-flex items-center gap-2 rounded-md bg-success px-4 py-2 text-sm font-medium text-success-foreground transition-colors hover:bg-success-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-success"
         >
           <PlayIcon className="h-4 w-4" />
           実行して確認する
         </button>
+        {checkDisabled && (
+          <span className="text-xs text-muted-foreground">
+            実行環境を準備中です…
+          </span>
+        )}
         <button
           type="button"
           onClick={onReset}

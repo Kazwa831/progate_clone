@@ -1,0 +1,29 @@
+{
+  "id": "py4-02-for-list",
+  "title": "リストをfor文で繰り返す",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "リストの中身を1つずつ処理する",
+      "body": "`for` 文は `range()` だけでなく、リストの中身を1つずつ取り出すのにも使えます。`for 変数 in リスト名:` と書くと、リストの要素数ぶんだけ自動的に繰り返され、変数に1つずつ要素が入ります。\nインデックスを意識する必要がなく、Pythonでは最もよく使われる繰り返し方の1つです。",
+      "points": ["`for fruit in fruits:` の `fruit` の部分は好きな名前をつけられます（1要素分の値が入ります）"]
+    },
+    {
+      "type": "example",
+      "description": "リスト `fruits` の要素を1つずつ出力します。",
+      "code": "fruits = [\"apple\", \"banana\"]\nfor fruit in fruits:\n    print(fruit)"
+    },
+    {
+      "type": "exercise",
+      "instruction": "リスト `fruits` に「apple」「banana」「orange」を入れて、`for` 文で1つずつ `print` してみましょう。",
+      "starterCode": "fruits = [\"apple\", \"banana\", \"orange\"]\n# ここにfor文を書いてください\n",
+      "solutionCode": "fruits = [\"apple\", \"banana\", \"orange\"]\nfor fruit in fruits:\n    print(fruit)",
+      "checkType": "python-output-equals",
+      "checkRule": {
+        "expectedOutput": "orange"
+      },
+      "hint": "`for fruit in fruits:` の次の行を字下げして `print(fruit)` と書きましょう。",
+      "commonMistakes": ["`for fruit in fruits:` の `in` を書き忘れる"]
+    }
+  ]
+}

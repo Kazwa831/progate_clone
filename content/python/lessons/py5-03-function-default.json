@@ -1,0 +1,32 @@
+{
+  "id": "py5-03-function-default",
+  "title": "デフォルト引数を使ってみよう",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "引数を省略できるようにする",
+      "body": "関数の引数には、あらかじめ「初期値（デフォルト値）」を設定しておくことができます。呼び出すときにその引数を省略すると、初期値が使われます。\n`def 関数名(引数=初期値):` のように書きます。「ほとんどの場合は同じ値だけど、たまに変えたい」という引数があるときに便利です。",
+      "points": ["デフォルト引数がある場合でも、呼び出し時に値を渡せばその値が優先されます"]
+    },
+    {
+      "type": "example",
+      "description": "`greet()` は引数を省略すると「ゲスト」宛のあいさつになります。",
+      "code": "def greet(name=\"ゲスト\"):\n    return \"こんにちは、\" + name + \"さん\"\n\nprint(greet())"
+    },
+    {
+      "type": "exercise",
+      "instruction": "引数 `name` のデフォルト値を「ゲスト」とした関数 `greet` を作り、「こんにちは、」+ `name` + 「さん」という文字列を返すようにしてください。そして、引数なしで `greet()` を呼び出した結果を `print` で出力してみましょう。",
+      "starterCode": "# ここに関数を定義してください\n",
+      "solutionCode": "def greet(name=\"ゲスト\"):\n    return \"こんにちは、\" + name + \"さん\"\n\nprint(greet())",
+      "checkType": "python-output-equals",
+      "checkRule": {
+        "expectedOutput": "こんにちは、ゲストさん"
+      },
+      "hint": "`def greet(name=\"ゲスト\"):` のように `=` でデフォルト値を指定しましょう。",
+      "commonMistakes": [
+        "デフォルト値の文字列を数値のようにクォートなしで書いてしまう",
+        "エディタが自動で字下げを続けることがあるため、`print(greet())` の行が意図せず字下げされていないか確認しましょう"
+      ]
+    }
+  ]
+}

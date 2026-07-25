@@ -1,0 +1,29 @@
+{
+  "id": "py3-03-list-len",
+  "title": "リストの要素数を調べる",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "リストの中身がいくつあるか調べる",
+      "body": "リストに入っている要素の数を知りたいときは `len()` を使います。`len(リスト名)` と書くだけで、要素の個数が取得できます。\n`len()` はリストだけでなく、文字列の文字数を調べるときにも使える、Pythonの組み込み関数です。これから学ぶ繰り返し処理でもよく登場します。",
+      "points": ["`len(fruits)` のように、対象を `()` の中に渡す形で使います（`fruits.len()` ではありません）"]
+    },
+    {
+      "type": "example",
+      "description": "リスト `fruits` の要素数を出力します。",
+      "code": "fruits = [\"apple\", \"banana\", \"orange\"]\nprint(len(fruits))"
+    },
+    {
+      "type": "exercise",
+      "instruction": "4つの果物が入ったリスト `fruits` を用意し、`len(fruits)` を `print` で出力してみましょう。",
+      "starterCode": "# ここにコードを書いてください\n",
+      "solutionCode": "fruits = [\"apple\", \"banana\", \"orange\", \"grape\"]\nprint(len(fruits))",
+      "checkType": "python-output-equals",
+      "checkRule": {
+        "expectedOutput": "4"
+      },
+      "hint": "リストに4つの要素を入れてから、`print(len(fruits))` としましょう。",
+      "commonMistakes": ["`fruits.len()` のように書いてしまう（JavaScriptの`.length`との書き方の違いに注意）"]
+    }
+  ]
+}

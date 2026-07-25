@@ -1,0 +1,29 @@
+{
+  "id": "py2-03-elif",
+  "title": "elifで3つ以上に分岐する",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "条件を3つ以上に分ける",
+      "body": "「80点以上はA、60点以上はB、それ未満はC」のように、3つ以上のパターンに分けたいときは `elif`（else ifの意味）を使います。\n`if`→`elif`→`elif`→...→`else` の順に上から条件を確認していき、最初に真になった条件のブロックだけが実行されます。",
+      "points": ["`elif` はいくつでも重ねることができます"]
+    },
+    {
+      "type": "example",
+      "description": "`score` が75なので、「80以上」には当てはまらず、「60以上」の「B」が出力されます。",
+      "code": "score = 75\nif score >= 80:\n    print(\"A\")\nelif score >= 60:\n    print(\"B\")\nelse:\n    print(\"C\")"
+    },
+    {
+      "type": "exercise",
+      "instruction": "変数 `score` が75のとき、80以上なら「A」、60以上なら「B」、それ以外は「C」と出力する文を書いてみましょう。",
+      "starterCode": "score = 75\n# ここにif-elif-else文を書いてください\n",
+      "solutionCode": "score = 75\nif score >= 80:\n    print(\"A\")\nelif score >= 60:\n    print(\"B\")\nelse:\n    print(\"C\")",
+      "checkType": "python-output-equals",
+      "checkRule": {
+        "expectedOutput": "B"
+      },
+      "hint": "`if score >= 80:` の後に `elif score >= 60:`、最後に `else:` を書きましょう。",
+      "commonMistakes": ["`elif` を `else if`（JavaScriptの書き方）と書いてしまう"]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "id": "py2-01-if",
+  "title": "if文で条件分岐する",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "条件によって処理を変える",
+      "body": "「点数が60点以上なら合格」のように、条件によって処理を分けたいときは `if` 文を使います。\n`if 条件:` と書き、その次の行を字下げ（インデント）して処理を書きます。条件が真（True）のときだけ、インデントされた処理が実行されます。",
+      "points": [
+        "Pythonでは `{}` の代わりに「字下げ（インデント）」でブロックを表します。半角スペース4つが一般的です",
+        "`if` の行の最後には `:`（コロン）を書きます"
+      ]
+    },
+    {
+      "type": "example",
+      "description": "`score` が60以上のときだけ「合格」と出力されます。",
+      "code": "score = 80\nif score >= 60:\n    print(\"合格\")"
+    },
+    {
+      "type": "exercise",
+      "instruction": "変数 `score` が80のとき、`score` が60以上なら「合格」と `print` で出力する `if` 文を書いてみましょう。",
+      "starterCode": "score = 80\n# ここにif文を書いてください\n",
+      "solutionCode": "score = 80\nif score >= 60:\n    print(\"合格\")",
+      "checkType": "python-output-equals",
+      "checkRule": {
+        "expectedOutput": "合格"
+      },
+      "hint": "`if score >= 60:` の次の行を字下げして `print(\"合格\")` と書きましょう。",
+      "commonMistakes": [
+        "`if` の行の最後の `:`（コロン）を書き忘れる",
+        "次の行の字下げ（インデント）を忘れる、または字下げの深さが揃っていない"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "id": "py3-01-list-basic",
+  "title": "リストを使ってみよう",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "複数の値をまとめて扱う",
+      "body": "複数の値をまとめて扱いたいときはリストを使います。`[値1, 値2, 値3]` のように `[]`（角括弧）で値をカンマ区切りに並べます。\nリストの中の値には「インデックス（番号）」でアクセスします。インデックスは1からではなく **0から** 数える点に注意しましょう。",
+      "points": ["最初の要素は `リスト名[0]`、2番目の要素は `リスト名[1]` のようにアクセスします"]
+    },
+    {
+      "type": "example",
+      "description": "リスト `fruits` の0番目（先頭）の要素を出力します。",
+      "code": "fruits = [\"apple\", \"banana\", \"orange\"]\nprint(fruits[0])"
+    },
+    {
+      "type": "exercise",
+      "instruction": "リスト `fruits` に「apple」「banana」「orange」を入れて、1番目の要素（インデックス1）を `print` で出力してみましょう。",
+      "starterCode": "# ここにコードを書いてください\n",
+      "solutionCode": "fruits = [\"apple\", \"banana\", \"orange\"]\nprint(fruits[1])",
+      "checkType": "python-output-equals",
+      "checkRule": {
+        "expectedOutput": "banana"
+      },
+      "hint": "`fruits = [\"apple\", \"banana\", \"orange\"]` の後、`print(fruits[1])` としましょう。",
+      "commonMistakes": ["インデックスを1から数えてしまい、`fruits[1]` を「1番目」ではなく「2番目」だと勘違いする"]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "id": "py1-03-types",
+  "title": "データの種類（型）を知ろう",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "値にはいろいろな種類がある",
+      "body": "Pythonの値には「型」という種類があります。代表的なものに、整数(`int`)、小数(`float`)、文字列(`str`)、真偽値(`bool`)があります。\n真偽値は `True`（真）と `False`（偽）の2つだけの値で、条件分岐（次の章で学びます）でよく使われます。文字列は `\"\"` または `''` で囲んで表します。",
+      "points": ["`True` `False` は先頭が大文字です（`true` ではありません）"]
+    },
+    {
+      "type": "example",
+      "description": "真偽値の変数を作って出力してみます。",
+      "code": "is_sunny = True\nprint(is_sunny)"
+    },
+    {
+      "type": "exercise",
+      "instruction": "変数 `is_student` に真偽値 `True` を代入してみましょう。（`print` は不要です）",
+      "starterCode": "# ここにコードを書いてください\n",
+      "solutionCode": "is_student = True",
+      "checkType": "python-variable-equals",
+      "checkRule": {
+        "variable": "is_student",
+        "expectedValue": true
+      },
+      "hint": "`is_student = True` のように書いてみましょう。",
+      "commonMistakes": ["`True` を `\"True\"` のように文字列として書いてしまう（クォートは不要です）"]
+    }
+  ]
+}

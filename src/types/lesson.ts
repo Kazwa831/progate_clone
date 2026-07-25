@@ -19,7 +19,13 @@ export type SlideExercise = {
   instruction: string;
   starterCode: string;
   solutionCode: string;
-  checkType: "contains-tag" | "css-property" | "regex-match" | "js-output-equals";
+  checkType:
+    | "contains-tag"
+    | "css-property"
+    | "regex-match"
+    | "js-output-equals"
+    | "python-output-equals"
+    | "python-variable-equals";
   checkRule: Record<string, unknown>;
   hint?: string;
   commonMistakes?: string[];

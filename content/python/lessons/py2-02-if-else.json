@@ -1,0 +1,29 @@
+{
+  "id": "py2-02-if-else",
+  "title": "elseで両方のパターンを扱う",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "条件に当てはまらないときの処理も書く",
+      "body": "`if` だけでは「条件に当てはまるときの処理」しか書けません。「当てはまらないときは別の処理をしたい」場合は `else` を使います。\n`if 条件:` の後に `else:` を続けて書きます。条件が真ならif側、偽ならelse側の処理が実行されます。",
+      "points": ["`else` も行の最後に `:`（コロン）が必要です"]
+    },
+    {
+      "type": "example",
+      "description": "`score` が60未満なので、`else` 側の「不合格」が出力されます。",
+      "code": "score = 40\nif score >= 60:\n    print(\"合格\")\nelse:\n    print(\"不合格\")"
+    },
+    {
+      "type": "exercise",
+      "instruction": "変数 `score` が40のとき、60以上なら「合格」、そうでなければ「不合格」と出力する `if`-`else` 文を書いてみましょう。",
+      "starterCode": "score = 40\n# ここにif-else文を書いてください\n",
+      "solutionCode": "score = 40\nif score >= 60:\n    print(\"合格\")\nelse:\n    print(\"不合格\")",
+      "checkType": "python-output-equals",
+      "checkRule": {
+        "expectedOutput": "不合格"
+      },
+      "hint": "`if score >= 60:` の後に `else:` を続けて書きましょう。",
+      "commonMistakes": ["`if` と `else` の字下げの深さを揃え忘れる"]
+    }
+  ]
+}

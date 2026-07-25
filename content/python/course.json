@@ -1,0 +1,33 @@
+{
+  "id": "python",
+  "title": "Python基礎コース",
+  "description": "変数・条件分岐・リスト・繰り返し・関数など、Pythonの基礎を一通り学びます",
+  "language": "python",
+  "chapters": [
+    {
+      "id": "chapter-1",
+      "title": "1章：Pythonに触れてみよう",
+      "lessonIds": ["py1-01-print", "py1-02-variables", "py1-03-types"]
+    },
+    {
+      "id": "chapter-2",
+      "title": "2章：if文で条件分岐しよう",
+      "lessonIds": ["py2-01-if", "py2-02-if-else", "py2-03-elif"]
+    },
+    {
+      "id": "chapter-3",
+      "title": "3章：リストを使ってみよう",
+      "lessonIds": ["py3-01-list-basic", "py3-02-list-append", "py3-03-list-len"]
+    },
+    {
+      "id": "chapter-4",
+      "title": "4章：for文で繰り返そう",
+      "lessonIds": ["py4-01-for-range", "py4-02-for-list", "py4-03-for-sum"]
+    },
+    {
+      "id": "chapter-5",
+      "title": "5章：関数を作ろう",
+      "lessonIds": ["py5-01-function-def", "py5-02-function-reuse", "py5-03-function-default"]
+    }
+  ]
+}

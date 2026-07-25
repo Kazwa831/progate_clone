@@ -1,0 +1,31 @@
+{
+  "id": "py5-02-function-reuse",
+  "title": "関数を何度も使い回す",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "関数は繰り返し呼び出せる",
+      "body": "一度作った関数は、引数を変えながら何度でも呼び出せます。同じ計算を毎回書く代わりに、関数を定義しておけば1行呼び出すだけで済みます。\n呼び出すたびに異なる引数を渡すことで、そのときどきに応じた結果を得られます。",
+      "points": ["関数はいわば「値を渡すと、決まった処理をして結果を返してくれる機械」のようなものです"]
+    },
+    {
+      "type": "example",
+      "description": "引数を2乗して返す関数 `square` を、異なる引数で2回呼び出しています。",
+      "code": "def square(n):\n    return n * n\n\nprint(square(3))\nprint(square(5))"
+    },
+    {
+      "type": "exercise",
+      "instruction": "受け取った数値を2倍にして返す関数 `double` を作り、`double(10)` の結果を `print` で出力してみましょう。",
+      "starterCode": "# ここに関数を定義してください\n",
+      "solutionCode": "def double(n):\n    return n * 2\n\nprint(double(10))",
+      "checkType": "python-output-equals",
+      "checkRule": {
+        "expectedOutput": "20"
+      },
+      "hint": "`def double(n):` の次の行で `return n * 2` と書いた後、`print(double(10))` を書きましょう。",
+      "commonMistakes": [
+        "エディタが自動で字下げを続けることがあるため、`print(double(10))` の行が意図せず字下げされていないか確認しましょう"
+      ]
+    }
+  ]
+}

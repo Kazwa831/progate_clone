@@ -1,0 +1,35 @@
+{
+  "id": "py4-01-for-range",
+  "title": "range()を使ったfor文",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "決まった回数だけ繰り返す",
+      "body": "「1から5まで数字を出力する」ように、同じ処理を繰り返したいときは `for` 文を使います。\n`range(開始, 終了)` を組み合わせると、開始の数から「終了の数の1つ手前」までを順番に繰り返せます。`for 変数 in range(1, 6):` は「1から5まで繰り返す」という意味になります。",
+      "points": [
+        "`range(1, 6)` は 1, 2, 3, 4, 5 を表します（6は含まれない点に注意）",
+        "`range()` は必ず指定した回数で終わるため、JavaScriptの`for`文と違って無限ループの心配がありません"
+      ]
+    },
+    {
+      "type": "example",
+      "description": "1から3までの数字を1つずつ出力します。",
+      "code": "for i in range(1, 4):\n    print(i)"
+    },
+    {
+      "type": "exercise",
+      "instruction": "`for` 文と `range()` を使って、1から5までの数字を `print` で出力してみましょう。",
+      "starterCode": "# ここにfor文を書いてください\n",
+      "solutionCode": "for i in range(1, 6):\n    print(i)",
+      "checkType": "python-output-equals",
+      "checkRule": {
+        "expectedOutput": "5"
+      },
+      "hint": "`for i in range(1, 6):` の次の行を字下げして `print(i)` と書きましょう。",
+      "commonMistakes": [
+        "`range(1, 5)` のように書いてしまい、5が出力されない（終了の数字は含まれないので6を指定します）",
+        "`for` の行の最後の `:`（コロン）を書き忘れる"
+      ]
+    }
+  ]
+}

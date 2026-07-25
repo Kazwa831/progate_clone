@@ -1,0 +1,29 @@
+{
+  "id": "py1-01-print",
+  "title": "printで出力する",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "printとは",
+      "body": "Pythonでは `print()` を使うと、指定した値を画面に出力できます。\nこのアプリでは、`print()` で出力された内容をもとに正誤判定を行います。計算結果を確認したいときなど、Pythonで最初に覚える命令のひとつです。\nなお、Pythonの実行環境（Pyodide）はレッスンを開いたときに一度だけ読み込まれます。読み込みが終わるまで少し時間がかかることがあります。",
+      "points": ["`print()` の `()` の中に、出力したい値や式を書きます"]
+    },
+    {
+      "type": "example",
+      "description": "文字列や計算結果を出力してみます。「実行してみる」を押すと、下のプレビューに結果が表示されます。",
+      "code": "print(\"Hello\")\nprint(1 + 2)"
+    },
+    {
+      "type": "exercise",
+      "instruction": "1 + 2 の計算結果を `print` で出力してみましょう。",
+      "starterCode": "# ここにコードを書いてください\n",
+      "solutionCode": "print(1 + 2)",
+      "checkType": "python-output-equals",
+      "checkRule": {
+        "expectedOutput": "3"
+      },
+      "hint": "`print(1 + 2)` のように書いてみましょう。",
+      "commonMistakes": ["`print` の後ろの `()`（丸括弧）を書き忘れる"]
+    }
+  ]
+}

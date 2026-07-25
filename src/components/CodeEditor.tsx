@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { html } from "@codemirror/lang-html";
 import { javascript } from "@codemirror/lang-javascript";
+import { python } from "@codemirror/lang-python";
 import { oneDark } from "@codemirror/theme-one-dark";
 
 type CodeEditorProps = {
@@ -27,7 +28,12 @@ export function CodeEditor({ value, language, onChange }: CodeEditorProps) {
     return () => mediaQuery.removeEventListener("change", handleChange);
   }, []);
 
-  const languageExtension = language === "javascript" ? javascript() : html();
+  const languageExtension =
+    language === "javascript"
+      ? javascript()
+      : language === "python"
+        ? python()
+        : html();
 
   return (
     <CodeMirror

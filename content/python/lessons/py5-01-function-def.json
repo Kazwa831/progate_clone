@@ -1,0 +1,35 @@
+{
+  "id": "py5-01-function-def",
+  "title": "関数を作ろう",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "処理をひとまとめにする",
+      "body": "同じような処理を何度も書く代わりに、処理を「関数」としてひとまとめにしておくと、必要なときに呼び出すだけで済みます。\n`def 関数名(引数):` の次の行を字下げして処理を書き、`return 戻り値` で結果を返します。定義した関数は `関数名(値)` の形で呼び出せます。",
+      "points": [
+        "`def` は \"define\"（定義する）の略です",
+        "`return` を書き忘れると、関数は自動的に `None` を返します"
+      ]
+    },
+    {
+      "type": "example",
+      "description": "2つの引数を受け取り、合計を返す関数 `add` を定義して呼び出します。",
+      "code": "def add(a, b):\n    return a + b\n\nprint(add(2, 3))"
+    },
+    {
+      "type": "exercise",
+      "instruction": "2つの引数を受け取り、その合計を返す関数 `add` を作り、`add(4, 5)` の結果を `print` で出力してみましょう。",
+      "starterCode": "# ここに関数を定義してください\n",
+      "solutionCode": "def add(a, b):\n    return a + b\n\nprint(add(4, 5))",
+      "checkType": "python-output-equals",
+      "checkRule": {
+        "expectedOutput": "9"
+      },
+      "hint": "`def add(a, b):` の次の行を字下げして `return a + b` と書いた後、`print(add(4, 5))` を書きましょう。",
+      "commonMistakes": [
+        "`return` を書き忘れて `None` が出力されてしまう",
+        "エディタが自動で字下げを続けることがあるため、`print(add(4, 5))` の行が意図せず字下げされていないか確認しましょう（関数の外の処理は行頭から書きます）"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "id": "py4-03-for-sum",
+  "title": "繰り返しの中で値を集計する",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "繰り返しながら合計を求める",
+      "body": "繰り返し処理はただ出力するだけでなく、値を集計するのにも使えます。ループの前に合計用の変数を0で用意しておき、繰り返しの中でその変数に足し込んでいく、という書き方がよく使われます。\n`合計 = 合計 + 値` は `合計 += 値` と省略して書くこともできます。",
+      "points": ["`+=` は「今の値に足して、同じ変数に代入し直す」という意味の省略記法です"]
+    },
+    {
+      "type": "example",
+      "description": "リスト `numbers` の合計を求めて出力します。",
+      "code": "numbers = [1, 2, 3]\ntotal = 0\nfor number in numbers:\n    total += number\nprint(total)"
+    },
+    {
+      "type": "exercise",
+      "instruction": "リスト `numbers` に `[1, 2, 3, 4, 5]` を用意し、`for` 文で合計を求めて `print` で出力してみましょう。",
+      "starterCode": "numbers = [1, 2, 3, 4, 5]\ntotal = 0\n# ここにfor文を書いてください\n",
+      "solutionCode": "numbers = [1, 2, 3, 4, 5]\ntotal = 0\nfor number in numbers:\n    total += number\nprint(total)",
+      "checkType": "python-output-equals",
+      "checkRule": {
+        "expectedOutput": "15"
+      },
+      "hint": "`for number in numbers:` の次の行で `total += number` とし、最後に `print(total)` としましょう。",
+      "commonMistakes": [
+        "合計用の変数(`total`)をループの中で `0` にリセットしてしまい、毎回0からになってしまう（初期化はループの外で1回だけ行います）",
+        "エディタが自動で字下げを続けることがあるため、`print(total)` の行が意図せず字下げされていないか確認しましょう（ループの外の処理は行頭から書きます）"
+      ]
+    }
+  ]
+}

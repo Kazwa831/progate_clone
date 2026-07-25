@@ -779,3 +779,115 @@ Progateの主要コースを一通りカバーする方針のもと、JS→Pytho
 
 ### 次回やること（②Python基礎コース新規追加）
 - Pyodide導入方針・判定ロジック（標準出力/変数値判定）をユーザーに提示し確認を得てから着手する
+
+---
+
+## 2026-07-26: コースラインナップ拡充 ②Python基礎コース新規追加（Pyodide導入）
+
+### 実装前の技術検証
+設計を確定する前に、Playwrightで以下を実機検証した。
+- `sandbox="allow-scripts"`（allow-same-originなし）のiframe内でも、jsdelivr CDN
+  （`Access-Control-Allow-Origin: *`）からPyodideをロード・実行・postMessage通信できること
+  → 実測ロード時間は約2.3秒
+- Pyodideのバージョンが`0.29.x`系から`314.x`系（CPythonのバージョンに合わせた命名規則と
+  推測される）に変わっていたが、2026年6月から約6週間安定運用されている正式リリースである
+  ことを確認し、最新の`v314.0.3`を採用
+- 変数値の型変換（`bool→boolean`, `float/int→number`, `str→string`）が正しく行われること
+- `pyodide.runPython(code, { globals: namespace })`で毎回新しい空の名前空間を使うことで、
+  実行間で変数が残留しないこと（`globals.clear()`は組み込みも消してしまうリスクがあるため
+  不採用とし、`pyodide.toPy({})`による分離された名前空間を採用）
+
+これらを踏まえた設計方針（CDN配布 vs 自己ホスティング）をユーザーに提示し、CDN配布での実装に
+合意を得た上で着手した。
+
+### 実施内容
+
+**実行環境: Pyodide (CDN配布)**
+- `@codemirror/lang-python`を追加（エディタのシンタックスハイライト用）
+- `src/lib/judge/pythonJudge.ts`を新規作成
+  - `buildPythonRunnerHtml()`: srcDocが固定の「常駐ランナー」。レッスン表示中に1回だけ
+    Pyodideを読み込み、以後は親からの`postMessage`でコードを受け取って実行する
+    （HTML/CSS・JSコースのように毎回iframeを作り直す方式は、Pyodideの初回ロードコストが
+    大きいため採用できないと判断した）
+  - `judgePythonOutput()`: `python-output-equals`（print出力の判定）と
+    `python-variable-equals`（実行後の変数値を直接判定）の2種類のcheckTypeに対応
+
+**実行モデルの違い（ユーザーに事前説明した通りの設計変更）**
+- レッスンを開くと同時にPyodideの読み込みを開始し、プレビュー内に
+  「Pythonの実行環境を読み込み中...」→「準備ができました」を表示（ローディングUX）
+- コード変更のたびに自動実行するのではなく、「実行してみる」（説明・完成イメージスライド）
+  「実行して確認する」（演習スライド）ボタンを押したときだけ実行
+- Pyodideの読み込みが終わるまで「実行して確認する」ボタンをdisabledにし、
+  「実行環境を準備中です…」を表示（`ResultChecker`に`checkDisabled`propsを追加）
+
+**教材構成（5章15レッスン）**: print、変数・型、if/elif/else、リスト、for文（`range()`と
+リストの繰り返し、集計処理）、関数（定義・再利用・デフォルト引数）。JSコースと同様、
+`while`文は扱わず`for ... in range()`中心の構成にすることで、無限ループのリスクを
+構造的に避けた（Pyodideも単一スレッドで動作するため、無限ループを外部から止める手段がない
+制約はJSコースと同じ）。
+
+### 実装中に発見・修正した不具合（2件）
+実ブラウザでの動作確認中に、ドキュメント化されていない重大な不具合を2件発見し修正した。
+
+1. **Pyodide準備完了通知のレースコンディション**: iframeの`srcDoc`はページのSSR済みHTMLに
+   直接埋め込まれるため、ブラウザがReactのhydrationを終えるより先にiframe内でPyodideの
+   読み込みを開始・完了してしまうことがあった。1回きりの`postMessage`通知だと、Reactの
+   `useEffect`がリスナーを登録する前に通知が届いて取りこぼされ、「実行して確認する」が
+   永久にdisabledのままになる不具合があった。→ 準備完了通知を250ms間隔で最大20回
+   繰り返し送信するように修正（親側の処理は何度届いても同じ状態にするだけなので副作用はない）。
+   あわせて、メッセージリスナーの`useEffect`が`slideIndex`等に依存し、スライド送りのたびに
+   再購読される作りになっていた点も、`latestSlideStateRef`経由で最新値を参照する方式に
+   直して、レッスン表示中はリスナーを張りっぱなしにするよう修正した。
+2. **`namespace.keys()`の扱いの誤り**: PyodideのPyProxyの`.keys()`はイテレータを返すが、
+   実装では配列であるかのように`keys.length`でループ回数を判定するコードになっており、
+   `length`が`undefined`のため条件`i < keys.length`が常に偽となり、変数の中身を
+   一切拾えていなかった（`python-variable-equals`の判定が常に「変数が定義されていません」
+   になる不具合）。→ `for...of`で走査するように修正。
+   （教訓: QA用の検証スクリプトは実装コードを再現するのではなく、実装コード自体を
+   検証する必要がある。今回は独自に書いたQAスクリプトが偶然正しい実装だったため、
+   実装側の同種のバグを自動検証だけでは検出できず、実ブラウザでの手動確認で見つかった）
+
+### 副次的に見つかった教材上の注意点
+CodeMirrorのPython言語モードは自動でインデントを継続する機能があり、関数やforループの
+本体を書いた後、空行を挟んでインデントなしの行（関数の外の処理）を書こうとすると、
+意図せず字下げされたままになりPythonの`IndentationError`やロジックの誤りにつながることが
+判明した。該当するレッスン（`py4-03-for-sum`, `py5-01〜03`）の「よくある間違い」に
+注意書きを追加した。
+
+### 変更・作成したファイル
+- 新規: `src/lib/judge/pythonJudge.ts`
+- 新規: `content/python/course.json`, `content/python/lessons/py1-01〜py5-03-*.json`（15ファイル）
+- 変更: `src/types/lesson.ts`（checkTypeに`python-output-equals`/`python-variable-equals`追加）
+- 変更: `src/components/PreviewPane.tsx`（python分岐、sandboxはallow-scripts）
+- 変更: `src/components/CodeEditor.tsx`（`@codemirror/lang-python`追加）
+- 変更: `src/components/LessonWorkspace.tsx`（Pyodideの読み込み状態管理、
+  postMessageでの実行トリガー、レースコンディション修正）
+- 変更: `src/components/ResultChecker.tsx`（`checkDisabled`props追加）
+- 変更: `package.json` / `package-lock.json`（`@codemirror/lang-python`追加）
+
+### 動作確認結果
+- 全JSONファイルを`python3 -m json.tool`で構文チェック → 全て正常
+- `npm run lint` / `npm run build` → いずれも成功
+- **教材の自動検証**: 全15レッスン・15演習について、Pyodideを1回ロードし各演習を
+  分離された名前空間で実行するPlaywrightスクリプトで、`solutionCode`が
+  `judgePythonOutput`相当のロジックで`correct: true`になることを確認
+  → **全問正解を確認**
+- **実ブラウザでの動作確認**（Playwright + Chromium）:
+  - トップページにPython基礎コースのカードが自動的に表示されることを確認
+    （`contentLoader`・API・一覧/詳細ページのコードは無変更のまま拡張性を再確認）
+  - コース詳細ページで5章すべてが表示されることを確認
+  - ローディング表示（「読み込み中...」→「準備ができました」）を確認
+  - 「実行してみる」ボタン（完成イメージスライド）でPythonコードを実行し、出力が
+    プレビューに表示されることを確認
+  - `python-output-equals`（print判定）・`python-variable-equals`（変数値判定）の
+    両方の判定方式が正しく動作することを確認
+  - リスト・for文（`range()`）・関数（デフォルト引数含む）の演習が正しく判定されることを確認
+  - レッスン最後の演習に正解 → 次のレッスンへ自動遷移することを確認
+  - HTML/CSSコース・JavaScriptコースが今回の`LessonWorkspace`/`ResultChecker`等の
+    共通コンポーネント変更後も問題なく動作することを確認（リグレッションなし）
+  - トップページに3コース（HTML/CSS・JavaScript・Python）が表示されることを確認
+  - ブラウザコンソールエラー: **0件**
+  - 検証で作成したテスト用進捗データはコミット前にクリア済み
+
+### 次回やること（③SQL基礎コース新規追加）
+- sql.js導入方針・判定ロジック（クエリ結果の判定）をユーザーに提示し確認を得てから着手する

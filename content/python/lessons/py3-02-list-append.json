@@ -1,0 +1,29 @@
+{
+  "id": "py3-02-list-append",
+  "title": "リストに要素を追加する",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "あとから要素を追加する",
+      "body": "`append()` を使うと、リストの末尾に新しい要素を追加できます。`リスト名.append(追加したい値)` のように書きます。\n買い物リストにあとから商品を追加するようなイメージです。JavaScriptの `push()` と同じ役割です。",
+      "points": ["`append()` は元のリストそのものを変更します（新しいリストを作るわけではありません）"]
+    },
+    {
+      "type": "example",
+      "description": "リスト `fruits` に `\"orange\"` を追加してから、リスト全体を出力します。",
+      "code": "fruits = [\"apple\", \"banana\"]\nfruits.append(\"orange\")\nprint(fruits)"
+    },
+    {
+      "type": "exercise",
+      "instruction": "リスト `fruits` に「apple」「banana」を用意し、`append()` で「orange」を追加して、`print` でリスト全体を出力してみましょう。",
+      "starterCode": "fruits = [\"apple\", \"banana\"]\n# ここにappendとprintを書いてください\n",
+      "solutionCode": "fruits = [\"apple\", \"banana\"]\nfruits.append(\"orange\")\nprint(fruits)",
+      "checkType": "python-output-equals",
+      "checkRule": {
+        "expectedOutput": "['apple', 'banana', 'orange']"
+      },
+      "hint": "`fruits.append(\"orange\")` の後に `print(fruits)` を書きましょう。",
+      "commonMistakes": ["`fruits.append(\"orange\")` の結果を変数に代入しようとしてしまう（`append`はリスト自体を書き換えるので代入は不要です）"]
+    }
+  ]
+}

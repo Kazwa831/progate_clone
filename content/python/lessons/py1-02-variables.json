@@ -1,0 +1,30 @@
+{
+  "id": "py1-02-variables",
+  "title": "変数を使ってみよう",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "変数に値を入れる",
+      "body": "何度も使う値には、名前をつけて保管しておくと便利です。この「名前をつけた入れ物」を変数と呼びます。\nPythonでは `変数名 = 値` と書くだけで変数を作成できます。JavaScriptの `let` のような宣言のキーワードは不要です。",
+      "points": ["この演習では、`print` をしなくても、変数に代入した値そのものを見て正誤判定します"]
+    },
+    {
+      "type": "example",
+      "description": "変数 `name` に文字列を代入して出力します。",
+      "code": "name = \"Progate\"\nprint(name)"
+    },
+    {
+      "type": "exercise",
+      "instruction": "変数 `height` に 170 を代入してみましょう。（`print` は不要です）",
+      "starterCode": "# ここにコードを書いてください\n",
+      "solutionCode": "height = 170",
+      "checkType": "python-variable-equals",
+      "checkRule": {
+        "variable": "height",
+        "expectedValue": 170
+      },
+      "hint": "`height = 170` のように書いてみましょう。",
+      "commonMistakes": ["変数名のスペルを問題文と違えてしまう（`Height` のように大文字小文字も区別されます）"]
+    }
+  ]
+}
