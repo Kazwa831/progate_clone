@@ -1,0 +1,42 @@
+{
+  "id": "sql5-01-join-basic",
+  "title": "JOINでテーブルを結合しよう",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "複数のテーブルを組み合わせる",
+      "body": "`posts` テーブルの `user_id` は、`users` テーブルの `id` と対応しています。このように関連する2つのテーブルを組み合わせて1つの結果として取得したいときは `JOIN` を使います。\n`FROM テーブルA JOIN テーブルB ON テーブルA.カラム = テーブルB.カラム;` のように、「どのカラム同士が対応しているか」を `ON` で指定します。同じカラム名がある場合は `テーブル名.カラム名` の形で区別します。",
+      "points": [
+        "`JOIN` は正式には `INNER JOIN` と呼ばれ、両方のテーブルに対応するデータがある行だけを結合します",
+        "`ON` の条件は「投稿の`user_id`と、ユーザーの`id`が一致する」という意味です"
+      ]
+    },
+    {
+      "type": "example",
+      "description": "投稿ごとに、投稿したユーザーの名前とタイトルを一緒に取得します。",
+      "code": "SELECT users.name, posts.title\nFROM users\nJOIN posts ON users.id = posts.user_id;"
+    },
+    {
+      "type": "exercise",
+      "instruction": "`users` と `posts` をJOINし、`users.name` と `posts.title` を取得するSQL文を書いてみましょう。",
+      "starterCode": "-- ここにSQLを書いてください\n",
+      "solutionCode": "SELECT users.name, posts.title\nFROM users\nJOIN posts ON users.id = posts.user_id;",
+      "checkType": "sql-result-equals",
+      "checkRule": {
+        "columns": ["name", "title"],
+        "rows": [
+          ["Alice", "Hello World"],
+          ["Alice", "My Second Post"],
+          ["Bob", "Osaka Life"],
+          ["Carol", "Tokyo Diaries"],
+          ["Dave", "Nagoya Castle"]
+        ]
+      },
+      "hint": "`FROM users JOIN posts ON users.id = posts.user_id` のように書いてみましょう。",
+      "commonMistakes": [
+        "`ON` の条件を書き忘れる、または逆向き（`posts.id = users.user_id`）に書いてしまう",
+        "同じ名前のカラムがある場合に `テーブル名.` を省略してしまい、あいまいさのエラーになる"
+      ]
+    }
+  ]
+}

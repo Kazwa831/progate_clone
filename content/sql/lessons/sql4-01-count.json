@@ -1,0 +1,30 @@
+{
+  "id": "sql4-01-count",
+  "title": "COUNTで件数を数えよう",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "行数を数える",
+      "body": "テーブルに何行データがあるかを数えたいときは `COUNT(*)` を使います。`COUNT(*)` はSELECTするカラムの代わりに書き、「該当する行の数」を1つの値として返します。\n`AS` を使うと、結果のカラムに好きな名前（別名）をつけられます。",
+      "points": ["`COUNT(*)` に `WHERE` を組み合わせれば、「条件に合う行の数」を数えることもできます"]
+    },
+    {
+      "type": "example",
+      "description": "`posts`テーブルの投稿数を数えます。",
+      "code": "SELECT COUNT(*) AS count FROM posts;"
+    },
+    {
+      "type": "exercise",
+      "instruction": "`users` テーブルの行数を、`count` という名前で取得するSQL文を書いてみましょう。",
+      "starterCode": "-- ここにSQLを書いてください\n",
+      "solutionCode": "SELECT COUNT(*) AS count FROM users;",
+      "checkType": "sql-result-equals",
+      "checkRule": {
+        "columns": ["count"],
+        "rows": [[5]]
+      },
+      "hint": "`SELECT COUNT(*) AS count FROM users;` のように書いてみましょう。",
+      "commonMistakes": ["`AS count` を書き忘れる（結果自体は取れますが、カラム名がこの演習の期待値と異なってしまいます）"]
+    }
+  ]
+}

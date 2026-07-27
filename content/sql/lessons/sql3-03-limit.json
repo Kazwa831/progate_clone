@@ -1,0 +1,34 @@
+{
+  "id": "sql3-03-limit",
+  "title": "LIMITで件数を制限しよう",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "取得する件数を制限する",
+      "body": "「上位3件だけ見たい」というように、取得する行数を制限したいときは `LIMIT 件数;` を使います。`ORDER BY` と組み合わせることで、「ランキングの上位n件」のような取得ができます。\n`LIMIT` は基本的にSQL文の一番最後に書きます。",
+      "points": ["`ORDER BY` と `LIMIT` を組み合わせるときは、`ORDER BY` を先に、`LIMIT` を後に書きます"]
+    },
+    {
+      "type": "example",
+      "description": "いいね数が多い順に、上位2件の投稿を取得します。",
+      "code": "SELECT title, likes FROM posts ORDER BY likes DESC LIMIT 2;"
+    },
+    {
+      "type": "exercise",
+      "instruction": "`users` テーブルから `name` と `age` を、`age` が大きい順に並び替えて上位3件だけ取得するSQL文を書いてみましょう。",
+      "starterCode": "-- ここにSQLを書いてください\n",
+      "solutionCode": "SELECT name, age FROM users ORDER BY age DESC LIMIT 3;",
+      "checkType": "sql-result-equals",
+      "checkRule": {
+        "columns": ["name", "age"],
+        "rows": [
+          ["Dave", 35],
+          ["Bob", 30],
+          ["Eve", 28]
+        ]
+      },
+      "hint": "`SELECT name, age FROM users ORDER BY age DESC LIMIT 3;` のように書いてみましょう。",
+      "commonMistakes": ["`LIMIT` を `ORDER BY` より前に書いてしまう（文法エラーになります）"]
+    }
+  ]
+}

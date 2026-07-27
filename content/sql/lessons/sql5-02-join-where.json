@@ -1,0 +1,33 @@
+{
+  "id": "sql5-02-join-where",
+  "title": "JOINと条件を組み合わせよう",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "結合した結果を絞り込む",
+      "body": "`JOIN` した結果に対しても、これまでと同じように `WHERE` で絞り込みができます。「投稿の`likes`が10以上のものだけ」のように、結合後のテーブルに対して条件を指定します。\n`JOIN ... ON ...` の後に `WHERE` を続けて書きます。",
+      "points": ["`JOIN`・`WHERE`・`ORDER BY`はこの順番で書きます"]
+    },
+    {
+      "type": "example",
+      "description": "いいね数が15以上の投稿だけを、ユーザー名と一緒に取得します。",
+      "code": "SELECT users.name, posts.title\nFROM users\nJOIN posts ON users.id = posts.user_id\nWHERE posts.likes >= 15;"
+    },
+    {
+      "type": "exercise",
+      "instruction": "`users` と `posts` をJOINし、`likes` が10以上の投稿について `users.name` と `posts.title` を取得するSQL文を書いてみましょう。",
+      "starterCode": "-- ここにSQLを書いてください\n",
+      "solutionCode": "SELECT users.name, posts.title\nFROM users\nJOIN posts ON users.id = posts.user_id\nWHERE posts.likes >= 10;",
+      "checkType": "sql-result-equals",
+      "checkRule": {
+        "columns": ["name", "title"],
+        "rows": [
+          ["Alice", "Hello World"],
+          ["Bob", "Osaka Life"],
+          ["Dave", "Nagoya Castle"]
+        ]
+      },
+      "hint": "`JOIN posts ON users.id = posts.user_id` の後に `WHERE posts.likes >= 10` を続けましょう。"
+    }
+  ]
+}

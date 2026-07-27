@@ -1,0 +1,33 @@
+{
+  "id": "sql",
+  "title": "SQL基礎コース",
+  "description": "SELECT・WHERE・ORDER BY・集計・JOINなど、SQLの基礎を一通り学びます",
+  "language": "sql",
+  "chapters": [
+    {
+      "id": "chapter-1",
+      "title": "1章：SQLに触れてみよう",
+      "lessonIds": ["sql1-01-select-all", "sql1-02-select-columns", "sql1-03-select-posts"]
+    },
+    {
+      "id": "chapter-2",
+      "title": "2章：WHEREで絞り込もう",
+      "lessonIds": ["sql2-01-where-basic", "sql2-02-comparison", "sql2-03-and-or"]
+    },
+    {
+      "id": "chapter-3",
+      "title": "3章：並び替え・件数を制限しよう",
+      "lessonIds": ["sql3-01-order-by", "sql3-02-order-by-desc", "sql3-03-limit"]
+    },
+    {
+      "id": "chapter-4",
+      "title": "4章：集計しよう",
+      "lessonIds": ["sql4-01-count", "sql4-02-group-by", "sql4-03-sum-avg"]
+    },
+    {
+      "id": "chapter-5",
+      "title": "5章：テーブルを結合しよう",
+      "lessonIds": ["sql5-01-join-basic", "sql5-02-join-where", "sql5-03-join-order-by"]
+    }
+  ]
+}

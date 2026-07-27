@@ -25,7 +25,8 @@ export type SlideExercise = {
     | "regex-match"
     | "js-output-equals"
     | "python-output-equals"
-    | "python-variable-equals";
+    | "python-variable-equals"
+    | "sql-result-equals";
   checkRule: Record<string, unknown>;
   hint?: string;
   commonMistakes?: string[];

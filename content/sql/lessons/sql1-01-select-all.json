@@ -1,0 +1,39 @@
+{
+  "id": "sql1-01-select-all",
+  "title": "SQLとテーブルの基本",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "SQLとテーブル",
+      "body": "SQLは、データベースに保存されたデータを取り出したり操作したりするための言語です。データは「テーブル」と呼ばれる表形式で保存されています。\nこのコースでは、`users`（ユーザー）テーブルと`posts`（投稿）テーブルを使って学んでいきます。テーブルのすべての行を取得するには `SELECT * FROM テーブル名;` と書きます。",
+      "points": [
+        "`*`（アスタリスク）は「すべてのカラム（列）」という意味",
+        "SQL文の最後には `;`（セミコロン）をつけるのが基本です"
+      ]
+    },
+    {
+      "type": "example",
+      "description": "`users`テーブルのすべての行・カラムを取得します。",
+      "code": "SELECT * FROM users;"
+    },
+    {
+      "type": "exercise",
+      "instruction": "`users` テーブルのすべての行を取得するSQL文を書いてみましょう。",
+      "starterCode": "-- ここにSQLを書いてください\n",
+      "solutionCode": "SELECT * FROM users;",
+      "checkType": "sql-result-equals",
+      "checkRule": {
+        "columns": ["id", "name", "age", "city"],
+        "rows": [
+          [1, "Alice", 25, "Tokyo"],
+          [2, "Bob", 30, "Osaka"],
+          [3, "Carol", 22, "Tokyo"],
+          [4, "Dave", 35, "Nagoya"],
+          [5, "Eve", 28, "Osaka"]
+        ]
+      },
+      "hint": "`SELECT * FROM users;` のように書いてみましょう。",
+      "commonMistakes": ["`;`（セミコロン）を書き忘れる", "テーブル名のスペルミス"]
+    }
+  ]
+}

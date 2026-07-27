@@ -1,0 +1,34 @@
+{
+  "id": "sql4-02-group-by",
+  "title": "GROUP BYでグループごとに集計しよう",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "グループごとに数える",
+      "body": "「都市ごとの人数」のように、同じ値でグループ分けしてから集計したいときは `GROUP BY カラム名` を使います。`COUNT(*)` と組み合わせることで、グループごとの件数が求められます。\n`SELECT グループ化するカラム, COUNT(*) FROM テーブル GROUP BY グループ化するカラム;` という形がよく使われる基本パターンです。",
+      "points": ["`GROUP BY` に指定したカラムと同じカラムを、`SELECT` にも書くのが基本です"]
+    },
+    {
+      "type": "example",
+      "description": "投稿者（`user_id`）ごとの投稿数を数えます。",
+      "code": "SELECT user_id, COUNT(*) AS count FROM posts GROUP BY user_id;"
+    },
+    {
+      "type": "exercise",
+      "instruction": "`users` テーブルから、`city` ごとの人数を `count` という名前で取得するSQL文を書いてみましょう。",
+      "starterCode": "-- ここにSQLを書いてください\n",
+      "solutionCode": "SELECT city, COUNT(*) AS count FROM users GROUP BY city;",
+      "checkType": "sql-result-equals",
+      "checkRule": {
+        "columns": ["city", "count"],
+        "rows": [
+          ["Nagoya", 1],
+          ["Osaka", 2],
+          ["Tokyo", 2]
+        ]
+      },
+      "hint": "`SELECT city, COUNT(*) AS count FROM users GROUP BY city;` のように書いてみましょう。",
+      "commonMistakes": ["`GROUP BY` を書き忘れて、全体の件数だけが1行返ってきてしまう"]
+    }
+  ]
+}

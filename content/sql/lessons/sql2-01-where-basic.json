@@ -1,0 +1,30 @@
+{
+  "id": "sql2-01-where-basic",
+  "title": "WHEREで絞り込もう",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "条件に合う行だけ取り出す",
+      "body": "テーブルの中から、条件に合う行だけを取得したいときは `WHERE` を使います。`SELECT カラム FROM テーブル WHERE 条件;` のように、`FROM`の後に条件を書きます。\n文字列を比較するときは `'`（シングルクォート）で囲みます。",
+      "points": ["文字列の比較には `'Tokyo'` のようにクォートが必要ですが、数値の比較にはクォートは不要です"]
+    },
+    {
+      "type": "example",
+      "description": "`city` が「Osaka」の行だけを取得します。",
+      "code": "SELECT name FROM users WHERE city = 'Osaka';"
+    },
+    {
+      "type": "exercise",
+      "instruction": "`users` テーブルから、`city` が「Tokyo」の人の `name` を取得するSQL文を書いてみましょう。",
+      "starterCode": "-- ここにSQLを書いてください\n",
+      "solutionCode": "SELECT name FROM users WHERE city = 'Tokyo';",
+      "checkType": "sql-result-equals",
+      "checkRule": {
+        "columns": ["name"],
+        "rows": [["Alice"], ["Carol"]]
+      },
+      "hint": "`SELECT name FROM users WHERE city = 'Tokyo';` のように書いてみましょう。",
+      "commonMistakes": ["文字列を `'`（シングルクォート）で囲み忘れる"]
+    }
+  ]
+}

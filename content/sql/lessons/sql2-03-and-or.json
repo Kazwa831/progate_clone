@@ -1,0 +1,30 @@
+{
+  "id": "sql2-03-and-or",
+  "title": "複数条件で絞り込もう",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "AND・ORで条件を組み合わせる",
+      "body": "「Tokyo在住で、かつ25歳未満」のように複数の条件を組み合わせたいときは `AND`（かつ）や `OR`（または）を使います。\n`AND` は両方の条件を満たす行だけ、`OR` はどちらか一方でも満たせば取得されます。",
+      "points": ["`AND` は「両方満たす」、`OR` は「どちらか一方でよい」と覚えましょう"]
+    },
+    {
+      "type": "example",
+      "description": "`city` が「Tokyo」かつ `age` が23以上の人を取得します。",
+      "code": "SELECT name FROM users WHERE city = 'Tokyo' AND age >= 23;"
+    },
+    {
+      "type": "exercise",
+      "instruction": "`users` テーブルから、`city` が「Tokyo」かつ `age` が25未満の人の `name` を取得するSQL文を書いてみましょう。",
+      "starterCode": "-- ここにSQLを書いてください\n",
+      "solutionCode": "SELECT name FROM users WHERE city = 'Tokyo' AND age < 25;",
+      "checkType": "sql-result-equals",
+      "checkRule": {
+        "columns": ["name"],
+        "rows": [["Carol"]]
+      },
+      "hint": "`SELECT name FROM users WHERE city = 'Tokyo' AND age < 25;` のように書いてみましょう。",
+      "commonMistakes": ["`AND` にすべき箇所を `OR` にしてしまい、意図しない行まで取得してしまう"]
+    }
+  ]
+}

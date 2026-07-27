@@ -5,6 +5,7 @@ import CodeMirror from "@uiw/react-codemirror";
 import { html } from "@codemirror/lang-html";
 import { javascript } from "@codemirror/lang-javascript";
 import { python } from "@codemirror/lang-python";
+import { sql } from "@codemirror/lang-sql";
 import { oneDark } from "@codemirror/theme-one-dark";
 
 type CodeEditorProps = {
@@ -33,7 +34,9 @@ export function CodeEditor({ value, language, onChange }: CodeEditorProps) {
       ? javascript()
       : language === "python"
         ? python()
-        : html();
+        : language === "sql"
+          ? sql()
+          : html();
 
   return (
     <CodeMirror

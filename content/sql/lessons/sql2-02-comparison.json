@@ -1,0 +1,29 @@
+{
+  "id": "sql2-02-comparison",
+  "title": "比較演算子を使おう",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "数値を比較して絞り込む",
+      "body": "`WHERE` では `=`（等しい）だけでなく、`>=`（以上）、`<=`（以下）、`>`（より大きい）、`<`（より小さい）、`!=`（等しくない）といった比較演算子も使えます。\n年齢や金額のような数値データを条件で絞り込むときによく使います。",
+      "points": ["`!=` の代わりに `<>` と書くこともあります（どちらも「等しくない」という意味）"]
+    },
+    {
+      "type": "example",
+      "description": "`age` が30以上の人を取得します。",
+      "code": "SELECT name FROM users WHERE age >= 30;"
+    },
+    {
+      "type": "exercise",
+      "instruction": "`users` テーブルから、`age` が28以上の人の `name` を取得するSQL文を書いてみましょう。",
+      "starterCode": "-- ここにSQLを書いてください\n",
+      "solutionCode": "SELECT name FROM users WHERE age >= 28;",
+      "checkType": "sql-result-equals",
+      "checkRule": {
+        "columns": ["name"],
+        "rows": [["Bob"], ["Dave"], ["Eve"]]
+      },
+      "hint": "`SELECT name FROM users WHERE age >= 28;` のように書いてみましょう。"
+    }
+  ]
+}

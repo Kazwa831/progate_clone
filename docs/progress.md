@@ -891,3 +891,87 @@ CodeMirrorのPython言語モードは自動でインデントを継続する機�
 
 ### 次回やること（③SQL基礎コース新規追加）
 - sql.js導入方針・判定ロジック（クエリ結果の判定）をユーザーに提示し確認を得てから着手する
+
+---
+
+## 2026-07-27: コースラインナップ拡充 ③SQL基礎コース新規追加（sql.js導入）
+
+### 実装前の技術検証
+- `sandbox="allow-scripts"`のiframe内でsql.js(jsdelivr CDN、`v1.14.1`)をロード・実行できることを
+  Playwrightで確認。ロード時間は実測約290ms（Pyodideの約2.3秒よりかなり軽量）
+- 同じCREATE TABLE/INSERTを与えた複数の新規`Database`インスタンスに対して、JOINや
+  GROUP BYを含むクエリを3回実行し、結果の行順が毎回完全に一致すること（決定的であること）を
+  確認した上で、`columns`/`rows`の完全一致判定を採用する設計に決めた
+- 今回はPythonコースで得た教訓（QAスクリプトが実装を再現するのではなく、実装コードそのものを
+  検証すべき）を踏まえ、自動検証は`sqlJudge.ts`の`buildSqlRunnerHtml`/`judgeSqlResult`を
+  実際にimportして使う方式にした
+
+これらを踏まえた設計方針（5章15レッスン、users+postsテーブル、sql-result-equals判定）を
+ユーザーに提示し合意を得た上で着手した。
+
+### 実施内容
+
+**実行環境: sql.js (CDN配布)**
+- `@codemirror/lang-sql`を追加（エディタのシンタックスハイライト用）
+- `src/lib/judge/sqlJudge.ts`を新規作成
+  - `buildSqlRunnerHtml()`: Python同様の常駐ランナー。コース全体で共通のサンプル
+    データベース（`users`: id/name/age/city、`posts`: id/user_id/title/likes、
+    それぞれ5件）のCREATE/INSERT文を埋め込み、実行のたびに新しい`Database`を作って
+    そのSQLを流し込んでからユーザーのクエリを実行する（誤ってUPDATE/DELETEを
+    書いても次の実行に影響しない設計）。結果はプレビュー内にHTMLテーブルとして
+    整形して表示する
+  - `judgeSqlResult()`: `sql-result-equals`（実行結果の`columns`/`rows`を
+    期待値と完全一致で比較）
+- Python導入時に発見した2つの不具合（準備完了通知のレースコンディション、
+  イテレータをlengthで扱う誤り）を教訓に、`buildSqlRunnerHtml`は最初から
+  「準備完了通知を250ms間隔で最大20回リトライ送信」する設計で実装した
+  （同じ不具合を再発させない）
+
+**LessonWorkspaceのリファクタリング**
+Python導入時に追加した「常駐ランナー方式（読み込み待ち→postMessageで実行→
+判定）」のロジックを、SQLでもほぼ全く同じ形で必要としたため、
+`ASYNC_RUNNER_LANGUAGES`という言語→メッセージ種別・判定関数の対応表を導入し、
+Python専用だった状態管理・メッセージリスナー・実行トリガーの関数を
+Python/SQL共通のロジックに一本化した（`pyodideReady`→`asyncRunnerReady`、
+`handleRunPython`→`handleRunAsync`など）。JavaScriptコースは引き続き別ロジック
+（コード変更のたびに自動実行し、Stateに結果を保持しておく方式）のまま。
+
+**教材構成（5章15レッスン）**: SELECT基本、WHERE（比較演算子・AND/OR）、
+ORDER BY/DESC/LIMIT、集計（COUNT/GROUP BY/SUM・AVG）、JOIN（基本・WHERE併用・
+ORDER BY併用の総仕上げ）。全レッスンで共通のusers/postsサンプルデータを使い、
+章が進むごとに同じデータへの理解が深まる構成にした。
+
+### 動作確認結果
+- 全JSONファイルを`python3 -m json.tool`で構文チェック → 全て正常
+- `npm run lint` / `npm run build` → いずれも成功
+- **教材の自動検証**: 実装コードの`buildSqlRunnerHtml`/`judgeSqlResult`を
+  直接importして使うPlaywrightスクリプトで、全15レッスン・15演習の
+  `solutionCode`が`correct: true`になることを確認 → **全問正解を確認**
+- **実ブラウザでの動作確認**（Playwright + Chromium）:
+  - トップページにSQL基礎コースのカードが自動的に表示されることを確認
+    （`contentLoader`・API・一覧/詳細ページのコードは無変更のまま拡張性を再確認）
+  - コース詳細ページで5章すべてが表示されることを確認
+  - 「実行してみる」ボタンでSELECT文を実行し、結果がHTMLテーブルとして
+    プレビューに表示されることを確認
+  - 複数行にまたがるJOIN文をキーボード入力で正しく判定できることを確認
+    （PythonのCodeMirror自動インデント問題のような不具合がないことを確認）
+  - GROUP BY・JOIN・JOIN+ORDER BY（5章の総仕上げレッスン）が正しく判定されることを確認
+  - 不正解パターン（該当しない条件のクエリ）が正しく不正解と判定されることを確認
+  - レッスン最後の演習に正解 → 次のレッスンへ自動遷移することを確認
+  - HTML/CSS・JavaScript・Pythonコースが今回の`LessonWorkspace`リファクタリング後も
+    問題なく動作することを確認（リグレッションなし）
+  - トップページに4コース（HTML/CSS・JavaScript・Python・SQL）が表示されることを確認
+  - ブラウザコンソールエラー: **0件**
+  - 検証で作成したテスト用進捗データはコミット前にクリア済み
+
+### コースラインナップ拡充（①②③）まとめ
+これで設計書が将来拡張として想定していたJavaScript・Python・SQLの3コースが、
+既存のcontent/JSON + judgeロジックのアーキテクチャに沿って実装できた。
+4コース・71レッスン（HTML/CSS 26、JavaScript 15、Python 15、SQL 15）が
+`content/`配下へのJSON追加のみで動作し、`contentLoader`・API・コース一覧/詳細
+ページのコードは初回実装（ステップ2〜3）から一度も変更しておらず、設計書が
+意図した拡張性を3コース分の追加を通じて実証できた。
+
+### 今回のスコープ外（次回以降に検討）
+- 章末レビュー問題・復習機能（別途依頼予定とのこと）
+- Ruby/PHP/Javaなどサーバー実行が必要な言語

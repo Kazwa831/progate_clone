@@ -1,0 +1,36 @@
+{
+  "id": "sql3-02-order-by-desc",
+  "title": "降順に並び替えよう",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "大きい順に並び替える",
+      "body": "`ORDER BY` は何も指定しないと小さい順（昇順）に並びますが、`DESC` をつけると大きい順（降順）になります。反対に、昇順であることを明示したいときは `ASC` を使います（省略時のデフォルトなので、書かなくても構いません）。\nランキングのように「大きい順に見たい」場合によく使われます。",
+      "points": ["`DESC` は \"descending\"（降順）の略、`ASC` は \"ascending\"（昇順）の略です"]
+    },
+    {
+      "type": "example",
+      "description": "`likes`（いいね数）が多い順に投稿を並び替えます。",
+      "code": "SELECT title, likes FROM posts ORDER BY likes DESC;"
+    },
+    {
+      "type": "exercise",
+      "instruction": "`users` テーブルから `name` と `age` を取得し、`age` が大きい順に並び替えるSQL文を書いてみましょう。",
+      "starterCode": "-- ここにSQLを書いてください\n",
+      "solutionCode": "SELECT name, age FROM users ORDER BY age DESC;",
+      "checkType": "sql-result-equals",
+      "checkRule": {
+        "columns": ["name", "age"],
+        "rows": [
+          ["Dave", 35],
+          ["Bob", 30],
+          ["Eve", 28],
+          ["Alice", 25],
+          ["Carol", 22]
+        ]
+      },
+      "hint": "`SELECT name, age FROM users ORDER BY age DESC;` のように書いてみましょう。",
+      "commonMistakes": ["`DESC` を書き忘れて昇順のままになってしまう"]
+    }
+  ]
+}

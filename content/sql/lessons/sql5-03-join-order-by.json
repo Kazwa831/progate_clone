@@ -1,0 +1,37 @@
+{
+  "id": "sql5-03-join-order-by",
+  "title": "人気投稿ランキングを作ろう",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "ここまでの集大成",
+      "body": "`JOIN` と `ORDER BY` を組み合わせれば、「投稿者名つきの人気投稿ランキング」のような、実際のアプリでもよく使われる集計が作れます。\nこれまで学んだ `SELECT`・`JOIN`・`ORDER BY` を組み合わせて、投稿を「いいね数が多い順」に並び替え、投稿者名も一緒に表示してみましょう。",
+      "points": ["`JOIN` → `WHERE`（今回は省略） → `ORDER BY` の順で書くとエラーになりません"]
+    },
+    {
+      "type": "example",
+      "description": "投稿を`likes`が多い順に並び替え、ユーザー名も表示します。",
+      "code": "SELECT users.name, posts.title, posts.likes\nFROM users\nJOIN posts ON users.id = posts.user_id\nORDER BY posts.likes DESC;"
+    },
+    {
+      "type": "exercise",
+      "instruction": "`users` と `posts` をJOINし、`users.name`・`posts.title`・`posts.likes` を、`likes` が多い順に取得するSQL文を書いてみましょう。",
+      "starterCode": "-- ここにSQLを書いてください\n",
+      "solutionCode": "SELECT users.name, posts.title, posts.likes\nFROM users\nJOIN posts ON users.id = posts.user_id\nORDER BY posts.likes DESC;",
+      "checkType": "sql-result-equals",
+      "checkRule": {
+        "columns": ["name", "title", "likes"],
+        "rows": [
+          ["Bob", "Osaka Life", 20],
+          ["Dave", "Nagoya Castle", 15],
+          ["Alice", "Hello World", 10],
+          ["Carol", "Tokyo Diaries", 8],
+          ["Alice", "My Second Post", 5]
+        ]
+      },
+      "hint": "`JOIN posts ON users.id = posts.user_id` の後に `ORDER BY posts.likes DESC` を続けましょう。",
+      "commonMistakes": ["`DESC` を書き忘れて、いいね数が少ない順になってしまう"],
+      "points": ["ここまでの5章で、実際のWebサービスのランキング機能に近いクエリが書けるようになりました"]
+    }
+  ]
+}

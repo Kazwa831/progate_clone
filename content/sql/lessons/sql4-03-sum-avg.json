@@ -1,0 +1,29 @@
+{
+  "id": "sql4-03-sum-avg",
+  "title": "SUM・AVGで合計・平均を求めよう",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "合計と平均を計算する",
+      "body": "数値カラムの合計を求めたいときは `SUM(カラム名)`、平均を求めたいときは `AVG(カラム名)` を使います。`COUNT` と同じように、`SELECT` の中で使う「集計関数」の仲間です。\nこれらの関数もカラムに別名(`AS`)をつけて分かりやすくするのが一般的です。",
+      "points": ["`SUM` は \"合計\"、`AVG` は \"average(平均)\" の略です"]
+    },
+    {
+      "type": "example",
+      "description": "全ユーザーの年齢の平均を求めます。",
+      "code": "SELECT AVG(age) AS avg_age FROM users;"
+    },
+    {
+      "type": "exercise",
+      "instruction": "`posts` テーブルの `likes`（いいね数）の合計を、`total_likes` という名前で取得するSQL文を書いてみましょう。",
+      "starterCode": "-- ここにSQLを書いてください\n",
+      "solutionCode": "SELECT SUM(likes) AS total_likes FROM posts;",
+      "checkType": "sql-result-equals",
+      "checkRule": {
+        "columns": ["total_likes"],
+        "rows": [[58]]
+      },
+      "hint": "`SELECT SUM(likes) AS total_likes FROM posts;` のように書いてみましょう。"
+    }
+  ]
+}

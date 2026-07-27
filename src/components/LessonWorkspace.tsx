@@ -16,8 +16,13 @@ import {
   PYTHON_RESULT_MESSAGE_TYPE,
   PYTHON_RUN_MESSAGE_TYPE,
   judgePythonOutput,
-  type PyRunResult,
 } from "@/lib/judge/pythonJudge";
+import {
+  SQL_READY_MESSAGE_TYPE,
+  SQL_RESULT_MESSAGE_TYPE,
+  SQL_RUN_MESSAGE_TYPE,
+  judgeSqlResult,
+} from "@/lib/judge/sqlJudge";
 import { SlidePanel } from "@/components/SlidePanel";
 import { CodeEditor } from "@/components/CodeEditor";
 import { PreviewPane } from "@/components/PreviewPane";
@@ -32,6 +37,46 @@ type LessonWorkspaceProps = {
   nextLesson: LessonRef | null;
 };
 
+// Python・SQLは常駐ランナー方式（読み込みに時間がかかるため、レッスン表示中は
+// 同じiframeを使い回し、postMessageでコード/クエリを送って実行する）。
+// メッセージの種類・判定ロジックだけが言語ごとに異なるので、その対応表をここにまとめる。
+const ASYNC_RUNNER_LANGUAGES: Record<
+  string,
+  {
+    readyMessageType: string;
+    runMessageType: string;
+    resultMessageType: string;
+    judge: (
+      result: Record<string, unknown> | null,
+      checkType: string,
+      checkRule: Record<string, unknown>
+    ) => JudgeResult;
+  }
+> = {
+  python: {
+    readyMessageType: PYTHON_READY_MESSAGE_TYPE,
+    runMessageType: PYTHON_RUN_MESSAGE_TYPE,
+    resultMessageType: PYTHON_RESULT_MESSAGE_TYPE,
+    judge: (result, checkType, checkRule) =>
+      judgePythonOutput(
+        result as Parameters<typeof judgePythonOutput>[0],
+        checkType,
+        checkRule
+      ),
+  },
+  sql: {
+    readyMessageType: SQL_READY_MESSAGE_TYPE,
+    runMessageType: SQL_RUN_MESSAGE_TYPE,
+    resultMessageType: SQL_RESULT_MESSAGE_TYPE,
+    judge: (result, checkType, checkRule) =>
+      judgeSqlResult(
+        result as Parameters<typeof judgeSqlResult>[0],
+        checkType,
+        checkRule
+      ),
+  },
+};
+
 function initialCodeFor(lesson: Lesson, slideIndex: number): string {
   const slide = lesson.slides[slideIndex];
   if (slide.type === "exercise") return slide.starterCode;
@@ -42,6 +87,7 @@ function initialCodeFor(lesson: Lesson, slideIndex: number): string {
 function editorFileNameFor(language: string): string {
   if (language === "javascript") return "script.js";
   if (language === "python") return "main.py";
+  if (language === "sql") return "query.sql";
   return "index.html";
 }
 
@@ -75,14 +121,14 @@ export function LessonWorkspace({
   const [code, setCode] = useState(() => initialCodeFor(lesson, 0));
   const [result, setResult] = useState<JudgeResult | null>(null);
   const [jsRunResult, setJsRunResult] = useState<JsRunResult | null>(null);
-  const [pyodideReady, setPyodideReady] = useState(false);
+  const [asyncRunnerReady, setAsyncRunnerReady] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   // 判定待ちの実行かどうか（「実行して確認する」経由か、ただの「実行してみる」かを区別する）
   const pendingJudgeRef = useRef(false);
 
   const currentSlide = lesson.slides[slideIndex];
   const isJavaScript = courseLanguage === "javascript";
-  const isPython = courseLanguage === "python";
+  const asyncRunner = ASYNC_RUNNER_LANGUAGES[courseLanguage];
   const isFirstSlide = slideIndex === 0;
   const isLastSlide = slideIndex === lesson.slides.length - 1;
 
@@ -108,35 +154,30 @@ export function LessonWorkspace({
 
   // handleMessageの中から常に最新のスライド状態を読めるようにrefで追随させる。
   // （postMessageのリスナー自体は下のuseEffectでレッスン表示中ずっと張りっぱなしにするため、
-  // スライドを切り替えるたびに購読し直すと、その一瞬の間にPyodideの準備完了通知を
+  // スライドを切り替えるたびに購読し直すと、その一瞬の間に読み込み完了通知を
   // 取りこぼす恐れがある。リスナーは固定し、参照する値だけをrefで最新化する）
   const latestSlideStateRef = useRef({ currentSlide, slideIndex, isLastSlide });
   useEffect(() => {
     latestSlideStateRef.current = { currentSlide, slideIndex, isLastSlide };
   }, [currentSlide, slideIndex, isLastSlide]);
 
-  // Pythonコースは、Pyodideの読み込み完了通知と、実行結果の両方をpostMessageで受け取る。
-  // 読み込みは初回の1回だけで、以後はスライドを切り替えても同じiframe(=同じPyodide)を使い回す。
+  // Python/SQLコースは、実行環境の読み込み完了通知と実行結果の両方をpostMessageで受け取る。
+  // 読み込みは初回の1回だけで、以後はスライドを切り替えても同じiframeを使い回す。
   useEffect(() => {
-    if (!isPython) return;
+    if (!asyncRunner) return;
 
     function handleMessage(event: MessageEvent) {
-      if (event.data?.type === PYTHON_READY_MESSAGE_TYPE) {
-        setPyodideReady(true);
+      if (event.data?.type === asyncRunner.readyMessageType) {
+        setAsyncRunnerReady(true);
         return;
       }
-      if (event.data?.type === PYTHON_RESULT_MESSAGE_TYPE) {
-        const runResult: PyRunResult = {
-          logs: event.data.logs ?? [],
-          variables: event.data.variables ?? {},
-          error: event.data.error ?? null,
-        };
+      if (event.data?.type === asyncRunner.resultMessageType) {
         if (pendingJudgeRef.current) {
           pendingJudgeRef.current = false;
           const { currentSlide: slide, slideIndex: index, isLastSlide: isLast } =
             latestSlideStateRef.current;
-          const judged = judgePythonOutput(
-            runResult,
+          const judged = asyncRunner.judge(
+            event.data,
             slide.type === "exercise" ? slide.checkType : "",
             slide.type === "exercise" ? slide.checkRule : {}
           );
@@ -150,7 +191,7 @@ export function LessonWorkspace({
 
     window.addEventListener("message", handleMessage);
     return () => window.removeEventListener("message", handleMessage);
-  }, [isPython, courseId, lesson.id]);
+  }, [asyncRunner, courseId, lesson.id]);
 
   function goToSlide(nextIndex: number) {
     setSlideIndex(nextIndex);
@@ -188,10 +229,10 @@ export function LessonWorkspace({
     setResult(null);
   }
 
-  function handleRunPython() {
-    if (!pyodideReady) return;
+  function handleRunAsync() {
+    if (!asyncRunner || !asyncRunnerReady) return;
     iframeRef.current?.contentWindow?.postMessage(
-      { type: PYTHON_RUN_MESSAGE_TYPE, code },
+      { type: asyncRunner.runMessageType, code },
       "*"
     );
   }
@@ -199,9 +240,9 @@ export function LessonWorkspace({
   function handleCheck() {
     if (currentSlide.type !== "exercise") return;
 
-    if (isPython) {
+    if (asyncRunner) {
       pendingJudgeRef.current = true;
-      handleRunPython();
+      handleRunAsync();
       return;
     }
 
@@ -316,16 +357,16 @@ export function LessonWorkspace({
                 hint={currentSlide.hint}
                 commonMistakes={currentSlide.commonMistakes}
                 solutionCode={currentSlide.solutionCode}
-                checkDisabled={isPython && !pyodideReady}
+                checkDisabled={Boolean(asyncRunner) && !asyncRunnerReady}
               />
             </div>
           )}
-          {currentSlide.type === "example" && isPython && (
+          {currentSlide.type === "example" && asyncRunner && (
             <div className="shrink-0 border-t border-border p-4">
               <button
                 type="button"
-                onClick={handleRunPython}
-                disabled={!pyodideReady}
+                onClick={handleRunAsync}
+                disabled={!asyncRunnerReady}
                 className="inline-flex items-center gap-2 rounded-md bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground transition-colors hover:bg-secondary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <PlayIcon className="h-4 w-4" />

@@ -1,0 +1,35 @@
+{
+  "id": "sql3-01-order-by",
+  "title": "ORDER BYで並び替えよう",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "結果を並び替える",
+      "body": "取得したデータを特定の順番で並び替えたいときは `ORDER BY カラム名;` を使います。何も指定しなければ、数値なら小さい順、文字列ならアルファベット順に並びます（昇順）。\n`SELECT ... FROM ... WHERE ... ORDER BY ...;` のように、`ORDER BY` は`WHERE`より後ろに書きます。",
+      "points": ["`ORDER BY` は結果の見せ方を整えるためのもので、絞り込み(`WHERE`)とは役割が異なります"]
+    },
+    {
+      "type": "example",
+      "description": "`likes`（いいね数）が小さい順に投稿を並び替えます。",
+      "code": "SELECT title, likes FROM posts ORDER BY likes;"
+    },
+    {
+      "type": "exercise",
+      "instruction": "`users` テーブルから `name` と `age` を取得し、`age` が小さい順に並び替えるSQL文を書いてみましょう。",
+      "starterCode": "-- ここにSQLを書いてください\n",
+      "solutionCode": "SELECT name, age FROM users ORDER BY age;",
+      "checkType": "sql-result-equals",
+      "checkRule": {
+        "columns": ["name", "age"],
+        "rows": [
+          ["Carol", 22],
+          ["Alice", 25],
+          ["Eve", 28],
+          ["Bob", 30],
+          ["Dave", 35]
+        ]
+      },
+      "hint": "`SELECT name, age FROM users ORDER BY age;` のように書いてみましょう。"
+    }
+  ]
+}

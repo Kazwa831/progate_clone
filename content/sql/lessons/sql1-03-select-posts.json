@@ -1,0 +1,35 @@
+{
+  "id": "sql1-03-select-posts",
+  "title": "別のテーブルからも取得してみよう",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "postsテーブルもある",
+      "body": "このコースには `users` テーブルの他に、投稿を表す `posts` テーブルも用意されています。`posts` テーブルには `id`（投稿ID）、`user_id`（投稿した人のID）、`title`（タイトル）、`likes`（いいね数）というカラムがあります。\nどのテーブルに対しても、これまでと同じ `SELECT` の書き方でデータを取得できます。",
+      "points": ["`user_id` は「誰の投稿か」を表す、`users`テーブルの`id`と対応する値です（5章のJOINで活用します）"]
+    },
+    {
+      "type": "example",
+      "description": "`posts`テーブルから `title` と `likes` を取得します。",
+      "code": "SELECT title, likes FROM posts;"
+    },
+    {
+      "type": "exercise",
+      "instruction": "`posts` テーブルから `title` と `likes` のカラムを取得するSQL文を書いてみましょう。",
+      "starterCode": "-- ここにSQLを書いてください\n",
+      "solutionCode": "SELECT title, likes FROM posts;",
+      "checkType": "sql-result-equals",
+      "checkRule": {
+        "columns": ["title", "likes"],
+        "rows": [
+          ["Hello World", 10],
+          ["My Second Post", 5],
+          ["Osaka Life", 20],
+          ["Tokyo Diaries", 8],
+          ["Nagoya Castle", 15]
+        ]
+      },
+      "hint": "`SELECT title, likes FROM posts;` のように書いてみましょう。"
+    }
+  ]
+}

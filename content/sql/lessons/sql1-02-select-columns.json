@@ -1,0 +1,36 @@
+{
+  "id": "sql1-02-select-columns",
+  "title": "特定のカラムを取得する",
+  "slides": [
+    {
+      "type": "explanation",
+      "heading": "必要なカラムだけ取り出す",
+      "body": "`*` はすべてのカラムを取得しますが、実際には必要なカラムだけを取り出したいことが多いです。そんなときは `SELECT カラム名1, カラム名2 FROM テーブル名;` のように、カラム名をカンマ区切りで指定します。\n必要な情報だけを取得することで、結果が見やすくなります。",
+      "points": ["カラムを指定する順番が、そのまま結果の列の順番になります"]
+    },
+    {
+      "type": "example",
+      "description": "`users`テーブルから `name` と `age` だけを取得します。",
+      "code": "SELECT name, age FROM users;"
+    },
+    {
+      "type": "exercise",
+      "instruction": "`users` テーブルから `name` と `age` のカラムを取得するSQL文を書いてみましょう。",
+      "starterCode": "-- ここにSQLを書いてください\n",
+      "solutionCode": "SELECT name, age FROM users;",
+      "checkType": "sql-result-equals",
+      "checkRule": {
+        "columns": ["name", "age"],
+        "rows": [
+          ["Alice", 25],
+          ["Bob", 30],
+          ["Carol", 22],
+          ["Dave", 35],
+          ["Eve", 28]
+        ]
+      },
+      "hint": "`SELECT name, age FROM users;` のように書いてみましょう。",
+      "commonMistakes": ["カラム名の間の `,`（カンマ）を書き忘れる"]
+    }
+  ]
+}
