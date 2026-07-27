@@ -23,6 +23,8 @@ import {
   SQL_RUN_MESSAGE_TYPE,
   judgeSqlResult,
 } from "@/lib/judge/sqlJudge";
+import { defaultCodeForSlide } from "@/lib/lessonCode";
+import { useDraftAutoSave } from "@/hooks/useDraftAutoSave";
 import { SlidePanel } from "@/components/SlidePanel";
 import { CodeEditor } from "@/components/CodeEditor";
 import { PreviewPane } from "@/components/PreviewPane";
@@ -37,6 +39,8 @@ type LessonWorkspaceProps = {
   nextLesson: LessonRef | null;
   /** 前回の学習を中断した位置。最初から始める場合は0が渡される */
   initialSlideIndex: number;
+  /** 中断時の書きかけコード。無い場合はそのスライドの初期コードが渡される */
+  initialCode: string;
 };
 
 // Python・SQLは常駐ランナー方式（読み込みに時間がかかるため、レッスン表示中は
@@ -79,13 +83,6 @@ const ASYNC_RUNNER_LANGUAGES: Record<
   },
 };
 
-function initialCodeFor(lesson: Lesson, slideIndex: number): string {
-  const slide = lesson.slides[slideIndex];
-  if (slide.type === "exercise") return slide.starterCode;
-  if (slide.type === "example") return slide.code;
-  return "";
-}
-
 function editorFileNameFor(language: string): string {
   if (language === "javascript") return "script.js";
   if (language === "python") return "main.py";
@@ -96,16 +93,25 @@ function editorFileNameFor(language: string): string {
 // 正解表示を見せてから次のスライドへ進めるまでの待機時間
 const ADVANCE_DELAY_MS = 1000;
 
+// 下書き(draftCode)は必ず今いるスライド(currentSlide)とセットで送る。
+// 片方だけ更新すると、復元時に別スライドのコードが出てしまう
 function reportProgress(
   courseId: string,
   lessonId: string,
   slideIndex: number,
-  status: "in_progress" | "completed"
+  status: "in_progress" | "completed",
+  draftCode: string
 ) {
   fetch("/api/progress", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ courseId, lessonId, currentSlide: slideIndex, status }),
+    body: JSON.stringify({
+      courseId,
+      lessonId,
+      currentSlide: slideIndex,
+      status,
+      draftCode,
+    }),
   }).catch(() => {
     // ローカル学習ツールのため、進捗保存に失敗しても学習自体は継続できるようにする
   });
@@ -118,10 +124,11 @@ export function LessonWorkspace({
   previousLesson,
   nextLesson,
   initialSlideIndex,
+  initialCode,
 }: LessonWorkspaceProps) {
   const router = useRouter();
   const [slideIndex, setSlideIndex] = useState(initialSlideIndex);
-  const [code, setCode] = useState(() => initialCodeFor(lesson, initialSlideIndex));
+  const [code, setCode] = useState(initialCode);
   const [result, setResult] = useState<JudgeResult | null>(null);
   const [jsRunResult, setJsRunResult] = useState<JsRunResult | null>(null);
   const [asyncRunnerReady, setAsyncRunnerReady] = useState(false);
@@ -135,10 +142,24 @@ export function LessonWorkspace({
   const isFirstSlide = slideIndex === 0;
   const isLastSlide = slideIndex === lesson.slides.length - 1;
 
+  // 入力が止まった時と、タブを離れる時に書きかけのコードを保存する
+  useDraftAutoSave({
+    courseId,
+    lessonId: lesson.id,
+    currentSlide: slideIndex,
+    draftCode: code,
+  });
+
   useEffect(() => {
     // 開いた時点の位置をそのまま記録する。ここで0を送ってしまうと、
     // 再開位置として保存しておいた値を開くたびに壊してしまう
-    reportProgress(courseId, lesson.id, initialSlideIndex, "in_progress");
+    reportProgress(
+      courseId,
+      lesson.id,
+      initialSlideIndex,
+      "in_progress",
+      initialCode
+    );
     // レッスンを開いた時点の初回1回だけ記録する
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -161,10 +182,10 @@ export function LessonWorkspace({
   // （postMessageのリスナー自体は下のuseEffectでレッスン表示中ずっと張りっぱなしにするため、
   // スライドを切り替えるたびに購読し直すと、その一瞬の間に読み込み完了通知を
   // 取りこぼす恐れがある。リスナーは固定し、参照する値だけをrefで最新化する）
-  const latestSlideStateRef = useRef({ currentSlide, slideIndex, isLastSlide });
+  const latestSlideStateRef = useRef({ currentSlide, slideIndex, isLastSlide, code });
   useEffect(() => {
-    latestSlideStateRef.current = { currentSlide, slideIndex, isLastSlide };
-  }, [currentSlide, slideIndex, isLastSlide]);
+    latestSlideStateRef.current = { currentSlide, slideIndex, isLastSlide, code };
+  }, [currentSlide, slideIndex, isLastSlide, code]);
 
   // Python/SQLコースは、実行環境の読み込み完了通知と実行結果の両方をpostMessageで受け取る。
   // 読み込みは初回の1回だけで、以後はスライドを切り替えても同じiframeを使い回す。
@@ -179,8 +200,12 @@ export function LessonWorkspace({
       if (event.data?.type === asyncRunner.resultMessageType) {
         if (pendingJudgeRef.current) {
           pendingJudgeRef.current = false;
-          const { currentSlide: slide, slideIndex: index, isLastSlide: isLast } =
-            latestSlideStateRef.current;
+          const {
+            currentSlide: slide,
+            slideIndex: index,
+            isLastSlide: isLast,
+            code: latestCode,
+          } = latestSlideStateRef.current;
           const judged = asyncRunner.judge(
             event.data,
             slide.type === "exercise" ? slide.checkType : "",
@@ -188,7 +213,13 @@ export function LessonWorkspace({
           );
           setResult(judged);
           if (judged.correct) {
-            reportProgress(courseId, lesson.id, index, isLast ? "completed" : "in_progress");
+            reportProgress(
+              courseId,
+              lesson.id,
+              index,
+              isLast ? "completed" : "in_progress",
+              latestCode
+            );
           }
         }
       }
@@ -199,12 +230,13 @@ export function LessonWorkspace({
   }, [asyncRunner, courseId, lesson.id]);
 
   function goToSlide(nextIndex: number) {
+    const nextCode = defaultCodeForSlide(lesson, nextIndex);
     setSlideIndex(nextIndex);
-    setCode(initialCodeFor(lesson, nextIndex));
+    setCode(nextCode);
     setResult(null);
     setJsRunResult(null);
     pendingJudgeRef.current = false;
-    reportProgress(courseId, lesson.id, nextIndex, "in_progress");
+    reportProgress(courseId, lesson.id, nextIndex, "in_progress", nextCode);
   }
 
   function handlePrev() {
@@ -230,7 +262,7 @@ export function LessonWorkspace({
   }
 
   function handleReset() {
-    setCode(initialCodeFor(lesson, slideIndex));
+    setCode(defaultCodeForSlide(lesson, slideIndex));
     setResult(null);
   }
 
@@ -277,7 +309,8 @@ export function LessonWorkspace({
         courseId,
         lesson.id,
         slideIndex,
-        isLastSlide ? "completed" : "in_progress"
+        isLastSlide ? "completed" : "in_progress",
+        code
       );
     }
   }

@@ -17,6 +17,7 @@ model LessonProgress {
   lessonId     String
   status       String    @default("not_started") // not_started | in_progress | completed
   currentSlide Int       @default(0)
+  draftCode    String? // 中断した時点のエディタ内容。currentSlideと必ず同時に保存する
   completedAt  DateTime?
   updatedAt    DateTime  @updatedAt
 

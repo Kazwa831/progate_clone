@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { getCourseById, getLessonById } from "@/lib/contentLoader";
 import { getLessonProgressMap } from "@/lib/progress";
 import { getLessonPosition } from "@/lib/courseNavigation";
+import { defaultCodeForSlide } from "@/lib/lessonCode";
 import { LessonWorkspace } from "@/components/LessonWorkspace";
 import { LessonSidebar } from "@/components/LessonSidebar";
 
@@ -33,6 +34,17 @@ export default async function LessonPage({ params }: LessonPageProps) {
       ? Math.min(savedProgress.currentSlide, lesson.slides.length - 1)
       : 0;
 
+  // 書きかけコードは保存時のスライドとセットでのみ意味を持つ。開く位置が
+  // ずれている場合（完了済みで先頭に戻す時や、教材のスライドが減った時）は
+  // 別スライドの内容を復元してしまわないよう、そのスライドの初期コードを使う
+  const restorableDraft =
+    savedProgress?.draftCode != null &&
+    savedProgress.currentSlide === initialSlideIndex
+      ? savedProgress.draftCode
+      : null;
+  const initialCode =
+    restorableDraft ?? defaultCodeForSlide(lesson, initialSlideIndex);
+
   return (
     <div className="flex h-screen">
       <LessonSidebar
@@ -61,6 +73,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
             previousLesson={position.previous}
             nextLesson={position.next}
             initialSlideIndex={initialSlideIndex}
+            initialCode={initialCode}
           />
         </div>
       </div>

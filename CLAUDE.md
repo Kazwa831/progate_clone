@@ -64,13 +64,22 @@ progate_clone/
 │   │   ├── CodeEditor.tsx
 │   │   ├── PreviewPane.tsx
 │   │   ├── ResultChecker.tsx
-│   │   ├── ProgressBar.tsx
+│   │   ├── LessonWorkspace.tsx      # 学習画面の中核（4コース共通）
+│   │   ├── LessonSidebar.tsx
 │   │   └── CourseCard.tsx
+│   ├── hooks/                       # 複数箇所から使う、またはコンポーネントから
+│   │   └── useDraftAutoSave.ts      # 切り出したいReactロジックを置く
 │   ├── lib/
 │   │   ├── prisma.ts                # Prismaクライアントのシングルトン
 │   │   ├── contentLoader.ts
-│   │   └── judge/
+│   │   ├── progress.ts              # 進捗の保存・取得
+│   │   ├── courseNavigation.ts      # 章をまたいだレッスン順序
+│   │   ├── lessonCode.ts            # スライドの初期コード（サーバー/クライアント共用）
+│   │   └── judge/                   # 言語ごとの判定ロジック
 │   │       ├── htmlCssJudge.ts
+│   │       ├── javascriptJudge.ts
+│   │       ├── pythonJudge.ts
+│   │       ├── sqlJudge.ts
 │   │       └── types.ts
 │   ├── types/
 │   │   └── lesson.ts
@@ -111,6 +120,9 @@ progate_clone/
 - Server Component をデフォルトとし、インタラクション（エディタ入力、iframe操作など）が
   必要な部分だけ `"use client"` を付与する。
 - Propsの型は各コンポーネントファイル内、または `src/types/` で明示的に定義する。
+- コンポーネントが大きくなり見通しが悪くなる場合は、Reactのロジック（`useEffect`での
+  購読・タイマー処理など）を `src/hooks/` のカスタムフックへ切り出す。
+  Reactに依存しない純粋なロジックは `src/lib/` に置く。
 
 ## API設計ルール
 

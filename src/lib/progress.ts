@@ -47,14 +47,24 @@ export async function getAllCourseProgress(): Promise<CourseProgressSummary[]> {
   });
 }
 
+export type LessonProgressEntry = {
+  status: LessonStatus;
+  currentSlide: number;
+  draftCode: string | null;
+};
+
 export async function getLessonProgressMap(
   courseId: string
-): Promise<Map<string, { status: LessonStatus; currentSlide: number }>> {
+): Promise<Map<string, LessonProgressEntry>> {
   const rows = await prisma.lessonProgress.findMany({ where: { courseId } });
   return new Map(
     rows.map((row) => [
       row.lessonId,
-      { status: row.status as LessonStatus, currentSlide: row.currentSlide },
+      {
+        status: row.status as LessonStatus,
+        currentSlide: row.currentSlide,
+        draftCode: row.draftCode,
+      },
     ])
   );
 }
@@ -64,6 +74,7 @@ type UpdateLessonProgressInput = {
   lessonId: string;
   currentSlide: number;
   status: "in_progress" | "completed";
+  draftCode?: string;
 };
 
 export async function updateLessonProgress(
@@ -96,11 +107,16 @@ export async function updateLessonProgress(
       lessonId: input.lessonId,
       currentSlide: input.currentSlide,
       status: nextStatus,
+      draftCode: input.draftCode ?? null,
       completedAt: nextStatus === "completed" ? new Date() : null,
     },
     update: {
       currentSlide: input.currentSlide,
       status: nextStatus,
+      // 下書きは常に「今いるスライドの内容」として currentSlide と一緒に送られてくる。
+      // 古いスライドの下書きが残ると復元時に別スライドのコードが出てしまうため、
+      // 送られてこなかった場合は保持せずに消す
+      draftCode: input.draftCode ?? null,
       completedAt:
         nextStatus === "completed" ? existing?.completedAt ?? new Date() : null,
     },
