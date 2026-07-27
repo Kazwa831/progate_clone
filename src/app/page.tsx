@@ -28,6 +28,7 @@ export default async function Home() {
               course={course}
               completedLessons={progress?.completedLessons ?? 0}
               totalLessons={progress?.totalLessons ?? 0}
+              lastStudiedLessonId={progress?.lastStudiedLessonId ?? null}
             />
           );
         })}

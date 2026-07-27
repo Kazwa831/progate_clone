@@ -35,6 +35,8 @@ type LessonWorkspaceProps = {
   lesson: Lesson;
   previousLesson: LessonRef | null;
   nextLesson: LessonRef | null;
+  /** 前回の学習を中断した位置。最初から始める場合は0が渡される */
+  initialSlideIndex: number;
 };
 
 // Python・SQLは常駐ランナー方式（読み込みに時間がかかるため、レッスン表示中は
@@ -115,10 +117,11 @@ export function LessonWorkspace({
   lesson,
   previousLesson,
   nextLesson,
+  initialSlideIndex,
 }: LessonWorkspaceProps) {
   const router = useRouter();
-  const [slideIndex, setSlideIndex] = useState(0);
-  const [code, setCode] = useState(() => initialCodeFor(lesson, 0));
+  const [slideIndex, setSlideIndex] = useState(initialSlideIndex);
+  const [code, setCode] = useState(() => initialCodeFor(lesson, initialSlideIndex));
   const [result, setResult] = useState<JudgeResult | null>(null);
   const [jsRunResult, setJsRunResult] = useState<JsRunResult | null>(null);
   const [asyncRunnerReady, setAsyncRunnerReady] = useState(false);
@@ -133,7 +136,9 @@ export function LessonWorkspace({
   const isLastSlide = slideIndex === lesson.slides.length - 1;
 
   useEffect(() => {
-    reportProgress(courseId, lesson.id, 0, "in_progress");
+    // 開いた時点の位置をそのまま記録する。ここで0を送ってしまうと、
+    // 再開位置として保存しておいた値を開くたびに壊してしまう
+    reportProgress(courseId, lesson.id, initialSlideIndex, "in_progress");
     // レッスンを開いた時点の初回1回だけ記録する
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

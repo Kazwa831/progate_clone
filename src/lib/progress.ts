@@ -7,6 +7,8 @@ export type CourseProgressSummary = {
   courseId: string;
   totalLessons: number;
   completedLessons: number;
+  /** 「続きから」の遷移先。一度も学習していないコースはnull */
+  lastStudiedLessonId: string | null;
 };
 
 function totalLessonsOf(courseId: string): number {
@@ -22,12 +24,25 @@ export async function getAllCourseProgress(): Promise<CourseProgressSummary[]> {
     progressRows.map((row) => [row.courseId, row])
   );
 
+  // 更新が新しい順に並べ、コースごとに最初に見つかった1件がそのコースで
+  // 最後に学習したレッスンになる
+  const lessonRows = await prisma.lessonProgress.findMany({
+    orderBy: { updatedAt: "desc" },
+  });
+  const lastStudiedByCourseId = new Map<string, string>();
+  for (const row of lessonRows) {
+    if (!lastStudiedByCourseId.has(row.courseId)) {
+      lastStudiedByCourseId.set(row.courseId, row.lessonId);
+    }
+  }
+
   return courses.map((course) => {
     const existing = progressByCourseId.get(course.id);
     return {
       courseId: course.id,
       totalLessons: totalLessonsOf(course.id),
       completedLessons: existing?.completedLessons ?? 0,
+      lastStudiedLessonId: lastStudiedByCourseId.get(course.id) ?? null,
     };
   });
 }

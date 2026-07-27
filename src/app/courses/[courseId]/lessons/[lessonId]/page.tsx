@@ -24,6 +24,15 @@ export default async function LessonPage({ params }: LessonPageProps) {
     (p) => p.status === "completed"
   ).length;
 
+  // 学習途中のレッスンは中断した位置から再開する。完了済みのレッスンは
+  // 「再開」ではなく復習として開くものなので先頭から表示する。
+  // 教材JSONを編集してスライドが減っている場合に備え、存在する範囲に収める。
+  const savedProgress = progressMap.get(lessonId);
+  const initialSlideIndex =
+    savedProgress?.status === "in_progress"
+      ? Math.min(savedProgress.currentSlide, lesson.slides.length - 1)
+      : 0;
+
   return (
     <div className="flex h-screen">
       <LessonSidebar
@@ -51,6 +60,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
             lesson={lesson}
             previousLesson={position.previous}
             nextLesson={position.next}
+            initialSlideIndex={initialSlideIndex}
           />
         </div>
       </div>
