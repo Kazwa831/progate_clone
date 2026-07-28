@@ -1,6 +1,7 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { getCourseById, getLessonById } from "@/lib/contentLoader";
 import { getLessonProgressMap } from "@/lib/progress";
+import { getCurrentUserId } from "@/lib/session";
 import { getLessonPosition } from "@/lib/courseNavigation";
 import { defaultCodeForSlide } from "@/lib/lessonCode";
 import { LessonWorkspace } from "@/components/LessonWorkspace";
@@ -20,7 +21,13 @@ export default async function LessonPage({ params }: LessonPageProps) {
     notFound();
   }
 
-  const progressMap = await getLessonProgressMap(courseId);
+  // 学習画面は進捗の保存を伴うため、ログインしていなければ開けない
+  const userId = await getCurrentUserId();
+  if (userId === null) {
+    redirect("/login");
+  }
+
+  const progressMap = await getLessonProgressMap(userId, courseId);
   const totalCompleted = Array.from(progressMap.values()).filter(
     (p) => p.status === "completed"
   ).length;

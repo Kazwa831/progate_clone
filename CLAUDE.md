@@ -84,6 +84,7 @@ progate_clone/
 │   │   ├── prisma.ts                # Prismaクライアントのシングルトン
 │   │   ├── auth.ts                  # 認証のサーバー設定（Better Auth）
 │   │   ├── auth-client.ts           # 認証のクライアント
+│   │   ├── session.ts               # ログイン中のユーザーIDの取得
 │   │   ├── contentLoader.ts
 │   │   ├── progress.ts              # 進捗の保存・取得
 │   │   ├── statistics.ts            # 学習ダッシュボード用の集計
@@ -168,8 +169,9 @@ progate_clone/
   脆弱性になるため。逸脱していることをコード上のコメントで明示する。
 - **認可はmiddlewareだけに依存しない。** データに触れる直前（Server Component /
   Route Handler）で必ずセッションを検証する。middlewareは体験の最適化と位置づける。
-- **`userId`はリクエストボディから受け取らない。** 必ずサーバー側でセッションから解決する
-  （ボディで受けると他人のデータを書き換えられるため）。
+- **`userId`はリクエストボディから受け取らない。** 必ず `getCurrentUserId()`
+  （`src/lib/session.ts`）でセッションから解決する。ボディで受けると、他人のIDを
+  送るだけで他人のデータを読み書きできてしまう。
 - ログイン失敗のメッセージは理由を区別せず共通化する（アカウント列挙対策）。
 - パスワードはBetter Auth標準のscryptでハッシュ化する。平文は保存もログ出力もしない。
 - 秘密情報は`.env`のみに置く（`.gitignore`済み）。`.env.example`にはキー名と取得方法だけ書く。

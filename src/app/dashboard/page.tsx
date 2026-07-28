@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { getLearningStatistics } from "@/lib/statistics";
+import { getCurrentUserId } from "@/lib/session";
 import { SiteHeader } from "@/components/SiteHeader";
 import { StatCard } from "@/components/StatCard";
 import { StreakBadges } from "@/components/StreakBadges";
@@ -24,7 +26,13 @@ function formatStudyTime(totalSeconds: number): {
 }
 
 export default async function DashboardPage() {
-  const stats = await getLearningStatistics();
+  // 個人の学習記録を表示する画面なので、ログインしていなければ見せない
+  const userId = await getCurrentUserId();
+  if (userId === null) {
+    redirect("/login");
+  }
+
+  const stats = await getLearningStatistics(userId);
   const studyTime = formatStudyTime(stats.studySummary.totalStudySeconds);
 
   return (

@@ -19,9 +19,28 @@ function totalLessonsOf(courseId: string): number {
   return course.chapters.reduce((sum, chapter) => sum + chapter.lessonIds.length, 0);
 }
 
-export async function getAllCourseProgress(): Promise<CourseProgressSummary[]> {
+/**
+ * コースごとの進捗。
+ *
+ * コース一覧は未ログインでも見られる画面のため、userIdがnullでも呼べる。
+ * その場合もレッスン数など教材由来の情報は返し、進捗だけを空にする。
+ */
+export async function getAllCourseProgress(
+  userId: string | null
+): Promise<CourseProgressSummary[]> {
   const courses = getAllCourses();
-  const progressRows = await prisma.courseProgress.findMany();
+
+  if (userId === null) {
+    return courses.map((course) => ({
+      courseId: course.id,
+      totalLessons: totalLessonsOf(course.id),
+      completedLessons: 0,
+      lastStudiedLessonId: null,
+      lastStudiedAt: null,
+    }));
+  }
+
+  const progressRows = await prisma.courseProgress.findMany({ where: { userId } });
   const progressByCourseId = new Map(
     progressRows.map((row) => [row.courseId, row])
   );
@@ -29,6 +48,7 @@ export async function getAllCourseProgress(): Promise<CourseProgressSummary[]> {
   // 更新が新しい順に並べ、コースごとに最初に見つかった1件がそのコースで
   // 最後に学習したレッスンになる
   const lessonRows = await prisma.lessonProgress.findMany({
+    where: { userId },
     orderBy: { updatedAt: "desc" },
   });
   const lastStudiedByCourseId = new Map<string, { lessonId: string; at: Date }>();
@@ -60,10 +80,16 @@ export type LessonProgressEntry = {
   draftCode: string | null;
 };
 
+/** 未ログイン（userIdがnull）の場合は、進捗なしとして空のMapを返す */
 export async function getLessonProgressMap(
+  userId: string | null,
   courseId: string
 ): Promise<Map<string, LessonProgressEntry>> {
-  const rows = await prisma.lessonProgress.findMany({ where: { courseId } });
+  if (userId === null) return new Map();
+
+  const rows = await prisma.lessonProgress.findMany({
+    where: { userId, courseId },
+  });
   return new Map(
     rows.map((row) => [
       row.lessonId,
@@ -84,17 +110,25 @@ type UpdateLessonProgressInput = {
   draftCode?: string;
 };
 
+/**
+ * 進捗を保存する。
+ *
+ * userIdは呼び出し元がセッションから解決した値を渡すこと。リクエストボディ由来の
+ * 値を渡すと、他人のIDを送るだけで他人の進捗を書き換えられてしまう。
+ */
 export async function updateLessonProgress(
+  userId: string,
   input: UpdateLessonProgressInput
 ): Promise<void> {
-  const existing = await prisma.lessonProgress.findUnique({
-    where: {
-      courseId_lessonId: {
-        courseId: input.courseId,
-        lessonId: input.lessonId,
-      },
+  const key = {
+    userId_courseId_lessonId: {
+      userId,
+      courseId: input.courseId,
+      lessonId: input.lessonId,
     },
-  });
+  };
+
+  const existing = await prisma.lessonProgress.findUnique({ where: key });
 
   // 一度完了したレッスンは、後でスライドを見返しても未完了へ後退させない
   const nextStatus: LessonStatus =
@@ -103,13 +137,9 @@ export async function updateLessonProgress(
       : "in_progress";
 
   await prisma.lessonProgress.upsert({
-    where: {
-      courseId_lessonId: {
-        courseId: input.courseId,
-        lessonId: input.lessonId,
-      },
-    },
+    where: key,
     create: {
+      userId,
       courseId: input.courseId,
       lessonId: input.lessonId,
       currentSlide: input.currentSlide,
@@ -129,17 +159,21 @@ export async function updateLessonProgress(
     },
   });
 
-  await syncCourseProgress(input.courseId);
+  await syncCourseProgress(userId, input.courseId);
 }
 
-async function syncCourseProgress(courseId: string): Promise<void> {
+async function syncCourseProgress(
+  userId: string,
+  courseId: string
+): Promise<void> {
   const completedLessons = await prisma.lessonProgress.count({
-    where: { courseId, status: "completed" },
+    where: { userId, courseId, status: "completed" },
   });
 
   await prisma.courseProgress.upsert({
-    where: { courseId },
+    where: { userId_courseId: { userId, courseId } },
     create: {
+      userId,
       courseId,
       totalLessons: totalLessonsOf(courseId),
       completedLessons,

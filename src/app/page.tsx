@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getAllCourses } from "@/lib/contentLoader";
 import { getAllCourseProgress } from "@/lib/progress";
+import { getCurrentUserId } from "@/lib/session";
 import { CourseCard } from "@/components/CourseCard";
 import { SiteHeader } from "@/components/SiteHeader";
 import { PlayIcon } from "@/components/icons";
@@ -10,7 +11,8 @@ export const dynamic = "force-dynamic";
 
 export default async function Home() {
   const courses = getAllCourses();
-  const progressList = await getAllCourseProgress();
+  // 未ログインでもコースは見られる。その場合は進捗のない状態で表示する
+  const progressList = await getAllCourseProgress(await getCurrentUserId());
   const progressByCourseId = new Map(
     progressList.map((progress) => [progress.courseId, progress])
   );

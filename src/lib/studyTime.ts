@@ -19,14 +19,24 @@ type AddStudyTimeInput = {
   solvedExercise?: boolean;
 };
 
-export async function addStudyTime(input: AddStudyTimeInput): Promise<void> {
-  const existing = await prisma.studyDay.findUnique({
-    where: { date: input.date },
-  });
+/**
+ * 学習時間を加算する。
+ *
+ * userIdは呼び出し元がセッションから解決した値を渡すこと
+ * （リクエストボディ由来の値を渡すと他人の記録を書き換えられてしまう）。
+ */
+export async function addStudyTime(
+  userId: string,
+  input: AddStudyTimeInput
+): Promise<void> {
+  const key = { userId_date: { userId, date: input.date } };
+
+  const existing = await prisma.studyDay.findUnique({ where: key });
 
   await prisma.studyDay.upsert({
-    where: { date: input.date },
+    where: key,
     create: {
+      userId,
       date: input.date,
       studySeconds: input.addedSeconds,
       solvedExercise: input.solvedExercise ?? false,
@@ -90,8 +100,8 @@ export function calculateStreaks(studiedDateKeys: string[]): {
   return { currentStreak, longestStreak };
 }
 
-export async function getStudySummary(): Promise<StudySummary> {
-  const days = await prisma.studyDay.findMany();
+export async function getStudySummary(userId: string): Promise<StudySummary> {
+  const days = await prisma.studyDay.findMany({ where: { userId } });
 
   const totalStudySeconds = days.reduce((sum, day) => sum + day.studySeconds, 0);
   const studiedDateKeys = days

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getCourseById, getLessonById } from "@/lib/contentLoader";
 import { getLessonProgressMap, type LessonStatus } from "@/lib/progress";
+import { getCurrentUserId } from "@/lib/session";
 import { getLessonSequence } from "@/lib/courseNavigation";
 import { SiteHeader } from "@/components/SiteHeader";
 import { CheckIcon, PlayIcon } from "@/components/icons";
@@ -29,7 +30,11 @@ export default async function CourseDetailPage({
     notFound();
   }
 
-  const progressMap = await getLessonProgressMap(course.id);
+  // 未ログインでもカリキュラムは見られる。その場合は完了マークが付かない
+  const progressMap = await getLessonProgressMap(
+    await getCurrentUserId(),
+    course.id
+  );
   const sequence = getLessonSequence(course);
   const completedCount = sequence.filter(
     (item) => progressMap.get(item.lessonId)?.status === "completed"

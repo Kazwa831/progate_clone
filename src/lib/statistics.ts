@@ -44,10 +44,12 @@ export type LearningStatistics = {
  * 演習数は現状のスキーマからは正確に求められないため、ここでは扱わない
  * （演習は「次へ」で飛ばせるため、完了レッスンの演習数を数えると実際より多くなる）。
  */
-export async function getLearningStatistics(): Promise<LearningStatistics> {
+export async function getLearningStatistics(
+  userId: string
+): Promise<LearningStatistics> {
   const courses = getAllCourses();
-  const rows = await prisma.lessonProgress.findMany();
-  const studySummary = await getStudySummary();
+  const rows = await prisma.lessonProgress.findMany({ where: { userId } });
+  const studySummary = await getStudySummary(userId);
 
   const rowsByCourseId = new Map<string, typeof rows>();
   for (const row of rows) {

@@ -11,8 +11,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// 進捗系の3モデルは必ず userId を持ち、ユニーク制約にも userId を含める。
+// 含めないと、あるユーザーが学習したレッスン・コース・日付を
+// 他のユーザーが記録できなくなる（DB全体で1行しか持てなくなるため）
+
 model LessonProgress {
   id           Int       @id @default(autoincrement())
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   courseId     String
   lessonId     String
   status       String    @default("not_started") // not_started | in_progress | completed
@@ -21,24 +27,35 @@ model LessonProgress {
   completedAt  DateTime?
   updatedAt    DateTime  @updatedAt
 
-  @@unique([courseId, lessonId])
+  @@unique([userId, courseId, lessonId])
+  @@index([userId])
 }
 
 model StudyDay {
-  id             Int     @id @default(autoincrement())
+  id     Int    @id @default(autoincrement())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   // "YYYY-MM-DD"。DateTimeで持つとUTC保存になり、深夜帯に学習した日が
   // SQL集計で前日に寄ってしまうため、確定済みの日付を文字列で保存する
-  date           String  @unique
+  date           String
   studySeconds   Int     @default(0)
   solvedExercise Boolean @default(false) // その日1問でも正解したか（ストリーク判定用）
+
+  @@unique([userId, date])
+  @@index([userId])
 }
 
 model CourseProgress {
   id               Int      @id @default(autoincrement())
-  courseId         String   @unique
+  userId           String
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseId         String
   totalLessons     Int
   completedLessons Int      @default(0)
   updatedAt        DateTime @updatedAt
+
+  @@unique([userId, courseId])
+  @@index([userId])
 }
 
 model User {
@@ -51,6 +68,11 @@ model User {
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
+
+  // 退会時に進捗が残らないよう、削除はユーザーを起点に連鎖させる
+  lessonProgress LessonProgress[]
+  courseProgress CourseProgress[]
+  studyDays      StudyDay[]
 
   @@unique([email])
   @@map("user")
