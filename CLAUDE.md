@@ -7,8 +7,9 @@
 **progate_clone** — Progate風の自作プログラミング学習プラットフォーム。
 「スライド解説 → コード入力 → 実行結果確認 → 正誤判定 → 次のレッスンへ」という学習体験を再現する。
 第1弾は HTML/CSS基礎コースを完成させる。将来的に JavaScript / Python / SQL コースへ
-`content/` 配下にJSONを追加するだけで拡張できる設計にする。単一ユーザー・ローカル運用が前提で、
-認証機能は作らない。
+`content/` 配下にJSONを追加するだけで拡張できる設計にする。ローカル運用が前提。
+当初は単一ユーザー前提で作っていたが、ポートフォリオとして複数人が使える状態にするため
+認証機能を後から追加した（「認証・セキュリティルール」を参照）。
 
 ## 開発目的
 
@@ -58,6 +59,7 @@ progate_clone/
 │   │   ├── courses/[courseId]/page.tsx     # コース詳細
 │   │   ├── courses/[courseId]/lessons/[lessonId]/page.tsx  # 学習画面
 │   │   └── api/
+│   │       ├── auth/[...all]/route.ts # 認証（Better Auth）
 │   │       ├── progress/route.ts    # 進捗の取得・更新（上書き）
 │   │       ├── study-time/route.ts  # 学習時間の加算・学習実績の記録
 │   │       └── courses/route.ts
@@ -69,6 +71,8 @@ progate_clone/
 │   │   ├── LessonWorkspace.tsx      # 学習画面の中核（4コース共通）
 │   │   ├── LessonSidebar.tsx
 │   │   ├── SiteHeader.tsx           # 全画面共通のヘッダー
+│   │   ├── AuthForm.tsx             # 登録/ログイン共通フォーム
+│   │   ├── SignOutButton.tsx        # ログアウト
 │   │   ├── StatCard.tsx             # ダッシュボードの数値タイル
 │   │   ├── StreakBadges.tsx         # 連続学習日数の達成バッジ
 │   │   ├── CompletedLessonList.tsx  # 完了レッスンの履歴一覧
@@ -78,6 +82,8 @@ progate_clone/
 │   │   └── useStudyTimeTracker.ts   # 学習時間の計測
 │   ├── lib/
 │   │   ├── prisma.ts                # Prismaクライアントのシングルトン
+│   │   ├── auth.ts                  # 認証のサーバー設定（Better Auth）
+│   │   ├── auth-client.ts           # 認証のクライアント
 │   │   ├── contentLoader.ts
 │   │   ├── progress.ts              # 進捗の保存・取得
 │   │   ├── statistics.ts            # 学習ダッシュボード用の集計
@@ -110,7 +116,7 @@ progate_clone/
 - コース・レッスンのデータは `content/` 配下のJSONとして管理し、新言語コース追加時に
   コードを書き足さずに済む拡張性を最優先する。
 - 判定ロジック（`judge/`）は言語ごとにファイルを分け、`checkType` によるStrategyパターンで分岐する。
-- 進捗はDB（Prisma + SQLite）に保存し、単一ユーザー前提のため `User` テーブルは持たない。
+- 進捗はDB（Prisma + SQLite）に保存し、ログイン中のユーザーに紐づけて管理する。
 - コード実行はすべてブラウザ内サンドボックス（iframe / 将来はPyodide）で完結させ、
   サーバーサイドでユーザーコードを実行しない。
 
@@ -153,6 +159,21 @@ progate_clone/
   しているが、角丸・余白・字送りなどの構造は両モード共通にする。
   アクセント（ラベンダー）はブランド色として両モードで共通。
 
+## 認証・セキュリティルール
+
+認証には **Better Auth** を使う（`next-auth`はv5が長期betaのままで`latest`がv4のため不採用）。
+
+- **認証コードでは「防御的なvalidationは書かない」というコーディングルールを適用しない。**
+  認証における「起きないはずの入力」は攻撃者が意図的に作る入力であり、防御を省くと
+  脆弱性になるため。逸脱していることをコード上のコメントで明示する。
+- **認可はmiddlewareだけに依存しない。** データに触れる直前（Server Component /
+  Route Handler）で必ずセッションを検証する。middlewareは体験の最適化と位置づける。
+- **`userId`はリクエストボディから受け取らない。** 必ずサーバー側でセッションから解決する
+  （ボディで受けると他人のデータを書き換えられるため）。
+- ログイン失敗のメッセージは理由を区別せず共通化する（アカウント列挙対策）。
+- パスワードはBetter Auth標準のscryptでハッシュ化する。平文は保存もログ出力もしない。
+- 秘密情報は`.env`のみに置く（`.gitignore`済み）。`.env.example`にはキー名と取得方法だけ書く。
+
 ## API設計ルール
 
 - Next.js の Route Handlers (`src/app/api/**/route.ts`) を使用する。
@@ -164,7 +185,10 @@ progate_clone/
 
 ## DB設計ルール
 
-- 単一ユーザー前提のため認証・ユーザーテーブルは作らない。
+- 認証関連のテーブル（`User` / `Session` / `Account` / `Verification`）はBetter Authの
+  スキーマに従う。手で書き換えず、`npx @better-auth/cli generate` の出力を使う。
+- 進捗系のテーブルは必ず `userId` を持ち、ユニーク制約にも `userId` を含める
+  （含めないと、あるユーザーが学習したレッスンを他のユーザーが学習できなくなる）。
 - `prisma/schema.prisma` を変更したら必ず `npx prisma migrate dev --name <説明>` で
   マイグレーションを作成し、コミットに含める。
 - SQLiteファイル本体（`data/app.db`）と生成物（`src/generated/prisma/`）はGit管理しない。
