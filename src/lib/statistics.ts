@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { getAllCourses } from "@/lib/contentLoader";
 import { getLessonSequence } from "@/lib/courseNavigation";
+import { getStudySummary, type StudySummary } from "@/lib/studyTime";
 
 export type CourseStatistics = {
   courseId: string;
@@ -32,6 +33,8 @@ export type LearningStatistics = {
   courses: CourseStatistics[];
   /** 完了したレッスンを新しい順に並べたもの */
   completedLessonHistory: CompletedLessonEntry[];
+  /** 学習時間と連続学習日数。学習時間は可視時間からの概算値 */
+  studySummary: StudySummary;
 };
 
 /**
@@ -44,6 +47,7 @@ export type LearningStatistics = {
 export async function getLearningStatistics(): Promise<LearningStatistics> {
   const courses = getAllCourses();
   const rows = await prisma.lessonProgress.findMany();
+  const studySummary = await getStudySummary();
 
   const rowsByCourseId = new Map<string, typeof rows>();
   for (const row of rows) {
@@ -121,5 +125,6 @@ export async function getLearningStatistics(): Promise<LearningStatistics> {
     lastStudiedAt,
     courses: courseStatistics,
     completedLessonHistory,
+    studySummary,
   };
 }

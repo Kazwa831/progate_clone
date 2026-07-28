@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getLearningStatistics } from "@/lib/statistics";
 import { StatCard } from "@/components/StatCard";
+import { StreakBadges } from "@/components/StreakBadges";
 import { CompletedLessonList } from "@/components/CompletedLessonList";
 
 // 進捗は学習の都度変わる動的なデータのため、ビルド時の静的プリレンダリング対象から外す
@@ -8,6 +9,14 @@ export const dynamic = "force-dynamic";
 
 function formatDate(date: Date): string {
   return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
+}
+
+function formatStudyTime(totalSeconds: number): string {
+  if (totalSeconds < 60) return "1分未満";
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  if (hours === 0) return `${minutes}分`;
+  return `${hours}時間${minutes}分`;
 }
 
 export default async function DashboardPage() {
@@ -29,7 +38,7 @@ export default async function DashboardPage() {
       </p>
 
       <section className="mt-8">
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <StatCard
             label="完了レッスン"
             value={`${stats.completedLessons} / ${stats.totalLessons}`}
@@ -40,10 +49,28 @@ export default async function DashboardPage() {
             value={`${stats.startedCourses} / ${stats.totalCourses}`}
           />
           <StatCard
+            label="学習時間（目安）"
+            value={formatStudyTime(stats.studySummary.totalStudySeconds)}
+            sub="タブを開いて操作している時間の概算です"
+          />
+          <StatCard
+            label="連続学習日数"
+            value={
+              stats.studySummary.currentStreak > 0
+                ? `🔥 ${stats.studySummary.currentStreak}日`
+                : "0日"
+            }
+            sub={`最長 ${stats.studySummary.longestStreak}日`}
+          />
+          <StatCard
             label="最終学習日"
             value={stats.lastStudiedAt ? formatDate(stats.lastStudiedAt) : "—"}
             sub={stats.lastStudiedAt ? undefined : "まだ学習の記録がありません"}
           />
+        </div>
+
+        <div className="mt-4">
+          <StreakBadges longestStreak={stats.studySummary.longestStreak} />
         </div>
       </section>
 

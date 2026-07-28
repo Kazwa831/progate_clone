@@ -24,6 +24,15 @@ model LessonProgress {
   @@unique([courseId, lessonId])
 }
 
+model StudyDay {
+  id Int @id @default(autoincrement())
+  // "YYYY-MM-DD"。DateTimeで持つとUTC保存になり、深夜帯に学習した日が
+  // SQL集計で前日に寄ってしまうため、確定済みの日付を文字列で保存する
+  date           String  @unique
+  studySeconds   Int     @default(0)
+  solvedExercise Boolean @default(false) // その日1問でも正解したか（ストリーク判定用）
+}
+
 model CourseProgress {
   id               Int      @id @default(autoincrement())
   courseId         String   @unique

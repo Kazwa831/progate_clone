@@ -58,7 +58,8 @@ progate_clone/
 │   │   ├── courses/[courseId]/page.tsx     # コース詳細
 │   │   ├── courses/[courseId]/lessons/[lessonId]/page.tsx  # 学習画面
 │   │   └── api/
-│   │       ├── progress/route.ts
+│   │       ├── progress/route.ts    # 進捗の取得・更新（上書き）
+│   │       ├── study-time/route.ts  # 学習時間の加算・学習実績の記録
 │   │       └── courses/route.ts
 │   ├── components/
 │   │   ├── SlidePanel.tsx
@@ -68,15 +69,19 @@ progate_clone/
 │   │   ├── LessonWorkspace.tsx      # 学習画面の中核（4コース共通）
 │   │   ├── LessonSidebar.tsx
 │   │   ├── StatCard.tsx             # ダッシュボードの数値タイル
+│   │   ├── StreakBadges.tsx         # 連続学習日数の達成バッジ
 │   │   ├── CompletedLessonList.tsx  # 完了レッスンの履歴一覧
 │   │   └── CourseCard.tsx
 │   ├── hooks/                       # 複数箇所から使う、またはコンポーネントから
-│   │   └── useDraftAutoSave.ts      # 切り出したいReactロジックを置く
+│   │   ├── useDraftAutoSave.ts      # 切り出したいReactロジックを置く
+│   │   └── useStudyTimeTracker.ts   # 学習時間の計測
 │   ├── lib/
 │   │   ├── prisma.ts                # Prismaクライアントのシングルトン
 │   │   ├── contentLoader.ts
 │   │   ├── progress.ts              # 進捗の保存・取得
 │   │   ├── statistics.ts            # 学習ダッシュボード用の集計
+│   │   ├── studyTime.ts             # 学習時間の記録・連続学習日数の計算
+│   │   ├── dateKey.ts               # 日付の文字列化（クライアント/サーバー共用）
 │   │   ├── courseNavigation.ts      # 章をまたいだレッスン順序
 │   │   ├── lessonCode.ts            # スライドの初期コード（サーバー/クライアント共用）
 │   │   └── judge/                   # 言語ごとの判定ロジック

@@ -25,6 +25,10 @@ import {
 } from "@/lib/judge/sqlJudge";
 import { defaultCodeForSlide } from "@/lib/lessonCode";
 import { useDraftAutoSave } from "@/hooks/useDraftAutoSave";
+import {
+  reportSolvedExercise,
+  useStudyTimeTracker,
+} from "@/hooks/useStudyTimeTracker";
 import { SlidePanel } from "@/components/SlidePanel";
 import { CodeEditor } from "@/components/CodeEditor";
 import { PreviewPane } from "@/components/PreviewPane";
@@ -142,6 +146,9 @@ export function LessonWorkspace({
   const isFirstSlide = slideIndex === 0;
   const isLastSlide = slideIndex === lesson.slides.length - 1;
 
+  // タブが見えている間の学習時間を計測する
+  useStudyTimeTracker();
+
   // 入力が止まった時と、タブを離れる時に書きかけのコードを保存する
   useDraftAutoSave({
     courseId,
@@ -213,6 +220,7 @@ export function LessonWorkspace({
           );
           setResult(judged);
           if (judged.correct) {
+            reportSolvedExercise();
             reportProgress(
               courseId,
               lesson.id,
@@ -305,6 +313,7 @@ export function LessonWorkspace({
     // 進捗の「完了」は、最後のスライドの問題に正解したときだけ記録する
     // （単にスライドを送っただけで完了扱いにならないようにするため）
     if (judged.correct) {
+      reportSolvedExercise();
       reportProgress(
         courseId,
         lesson.id,
