@@ -54,6 +54,7 @@ progate_clone/
 ├── src/
 │   ├── app/
 │   │   ├── page.tsx                        # コース一覧トップページ
+│   │   ├── dashboard/page.tsx              # 学習ダッシュボード（完了一覧・統計）
 │   │   ├── courses/[courseId]/page.tsx     # コース詳細
 │   │   ├── courses/[courseId]/lessons/[lessonId]/page.tsx  # 学習画面
 │   │   └── api/
@@ -66,6 +67,8 @@ progate_clone/
 │   │   ├── ResultChecker.tsx
 │   │   ├── LessonWorkspace.tsx      # 学習画面の中核（4コース共通）
 │   │   ├── LessonSidebar.tsx
+│   │   ├── StatCard.tsx             # ダッシュボードの数値タイル
+│   │   ├── CompletedLessonList.tsx  # 完了レッスンの履歴一覧
 │   │   └── CourseCard.tsx
 │   ├── hooks/                       # 複数箇所から使う、またはコンポーネントから
 │   │   └── useDraftAutoSave.ts      # 切り出したいReactロジックを置く
@@ -73,6 +76,7 @@ progate_clone/
 │   │   ├── prisma.ts                # Prismaクライアントのシングルトン
 │   │   ├── contentLoader.ts
 │   │   ├── progress.ts              # 進捗の保存・取得
+│   │   ├── statistics.ts            # 学習ダッシュボード用の集計
 │   │   ├── courseNavigation.ts      # 章をまたいだレッスン順序
 │   │   ├── lessonCode.ts            # スライドの初期コード（サーバー/クライアント共用）
 │   │   └── judge/                   # 言語ごとの判定ロジック

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getAllCourses } from "@/lib/contentLoader";
 import { getAllCourseProgress } from "@/lib/progress";
 import { CourseCard } from "@/components/CourseCard";
@@ -14,10 +15,20 @@ export default async function Home() {
 
   return (
     <div className="mx-auto max-w-4xl px-6 py-12">
-      <h1 className="text-3xl font-bold text-foreground">Progate Clone</h1>
-      <p className="mt-2 text-muted-foreground">
-        学習したいコースを選んでください。
-      </p>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-foreground">Progate Clone</h1>
+          <p className="mt-2 text-muted-foreground">
+            学習したいコースを選んでください。
+          </p>
+        </div>
+        <Link
+          href="/dashboard"
+          className="rounded-md border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        >
+          学習ダッシュボード
+        </Link>
+      </div>
 
       <div className="mt-8 grid gap-6 sm:grid-cols-2">
         {courses.map((course) => {
