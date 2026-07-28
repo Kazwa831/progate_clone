@@ -24,7 +24,7 @@ function groupByDate(entries: CompletedLessonEntry[]) {
 export function CompletedLessonList({ entries }: CompletedLessonListProps) {
   if (entries.length === 0) {
     return (
-      <p className="rounded-lg border border-border bg-card p-6 text-sm text-muted-foreground">
+      <p className="type-body-sm elevate-1 rounded-xl p-6 text-ink-subtle">
         まだ完了したレッスンはありません。コースを進めるとここに履歴が表示されます。
       </p>
     );
@@ -34,20 +34,20 @@ export function CompletedLessonList({ entries }: CompletedLessonListProps) {
     <div className="space-y-6">
       {groupByDate(entries).map(([date, lessons]) => (
         <div key={date}>
-          <h3 className="text-sm font-semibold text-muted-foreground">{date}</h3>
-          <ul className="mt-2 space-y-1">
+          <h3 className="type-eyebrow text-ink-tertiary">{date}</h3>
+          <ul className="mt-3 divide-y divide-hairline border-t border-hairline">
             {lessons.map((lesson, index) => (
               <li
                 key={`${date}-${index}`}
-                className="flex items-center gap-3 rounded-md border border-border bg-card px-4 py-3"
+                className="interactive flex items-center gap-3 px-2 py-3.5 hover:bg-surface-3"
               >
-                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-success text-success-foreground">
+                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-highlight text-accent-ink">
                   <CheckIcon className="h-3 w-3" />
                 </span>
-                <span className="min-w-0 flex-1 truncate text-card-foreground">
+                <span className="type-body-sm min-w-0 flex-1 truncate text-ink">
                   {lesson.lessonTitle}
                 </span>
-                <span className="shrink-0 text-xs text-muted-foreground">
+                <span className="type-caption shrink-0 text-ink-tertiary">
                   {lesson.courseTitle} ・ {lesson.chapterTitle}
                 </span>
               </li>

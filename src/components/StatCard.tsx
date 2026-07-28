@@ -4,12 +4,13 @@ type StatCardProps = {
   sub?: string;
 };
 
+// ダッシュボードの主役（学習時間・連続日数）より一段控えめに見せる補助的な指標
 export function StatCard({ label, value, sub }: StatCardProps) {
   return (
-    <div className="rounded-lg border border-border bg-card p-5">
-      <p className="text-xs text-muted-foreground">{label}</p>
-      <p className="mt-2 text-2xl font-bold text-card-foreground">{value}</p>
-      {sub && <p className="mt-1 text-xs text-muted-foreground">{sub}</p>}
+    <div className="elevate-1 rounded-xl p-5">
+      <p className="type-eyebrow text-ink-tertiary">{label}</p>
+      <p className="type-headline mt-2.5 text-ink tabular-nums">{value}</p>
+      {sub && <p className="type-caption mt-1 text-ink-tertiary">{sub}</p>}
     </div>
   );
 }

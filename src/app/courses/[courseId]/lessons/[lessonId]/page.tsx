@@ -46,7 +46,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
     restorableDraft ?? defaultCodeForSlide(lesson, initialSlideIndex);
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen bg-canvas">
       <LessonSidebar
         course={course}
         currentLessonId={lessonId}
@@ -55,14 +55,12 @@ export default async function LessonPage({ params }: LessonPageProps) {
         totalLessons={position.totalLessons}
       />
       <div className="flex min-h-0 flex-1 flex-col">
-        <header className="shrink-0 border-b border-border bg-card px-6 py-3">
-          <p className="text-xs text-muted-foreground">
+        <header className="shrink-0 border-b border-hairline bg-canvas px-6 py-3.5">
+          <p className="type-eyebrow text-ink-tertiary">
             {position.chapterTitle} ・ {position.indexInChapter + 1} /{" "}
             {position.totalInChapter}
           </p>
-          <h1 className="text-lg font-semibold text-card-foreground">
-            {lesson.title}
-          </h1>
+          <h1 className="type-card-title mt-1 text-ink">{lesson.title}</h1>
         </header>
         <div className="min-h-0 flex-1">
           <LessonWorkspace

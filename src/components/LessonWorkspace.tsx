@@ -357,8 +357,8 @@ export function LessonWorkspace({
   const nextDisabled = isLastSlide && !nextLesson;
 
   return (
-    <div className="grid h-full grid-cols-1 bg-background md:grid-cols-2">
-      <div className="min-h-0 border-b border-border md:border-b-0 md:border-r">
+    <div className="grid h-full grid-cols-1 bg-canvas md:grid-cols-2">
+      <div className="min-h-0 border-b border-hairline md:border-b-0 md:border-r">
         <SlidePanel
           slide={currentSlide}
           currentIndex={slideIndex}
@@ -373,30 +373,34 @@ export function LessonWorkspace({
         />
       </div>
       <div className="grid min-h-0 grid-rows-2">
-        <div className="flex min-h-0 flex-col border-b border-border">
-          <div className="flex shrink-0 items-center gap-2 border-b border-border bg-card px-4 py-2 text-xs text-muted-foreground">
-            <span className="h-2 w-2 shrink-0 rounded-full bg-primary/60" />
-            {editorFileNameFor(courseLanguage)}
+        <div className="flex min-h-0 flex-col border-b border-hairline">
+          <div className="flex shrink-0 items-center gap-2 border-b border-hairline bg-surface-3 px-4 py-2.5">
+            <span className="h-2 w-2 shrink-0 rounded-full bg-highlight" />
+            <span className="type-caption font-mono text-ink-subtle">
+              {editorFileNameFor(courseLanguage)}
+            </span>
           </div>
           <div className="min-h-0 flex-1">
             <CodeEditor value={code} language={courseLanguage} onChange={setCode} />
           </div>
         </div>
-        <div className="flex min-h-0 flex-col bg-card">
-          <div className="flex shrink-0 items-center justify-between border-b border-border px-4 py-2 text-xs text-muted-foreground">
-            <span className="flex items-center gap-1.5">
+        <div className="flex min-h-0 flex-col bg-surface-1">
+          <div className="flex shrink-0 items-center justify-between border-b border-hairline bg-surface-3 px-4 py-2.5">
+            <span className="type-caption flex items-center gap-1.5 font-medium text-ink-subtle">
               <EyeIcon className="h-3.5 w-3.5" />
               プレビュー
             </span>
             {currentSlide.type === "example" && (
-              <span className="font-medium text-primary-text">完成イメージ</span>
+              <span className="type-caption rounded-full bg-highlight/15 px-2 py-0.5 font-medium text-highlight">
+                完成イメージ
+              </span>
             )}
           </div>
           <div className="min-h-0 flex-1">
             <PreviewPane code={code} language={courseLanguage} ref={iframeRef} />
           </div>
           {currentSlide.type === "exercise" && (
-            <div className="shrink-0 border-t border-border p-4">
+            <div className="shrink-0 border-t border-hairline bg-surface-1 p-5">
               <ResultChecker
                 onCheck={handleCheck}
                 onReset={handleReset}
@@ -409,12 +413,12 @@ export function LessonWorkspace({
             </div>
           )}
           {currentSlide.type === "example" && asyncRunner && (
-            <div className="shrink-0 border-t border-border p-4">
+            <div className="shrink-0 border-t border-hairline bg-surface-1 p-5">
               <button
                 type="button"
                 onClick={handleRunAsync}
                 disabled={!asyncRunnerReady}
-                className="inline-flex items-center gap-2 rounded-md bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground transition-colors hover:bg-secondary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-40"
+                className="interactive inline-flex items-center gap-2 rounded-lg border border-hairline px-4 py-2.5 text-sm font-medium text-ink-subtle hover:border-hairline-strong hover:bg-surface-3 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-surface-1 disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <PlayIcon className="h-4 w-4" />
                 実行してみる

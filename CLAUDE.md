@@ -68,6 +68,7 @@ progate_clone/
 │   │   ├── ResultChecker.tsx
 │   │   ├── LessonWorkspace.tsx      # 学習画面の中核（4コース共通）
 │   │   ├── LessonSidebar.tsx
+│   │   ├── SiteHeader.tsx           # 全画面共通のヘッダー
 │   │   ├── StatCard.tsx             # ダッシュボードの数値タイル
 │   │   ├── StreakBadges.tsx         # 連続学習日数の達成バッジ
 │   │   ├── CompletedLessonList.tsx  # 完了レッスンの履歴一覧
@@ -95,6 +96,8 @@ progate_clone/
 │   └── generated/prisma/            # Prisma自動生成コード（Gitには含めない）
 ├── docs/
 │   ├── progate_clone_design_doc.md  # 唯一の仕様書
+│   ├── design.md                    # UI刷新の参考資料（ダークモードの配色）
+│   ├── design-light.md              # UI刷新の参考資料（ライトモードの配色）
 │   └── progress.md                  # 進捗ログ
 └── CLAUDE.md
 ```
@@ -132,6 +135,23 @@ progate_clone/
 - コンポーネントが大きくなり見通しが悪くなる場合は、Reactのロジック（`useEffect`での
   購読・タイマー処理など）を `src/hooks/` のカスタムフックへ切り出す。
   Reactに依存しない純粋なロジックは `src/lib/` に置く。
+
+## デザインルール
+
+配色・タイポグラフィは `src/app/globals.css` のトークンに集約する。
+個々のコンポーネントで色や文字サイズを直接指定しない。
+
+- **面の階調**: `canvas → surface-1 → surface-2 → surface-3` の4段。要素の重要度に
+  応じて使い分け、すべてのカードを同じ見た目にしない。持ち上げは `.elevate-1` /
+  `.elevate-2` を使う（ライトは影、ダークは階調で表現が切り替わる）。
+- **タイポグラフィ**: `.type-display / headline / card-title / body / body-sm /
+  caption / eyebrow / metric` を使う。大きい文字ほど字送りを詰め、`eyebrow` だけは
+  逆に広げて大文字にする（見出しではなく分類であることを示すため）。
+- **ホバー**: 操作できる要素には `.interactive` を付けて変化を滑らかにする。
+  カードは `.lift-on-hover` でわずかに浮かせる。
+- **配色の出典**: ダークは `docs/design.md`、ライトは `docs/design-light.md` を参考に
+  しているが、角丸・余白・字送りなどの構造は両モード共通にする。
+  アクセント（ラベンダー）はブランド色として両モードで共通。
 
 ## API設計ルール
 
