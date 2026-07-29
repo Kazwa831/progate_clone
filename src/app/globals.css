@@ -211,6 +211,26 @@
   font-variant-numeric: tabular-nums;
 }
 
+/*
+  ダッシュボードの数値タイル。狭い画面では2列に並ぶため、
+  「2026/12/30」のような長い値がはみ出さないよう1段階小さくする
+*/
+.type-stat-value {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (min-width: 640px) {
+  .type-stat-value {
+    font-size: 1.5rem;
+    line-height: 1.2;
+    letter-spacing: -0.03em;
+  }
+}
+
 /* 面の持ち上がり。ライトは影、ダークは階調で表現が切り替わる */
 .elevate-1 {
   background-color: var(--surface-1);

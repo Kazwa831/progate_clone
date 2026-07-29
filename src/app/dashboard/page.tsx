@@ -40,14 +40,14 @@ export default async function DashboardPage() {
     <div className="min-h-dvh bg-canvas">
       <SiteHeader current="dashboard" />
 
-      <main className="mx-auto max-w-4xl px-6">
+      <main className="mx-auto max-w-4xl px-4 sm:px-6">
         <section className="pt-12 pb-12">
           <p className="type-eyebrow text-ink-tertiary">Your progress</p>
           <h1 className="type-display mt-3 text-ink">学習ダッシュボード</h1>
 
           {/* 学習時間と連続日数をこの画面の主役にする */}
           <div className="elevate-2 mt-8 grid gap-px overflow-hidden rounded-2xl bg-hairline sm:grid-cols-2">
-            <div className="bg-surface-2 p-7">
+            <div className="bg-surface-2 p-5 sm:p-7">
               <p className="type-eyebrow text-ink-tertiary">学習時間（目安）</p>
               <p className="mt-3 flex items-baseline gap-1.5">
                 <span className="type-display text-ink tabular-nums">
@@ -62,7 +62,7 @@ export default async function DashboardPage() {
               </p>
             </div>
 
-            <div className="bg-surface-2 p-7">
+            <div className="bg-surface-2 p-5 sm:p-7">
               <p className="type-eyebrow text-ink-tertiary">連続学習日数</p>
               <p className="mt-3 flex items-baseline gap-1.5">
                 <span className="type-display text-ink tabular-nums">
@@ -87,7 +87,7 @@ export default async function DashboardPage() {
         </section>
 
         <section className="border-t border-hairline pt-10">
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
             <StatCard
               label="完了レッスン"
               value={`${stats.completedLessons} / ${stats.totalLessons}`}
@@ -105,7 +105,7 @@ export default async function DashboardPage() {
           </div>
         </section>
 
-        <section className="mt-14">
+        <section className="mt-10 sm:mt-14">
           <h2 className="type-headline text-ink">コース別の進捗</h2>
           <div className="mt-6 divide-y divide-hairline border-t border-hairline">
             {stats.courses.map((course) => (
@@ -152,7 +152,7 @@ export default async function DashboardPage() {
           </div>
         </section>
 
-        <section className="mt-14 pb-24">
+        <section className="mt-10 pb-20 sm:mt-14 sm:pb-24">
           <h2 className="type-headline text-ink">完了したレッスン</h2>
           <div className="mt-6">
             <CompletedLessonList entries={stats.completedLessonHistory} />

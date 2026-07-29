@@ -54,7 +54,7 @@ export default async function CourseDetailPage({
     <div className="min-h-dvh bg-canvas">
       <SiteHeader current="courses" />
 
-      <main className="mx-auto max-w-3xl px-6">
+      <main className="mx-auto max-w-3xl px-4 sm:px-6">
         <section className="pt-12 pb-14">
           <p className="type-eyebrow text-ink-tertiary">
             {course.chapters.length}章 · {sequence.length}レッスン
@@ -68,7 +68,7 @@ export default async function CourseDetailPage({
 
           {nextLesson && (
             <div className="elevate-2 mt-8 overflow-hidden rounded-2xl">
-              <div className="flex flex-wrap items-center justify-between gap-5 p-6">
+              <div className="flex flex-col gap-4 p-5 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-5 sm:p-6">
                 <div className="min-w-0">
                   <p className="type-eyebrow text-ink-tertiary">
                     {hasStarted ? "次のレッスン" : "最初のレッスン"}
@@ -81,19 +81,20 @@ export default async function CourseDetailPage({
                   </p>
                 </div>
 
-                <div className="flex shrink-0 items-center gap-5">
+                <div className="flex w-full shrink-0 flex-col gap-3 sm:w-auto sm:flex-row sm:items-center sm:gap-5">
                   {/* 未ログインの人に「0 / 26 完了」を見せても意味がないため出さない */}
                   {isLoggedIn && (
-                    <div className="text-right">
+                    // 狭い画面では横1行、広い画面では従来どおり右寄せの2段
+                    <div className="flex items-baseline gap-2 sm:block sm:text-right">
                       <p className="type-metric text-ink">{progressPercent}%</p>
-                      <p className="type-caption mt-1 text-ink-tertiary">
+                      <p className="type-caption text-ink-tertiary sm:mt-1">
                         {completedCount} / {sequence.length} 完了
                       </p>
                     </div>
                   )}
                   <Link
                     href={`/courses/${course.id}/lessons/${nextLesson.lessonId}`}
-                    className="interactive inline-flex items-center gap-2 rounded-lg bg-accent px-5 py-3 text-sm font-medium text-accent-ink hover:bg-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-canvas"
+                    className="interactive inline-flex min-h-12 items-center justify-center gap-2 rounded-lg bg-accent px-5 py-3 text-sm font-medium text-accent-ink hover:bg-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-canvas"
                   >
                     <PlayIcon className="h-4 w-4" />
                     {hasStarted ? "続きから" : "始める"}
@@ -137,7 +138,7 @@ export default async function CourseDetailPage({
                     >
                       {String(chapterIndex + 1).padStart(2, "0")}
                     </span>
-                    <h3 className="type-card-title text-ink">
+                    <h3 className="type-card-title min-w-0 text-ink">
                       {chapter.title}
                     </h3>
                     <span className="type-caption ml-auto shrink-0 text-ink-tertiary tabular-nums">
@@ -181,10 +182,14 @@ export default async function CourseDetailPage({
                               {lesson?.title ?? lessonId}
                             </span>
 
-                            {/* 学習状況はアカウントごとの情報なので未ログインでは出さない */}
+                            {/*
+                              学習状況はアカウントごとの情報なので未ログインでは出さない。
+                              狭い画面では文字を出さずに左の丸マーカーで示す（レッスン名に幅を渡すため）が、
+                              sr-onlyで読み上げには残すので、状態が伝わらなくなることはない
+                            */}
                             {isLoggedIn && (
                               <span
-                                className={`type-caption shrink-0 ${
+                                className={`type-caption shrink-0 sr-only sm:not-sr-only ${
                                   isInProgress
                                     ? "font-medium text-highlight"
                                     : "text-ink-tertiary"

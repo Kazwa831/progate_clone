@@ -39,17 +39,23 @@ export function CompletedLessonList({ entries }: CompletedLessonListProps) {
             {lessons.map((lesson, index) => (
               <li
                 key={`${date}-${index}`}
-                className="interactive flex items-center gap-3 px-2 py-3.5 hover:bg-surface-3"
+                className="interactive flex items-start gap-3 px-2 py-3.5 hover:bg-surface-3 sm:items-center"
               >
-                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-highlight text-accent-ink">
+                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-highlight text-accent-ink sm:mt-0">
                   <CheckIcon className="h-3 w-3" />
                 </span>
-                <span className="type-body-sm min-w-0 flex-1 truncate text-ink">
-                  {lesson.lessonTitle}
-                </span>
-                <span className="type-caption shrink-0 text-ink-tertiary">
-                  {lesson.courseTitle} ・ {lesson.chapterTitle}
-                </span>
+                {/*
+                  狭い画面では、コース名・章名を同じ行に置くとレッスン名が
+                  切れてしまうため下の行に回す
+                */}
+                <div className="min-w-0 flex-1 sm:flex sm:items-center sm:gap-3">
+                  <span className="type-body-sm block truncate text-ink sm:min-w-0 sm:flex-1">
+                    {lesson.lessonTitle}
+                  </span>
+                  <span className="type-caption mt-0.5 block truncate text-ink-tertiary sm:mt-0 sm:shrink-0">
+                    {lesson.courseTitle} ・ {lesson.chapterTitle}
+                  </span>
+                </div>
               </li>
             ))}
           </ul>
