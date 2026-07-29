@@ -55,7 +55,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
     restorableDraft ?? defaultCodeForSlide(lesson, initialSlideIndex);
 
   return (
-    <div className="flex h-screen bg-canvas">
+    <div className="flex h-dvh bg-canvas">
       <LessonSidebar
         course={course}
         currentLessonId={lessonId}

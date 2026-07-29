@@ -26,7 +26,7 @@ export default async function SignupPage({ searchParams }: SignupPageProps) {
   }
 
   return (
-    <div className="min-h-screen bg-canvas">
+    <div className="min-h-dvh bg-canvas">
       <SiteHeader />
       <main className="mx-auto max-w-sm px-6 pt-16 pb-24">
         <p className="type-eyebrow text-ink-tertiary">Create account</p>

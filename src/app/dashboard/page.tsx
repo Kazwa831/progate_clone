@@ -37,7 +37,7 @@ export default async function DashboardPage() {
   const studyTime = formatStudyTime(stats.studySummary.totalStudySeconds);
 
   return (
-    <div className="min-h-screen bg-canvas">
+    <div className="min-h-dvh bg-canvas">
       <SiteHeader current="dashboard" />
 
       <main className="mx-auto max-w-4xl px-6">
@@ -113,7 +113,7 @@ export default async function DashboardPage() {
                 <div className="flex flex-wrap items-baseline justify-between gap-2">
                   <Link
                     href={`/courses/${course.courseId}`}
-                    className="interactive type-card-title rounded-sm text-ink hover:text-highlight focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    className="interactive type-card-title flex min-h-11 items-center rounded-sm text-ink hover:text-highlight sm:min-h-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     {course.title}
                   </Link>
@@ -133,7 +133,7 @@ export default async function DashboardPage() {
                 {course.lastStudiedLessonId ? (
                   <Link
                     href={`/courses/${course.courseId}/lessons/${course.lastStudiedLessonId}`}
-                    className="interactive type-body-sm mt-3 inline-block rounded-sm font-medium text-link underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    className="interactive type-body-sm mt-2 -ml-2 inline-flex min-h-11 items-center rounded-md px-2 font-medium text-link underline-offset-4 hover:bg-surface-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     続きから →
                   </Link>
@@ -141,7 +141,7 @@ export default async function DashboardPage() {
                   course.firstLessonId && (
                     <Link
                       href={`/courses/${course.courseId}/lessons/${course.firstLessonId}`}
-                      className="interactive type-body-sm mt-3 inline-block rounded-sm font-medium text-link underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      className="interactive type-body-sm mt-2 -ml-2 inline-flex min-h-11 items-center rounded-md px-2 font-medium text-link underline-offset-4 hover:bg-surface-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
                       始める →
                     </Link>

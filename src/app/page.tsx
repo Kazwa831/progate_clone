@@ -39,7 +39,7 @@ export default async function Home() {
     : `/courses/${courses[0]?.id}`;
 
   return (
-    <div className="min-h-screen bg-canvas">
+    <div className="min-h-dvh bg-canvas">
       <SiteHeader current="courses" />
 
       <main className="mx-auto max-w-5xl px-6">

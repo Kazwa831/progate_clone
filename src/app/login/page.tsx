@@ -29,7 +29,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const cameFromProtectedPage = destination !== "/";
 
   return (
-    <div className="min-h-screen bg-canvas">
+    <div className="min-h-dvh bg-canvas">
       <SiteHeader />
       <main className="mx-auto max-w-sm px-6 pt-16 pb-24">
         <p className="type-eyebrow text-ink-tertiary">Sign in</p>

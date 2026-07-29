@@ -51,7 +51,7 @@ export default async function CourseDetailPage({
   const hasStarted = progressMap.size > 0;
 
   return (
-    <div className="min-h-screen bg-canvas">
+    <div className="min-h-dvh bg-canvas">
       <SiteHeader current="courses" />
 
       <main className="mx-auto max-w-3xl px-6">
