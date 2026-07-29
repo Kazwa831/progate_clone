@@ -10,6 +10,11 @@ type LessonSidebarProps = {
   progressMap: Map<string, { status: LessonStatus }>;
   totalCompleted: number;
   totalLessons: number;
+  /**
+   * 表示のしかたは置き場所によって変わる（画面横に固定するか、
+   * 狭い画面のドロワーの中に入れるか）ため、呼び出し側から指定する
+   */
+  className?: string;
 };
 
 function StatusMarker({
@@ -41,6 +46,7 @@ export function LessonSidebar({
   progressMap,
   totalCompleted,
   totalLessons,
+  className = "hidden h-full w-72 shrink-0 flex-col overflow-y-auto border-r border-hairline bg-canvas md:flex",
 }: LessonSidebarProps) {
   const progressPercent =
     totalLessons > 0 ? Math.round((totalCompleted / totalLessons) * 100) : 0;
@@ -48,10 +54,7 @@ export function LessonSidebar({
   // 学習画面ではコードとプレビューを主役にしたいので、サイドバーは
   // canvasと同じ面に置いて後ろへ下げる（カードのように持ち上げない）
   return (
-    <nav
-      aria-label="レッスン一覧"
-      className="hidden h-full w-72 shrink-0 flex-col overflow-y-auto border-r border-hairline bg-canvas md:flex"
-    >
+    <nav aria-label="レッスン一覧" className={className}>
       <div className="shrink-0 border-b border-hairline px-4 py-4">
         <Link
           href="/"

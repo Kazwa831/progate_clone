@@ -92,7 +92,11 @@ export function SlidePanel({
         )}
       </div>
 
-      <div className="mt-8 shrink-0 border-t border-hairline pt-4">
+      {/*
+        狭い画面では画面下部の操作バーが前へ/次へを担当するため、ここには出さない
+        （同じ操作が2か所に出てしまうのを避ける）
+      */}
+      <div className="mt-8 hidden shrink-0 border-t border-hairline pt-4 md:block">
         {nextPreviewTitle && (
           <p className="type-caption mb-3 text-right text-ink-tertiary">
             次のレッスン: <span className="text-ink-subtle">{nextPreviewTitle}</span>

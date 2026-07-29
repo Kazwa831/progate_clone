@@ -30,6 +30,8 @@ import {
   useStudyTimeTracker,
 } from "@/hooks/useStudyTimeTracker";
 import { SlidePanel } from "@/components/SlidePanel";
+import { LessonTabs, type LessonTab } from "@/components/LessonTabs";
+import { LessonActionBar } from "@/components/LessonActionBar";
 import { CodeEditor } from "@/components/CodeEditor";
 import { PreviewPane } from "@/components/PreviewPane";
 import { ResultChecker } from "@/components/ResultChecker";
@@ -132,6 +134,9 @@ export function LessonWorkspace({
 }: LessonWorkspaceProps) {
   const router = useRouter();
   const [slideIndex, setSlideIndex] = useState(initialSlideIndex);
+  // 狭い画面では3ペインを並べられないため、どれを見せるかを持つ。
+  // md以上では3ペインが常に並ぶので、この値は表示に影響しない
+  const [mobileTab, setMobileTab] = useState<LessonTab>("slide");
   const [code, setCode] = useState(initialCode);
   const [result, setResult] = useState<JudgeResult | null>(null);
   const [jsRunResult, setJsRunResult] = useState<JsRunResult | null>(null);
@@ -243,6 +248,8 @@ export function LessonWorkspace({
     setCode(nextCode);
     setResult(null);
     setJsRunResult(null);
+    // 新しいスライドはまず解説から読んでもらう（狭い画面のみ影響）
+    setMobileTab("slide");
     pendingJudgeRef.current = false;
     reportProgress(courseId, lesson.id, nextIndex, "in_progress", nextCode);
   }
@@ -267,6 +274,19 @@ export function LessonWorkspace({
     if (nextLesson) {
       router.push(`/courses/${courseId}/lessons/${nextLesson.lessonId}`);
     }
+  }
+
+  /**
+   * 狭い画面の操作バーから判定する。
+   *
+   * HTML/CSSの判定はプレビューのiframeのDOMを読むため、非表示のまま判定すると
+   * 結果が変わりうる。先に結果タブへ切り替え、描画が反映されてから判定する。
+   */
+  function handleCheckFromActionBar() {
+    setMobileTab("result");
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => handleCheck());
+    });
   }
 
   function handleReset() {
@@ -357,8 +377,18 @@ export function LessonWorkspace({
   const nextDisabled = isLastSlide && !nextLesson;
 
   return (
-    <div className="grid h-full grid-cols-1 bg-canvas md:grid-cols-2">
-      <div className="min-h-0 border-b border-hairline md:border-b-0 md:border-r">
+    <div className="flex h-full flex-col bg-canvas md:grid md:grid-cols-2">
+      <LessonTabs
+        value={mobileTab}
+        onChange={setMobileTab}
+        resultLabel={currentSlide.type === "exercise" ? "結果" : "プレビュー"}
+      />
+
+      <div
+        className={`min-h-0 border-b border-hairline md:block md:border-b-0 md:border-r ${
+          mobileTab === "slide" ? "flex-1" : "hidden"
+        }`}
+      >
         <SlidePanel
           slide={currentSlide}
           currentIndex={slideIndex}
@@ -372,8 +402,16 @@ export function LessonWorkspace({
           nextPreviewTitle={isLastSlide && nextLesson ? nextLesson.title : undefined}
         />
       </div>
-      <div className="grid min-h-0 grid-rows-2">
-        <div className="flex min-h-0 flex-col border-b border-hairline">
+      <div
+        className={`min-h-0 md:grid md:grid-rows-2 ${
+          mobileTab === "slide" ? "hidden" : "flex flex-1 flex-col"
+        }`}
+      >
+        <div
+          className={`min-h-0 flex-col border-b border-hairline md:flex ${
+            mobileTab === "code" ? "flex flex-1" : "hidden"
+          }`}
+        >
           <div className="flex shrink-0 items-center gap-2 border-b border-hairline bg-surface-3 px-4 py-2.5">
             <span className="h-2 w-2 shrink-0 rounded-full bg-highlight" />
             <span className="type-caption font-mono text-ink-subtle">
@@ -384,7 +422,11 @@ export function LessonWorkspace({
             <CodeEditor value={code} language={courseLanguage} onChange={setCode} />
           </div>
         </div>
-        <div className="flex min-h-0 flex-col bg-surface-1">
+        <div
+          className={`min-h-0 flex-col bg-surface-1 md:flex ${
+            mobileTab === "result" ? "flex flex-1" : "hidden"
+          }`}
+        >
           <div className="flex shrink-0 items-center justify-between border-b border-hairline bg-surface-3 px-4 py-2.5">
             <span className="type-caption flex items-center gap-1.5 font-medium text-ink-subtle">
               <EyeIcon className="h-3.5 w-3.5" />
@@ -427,6 +469,22 @@ export function LessonWorkspace({
           )}
         </div>
       </div>
+
+      <LessonActionBar
+        onPrev={handlePrev}
+        onNext={handleNext}
+        prevLabel={prevLabel}
+        nextLabel={nextLabel}
+        nextDisabled={nextDisabled}
+        onCheck={
+          // 結果タブにはResultCheckerの実行ボタンが出ているため、
+          // 操作バー側には出さない（同じボタンが2つ並ばないようにする）
+          currentSlide.type === "exercise" && mobileTab !== "result"
+            ? handleCheckFromActionBar
+            : undefined
+        }
+        checkDisabled={Boolean(asyncRunner) && !asyncRunnerReady}
+      />
     </div>
   );
 }

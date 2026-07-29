@@ -7,6 +7,7 @@ import { getLessonPosition } from "@/lib/courseNavigation";
 import { defaultCodeForSlide } from "@/lib/lessonCode";
 import { LessonWorkspace } from "@/components/LessonWorkspace";
 import { LessonSidebar } from "@/components/LessonSidebar";
+import { LessonDrawer } from "@/components/LessonDrawer";
 
 type LessonPageProps = {
   params: Promise<{ courseId: string; lessonId: string }>;
@@ -64,12 +65,28 @@ export default async function LessonPage({ params }: LessonPageProps) {
         totalLessons={position.totalLessons}
       />
       <div className="flex min-h-0 flex-1 flex-col">
-        <header className="shrink-0 border-b border-hairline bg-canvas px-6 py-3.5">
-          <p className="type-eyebrow text-ink-tertiary">
-            {position.chapterTitle} ・ {position.indexInChapter + 1} /{" "}
-            {position.totalInChapter}
-          </p>
-          <h1 className="type-card-title mt-1 text-ink">{lesson.title}</h1>
+        <header className="flex shrink-0 items-center gap-2 border-b border-hairline bg-canvas px-3 py-3 sm:px-6 sm:py-3.5">
+          {/* 狭い画面ではサイドバーが出せないため、ここから一覧を開く */}
+          <LessonDrawer>
+            <LessonSidebar
+              course={course}
+              currentLessonId={lessonId}
+              progressMap={progressMap}
+              totalCompleted={totalCompleted}
+              totalLessons={position.totalLessons}
+              className="flex h-full w-full flex-col bg-canvas"
+            />
+          </LessonDrawer>
+
+          <div className="min-w-0">
+            <p className="type-eyebrow truncate text-ink-tertiary">
+              {position.chapterTitle} ・ {position.indexInChapter + 1} /{" "}
+              {position.totalInChapter}
+            </p>
+            <h1 className="type-card-title mt-1 truncate text-ink">
+              {lesson.title}
+            </h1>
+          </div>
         </header>
         <div className="min-h-0 flex-1">
           <LessonWorkspace
