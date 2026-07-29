@@ -1,12 +1,27 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { AuthForm } from "@/components/AuthForm";
 import { SiteHeader } from "@/components/SiteHeader";
+import { sanitizeCallbackUrl } from "@/lib/callbackUrl";
+import { getCurrentUserId } from "@/lib/session";
 
 export const metadata: Metadata = {
   title: "新規登録 | Progate Clone",
 };
 
-export default function SignupPage() {
+type SignupPageProps = {
+  searchParams: Promise<{ callbackUrl?: string }>;
+};
+
+export default async function SignupPage({ searchParams }: SignupPageProps) {
+  const { callbackUrl } = await searchParams;
+  const destination = sanitizeCallbackUrl(callbackUrl);
+
+  // ログイン済みの人に登録画面を見せない
+  if ((await getCurrentUserId()) !== null) {
+    redirect(destination);
+  }
+
   return (
     <div className="min-h-screen bg-canvas">
       <SiteHeader />
@@ -16,7 +31,7 @@ export default function SignupPage() {
         <p className="type-body-sm mt-2 text-ink-subtle">
           学習の進捗はアカウントごとに保存されます。
         </p>
-        <AuthForm mode="signup" />
+        <AuthForm mode="signup" callbackUrl={destination} />
       </main>
     </div>
   );

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getLearningStatistics } from "@/lib/statistics";
 import { getCurrentUserId } from "@/lib/session";
+import { loginUrlFor } from "@/lib/callbackUrl";
 import { SiteHeader } from "@/components/SiteHeader";
 import { StatCard } from "@/components/StatCard";
 import { StreakBadges } from "@/components/StreakBadges";
@@ -29,7 +30,7 @@ export default async function DashboardPage() {
   // 個人の学習記録を表示する画面なので、ログインしていなければ見せない
   const userId = await getCurrentUserId();
   if (userId === null) {
-    redirect("/login");
+    redirect(loginUrlFor("/dashboard"));
   }
 
   const stats = await getLearningStatistics(userId);

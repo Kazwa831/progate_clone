@@ -85,6 +85,7 @@ progate_clone/
 │   │   ├── auth.ts                  # 認証のサーバー設定（Better Auth）
 │   │   ├── auth-client.ts           # 認証のクライアント
 │   │   ├── session.ts               # ログイン中のユーザーIDの取得
+│   │   ├── callbackUrl.ts           # ログイン後の戻り先の検証
 │   │   ├── contentLoader.ts
 │   │   ├── progress.ts              # 進捗の保存・取得
 │   │   ├── statistics.ts            # 学習ダッシュボード用の集計
@@ -172,9 +173,25 @@ progate_clone/
 - **`userId`はリクエストボディから受け取らない。** 必ず `getCurrentUserId()`
   （`src/lib/session.ts`）でセッションから解決する。ボディで受けると、他人のIDを
   送るだけで他人のデータを読み書きできてしまう。
+- **ログイン後の戻り先（callbackUrl）は必ず `sanitizeCallbackUrl()` を通す。**
+  受け取った値をそのまま遷移先にすると、自サイトのログイン画面から外部サイトへ
+  誘導できてしまう（オープンリダイレクト）。自サイト内の相対パスだけを許可する。
 - ログイン失敗のメッセージは理由を区別せず共通化する（アカウント列挙対策）。
 - パスワードはBetter Auth標準のscryptでハッシュ化する。平文は保存もログ出力もしない。
 - 秘密情報は`.env`のみに置く（`.gitignore`済み）。`.env.example`にはキー名と取得方法だけ書く。
+
+### 保護範囲
+
+| ルート | 方針 |
+|---|---|
+| `/`、`/courses/[courseId]` | 公開。未ログインでは進捗・完了マーク・学習状況を**出さない** |
+| `/courses/.../lessons/...`、`/dashboard` | 要ログイン。`/login?callbackUrl=元のパス` へ |
+| `/login`、`/signup` | ログイン済みなら戻り先（既定は `/`）へ |
+| `POST /api/progress`、`POST /api/study-time`、`GET /api/progress` | 要ログイン（401） |
+| `GET /api/courses` | 公開（教材内容のみでユーザーに依存しない） |
+
+未ログインの人に「全体の進捗 0%」のような**その人にとって意味のない数字は出さない**。
+アカウント作成の案内に置き換える。
 
 ## API設計ルール
 

@@ -2,6 +2,7 @@ import { notFound, redirect } from "next/navigation";
 import { getCourseById, getLessonById } from "@/lib/contentLoader";
 import { getLessonProgressMap } from "@/lib/progress";
 import { getCurrentUserId } from "@/lib/session";
+import { loginUrlFor } from "@/lib/callbackUrl";
 import { getLessonPosition } from "@/lib/courseNavigation";
 import { defaultCodeForSlide } from "@/lib/lessonCode";
 import { LessonWorkspace } from "@/components/LessonWorkspace";
@@ -21,10 +22,11 @@ export default async function LessonPage({ params }: LessonPageProps) {
     notFound();
   }
 
-  // 学習画面は進捗の保存を伴うため、ログインしていなければ開けない
+  // 学習画面は進捗の保存を伴うため、ログインしていなければ開けない。
+  // ログイン後はこのレッスンに戻す
   const userId = await getCurrentUserId();
   if (userId === null) {
-    redirect("/login");
+    redirect(loginUrlFor(`/courses/${courseId}/lessons/${lessonId}`));
   }
 
   const progressMap = await getLessonProgressMap(userId, courseId);

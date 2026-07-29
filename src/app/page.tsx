@@ -12,7 +12,9 @@ export const dynamic = "force-dynamic";
 export default async function Home() {
   const courses = getAllCourses();
   // 未ログインでもコースは見られる。その場合は進捗のない状態で表示する
-  const progressList = await getAllCourseProgress(await getCurrentUserId());
+  const userId = await getCurrentUserId();
+  const isLoggedIn = userId !== null;
+  const progressList = await getAllCourseProgress(userId);
   const progressByCourseId = new Map(
     progressList.map((progress) => [progress.courseId, progress])
   );
@@ -55,7 +57,44 @@ export default async function Home() {
             HTML/CSSからSQLまで、{courses.length}コース{totalLessons}レッスン。
           </p>
 
-          {resumeCourse && (
+          {/*
+            未ログインの人に「全体の進捗 0%」を見せても意味のある数字にならないため、
+            進捗ではなくアカウント作成の案内を出す
+          */}
+          {!isLoggedIn && (
+            <div className="elevate-2 mt-10 overflow-hidden rounded-2xl">
+              <div className="flex flex-col gap-6 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
+                <div className="min-w-0">
+                  <p className="type-eyebrow text-ink-tertiary">はじめての方へ</p>
+                  <p className="type-headline mt-2 text-ink">
+                    アカウントを作ると、学習の記録が残ります
+                  </p>
+                  <p className="type-body-sm mt-2 text-ink-subtle">
+                    どこまで進んだか、書きかけのコード、連続学習日数が保存されます。
+                    コースの内容は登録しなくても見られます。
+                  </p>
+                </div>
+
+                <div className="flex shrink-0 items-center gap-3">
+                  <Link
+                    href="/signup"
+                    className="interactive inline-flex items-center gap-2 rounded-lg bg-accent px-5 py-3 text-sm font-medium text-accent-ink hover:bg-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-canvas"
+                  >
+                    <PlayIcon className="h-4 w-4" />
+                    無料で始める
+                  </Link>
+                  <Link
+                    href="/login"
+                    className="interactive rounded-lg px-4 py-3 text-sm font-medium text-ink-subtle hover:bg-surface-3 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    ログイン
+                  </Link>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {isLoggedIn && resumeCourse && (
             <div className="elevate-2 mt-10 overflow-hidden rounded-2xl">
               <div className="flex flex-col gap-6 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
                 <div className="min-w-0">
@@ -104,7 +143,9 @@ export default async function Home() {
           <div className="flex items-baseline justify-between">
             <h2 className="type-headline text-ink">コース</h2>
             <p className="type-caption text-ink-tertiary">
-              {completedLessons} / {totalLessons} レッスン完了
+              {isLoggedIn
+                ? `${completedLessons} / ${totalLessons} レッスン完了`
+                : `全${totalLessons}レッスン`}
             </p>
           </div>
 

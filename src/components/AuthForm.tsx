@@ -4,10 +4,13 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signIn, signUp } from "@/lib/auth-client";
+import { sanitizeCallbackUrl } from "@/lib/callbackUrl";
 import { AlertIcon } from "@/components/icons";
 
 type AuthFormProps = {
   mode: "signup" | "login";
+  /** ログイン後の戻り先。保護されたページから来た場合に渡される */
+  callbackUrl?: string;
 };
 
 /** パスワードの最低文字数。サーバー側(auth.ts)の設定と揃えている */
@@ -22,9 +25,13 @@ const LOGIN_FAILED_MESSAGE = "メールアドレスまたはパスワードが�
 const SIGNUP_FAILED_MESSAGE =
   "登録できませんでした。入力内容を確認してください";
 
-export function AuthForm({ mode }: AuthFormProps) {
+export function AuthForm({ mode, callbackUrl }: AuthFormProps) {
   const router = useRouter();
   const isSignup = mode === "signup";
+
+  // 戻り先はページ側でも検証済みだが、遷移する直前にもう一度通す。
+  // 検証を1か所に頼ると、将来別の場所から渡されたときに素通りしてしまうため
+  const destination = sanitizeCallbackUrl(callbackUrl);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -52,7 +59,7 @@ export function AuthForm({ mode }: AuthFormProps) {
       return;
     }
 
-    router.push("/");
+    router.push(destination);
     router.refresh();
   }
 
@@ -132,7 +139,10 @@ export function AuthForm({ mode }: AuthFormProps) {
       <p className="type-body-sm mt-2 text-center text-ink-subtle">
         {isSignup ? "すでにアカウントをお持ちですか？ " : "アカウントがまだですか？ "}
         <Link
-          href={isSignup ? "/login" : "/signup"}
+          href={`${isSignup ? "/login" : "/signup"}${
+            // 画面を行き来しても戻り先を見失わないように引き継ぐ
+            destination === "/" ? "" : `?callbackUrl=${encodeURIComponent(destination)}`
+          }`}
           className="interactive rounded-sm font-medium text-link underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           {isSignup ? "ログイン" : "新規登録"}

@@ -31,10 +31,9 @@ export default async function CourseDetailPage({
   }
 
   // 未ログインでもカリキュラムは見られる。その場合は完了マークが付かない
-  const progressMap = await getLessonProgressMap(
-    await getCurrentUserId(),
-    course.id
-  );
+  const userId = await getCurrentUserId();
+  const isLoggedIn = userId !== null;
+  const progressMap = await getLessonProgressMap(userId, course.id);
   const sequence = getLessonSequence(course);
   const completedCount = sequence.filter(
     (item) => progressMap.get(item.lessonId)?.status === "completed"
@@ -83,12 +82,15 @@ export default async function CourseDetailPage({
                 </div>
 
                 <div className="flex shrink-0 items-center gap-5">
-                  <div className="text-right">
-                    <p className="type-metric text-ink">{progressPercent}%</p>
-                    <p className="type-caption mt-1 text-ink-tertiary">
-                      {completedCount} / {sequence.length} 完了
-                    </p>
-                  </div>
+                  {/* 未ログインの人に「0 / 26 完了」を見せても意味がないため出さない */}
+                  {isLoggedIn && (
+                    <div className="text-right">
+                      <p className="type-metric text-ink">{progressPercent}%</p>
+                      <p className="type-caption mt-1 text-ink-tertiary">
+                        {completedCount} / {sequence.length} 完了
+                      </p>
+                    </div>
+                  )}
                   <Link
                     href={`/courses/${course.id}/lessons/${nextLesson.lessonId}`}
                     className="interactive inline-flex items-center gap-2 rounded-lg bg-accent px-5 py-3 text-sm font-medium text-accent-ink hover:bg-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-canvas"
@@ -98,12 +100,18 @@ export default async function CourseDetailPage({
                   </Link>
                 </div>
               </div>
-              <div className="h-1 w-full bg-surface-3">
-                <div
-                  className="h-full bg-highlight transition-[width] duration-700"
-                  style={{ width: `${progressPercent}%` }}
-                />
-              </div>
+              {isLoggedIn ? (
+                <div className="h-1 w-full bg-surface-3">
+                  <div
+                    className="h-full bg-highlight transition-[width] duration-700"
+                    style={{ width: `${progressPercent}%` }}
+                  />
+                </div>
+              ) : (
+                <p className="type-caption border-t border-hairline bg-surface-1 px-6 py-3 text-ink-tertiary">
+                  レッスンを始めるにはログインが必要です。進捗はアカウントごとに保存されます。
+                </p>
+              )}
             </div>
           )}
         </section>
@@ -133,7 +141,9 @@ export default async function CourseDetailPage({
                       {chapter.title}
                     </h3>
                     <span className="type-caption ml-auto shrink-0 text-ink-tertiary tabular-nums">
-                      {chapterDone} / {chapterLessons.length}
+                      {isLoggedIn
+                        ? `${chapterDone} / ${chapterLessons.length}`
+                        : `${chapterLessons.length}レッスン`}
                     </span>
                   </div>
 
@@ -171,15 +181,18 @@ export default async function CourseDetailPage({
                               {lesson?.title ?? lessonId}
                             </span>
 
-                            <span
-                              className={`type-caption shrink-0 ${
-                                isInProgress
-                                  ? "font-medium text-highlight"
-                                  : "text-ink-tertiary"
-                              }`}
-                            >
-                              {STATUS_LABEL[status]}
-                            </span>
+                            {/* 学習状況はアカウントごとの情報なので未ログインでは出さない */}
+                            {isLoggedIn && (
+                              <span
+                                className={`type-caption shrink-0 ${
+                                  isInProgress
+                                    ? "font-medium text-highlight"
+                                    : "text-ink-tertiary"
+                                }`}
+                              >
+                                {STATUS_LABEL[status]}
+                              </span>
+                            )}
                           </Link>
                         </li>
                       );
