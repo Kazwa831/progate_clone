@@ -1645,3 +1645,80 @@ Better Authの `getSessionCookie` はCookieの存在確認のみでセッショ�
   発行された値を`.env`の`GOOGLE_CLIENT_ID`・`GOOGLE_CLIENT_SECRET`に貼り付け
 - 実装側: `auth.ts`にsocialProvidersを追加、ログイン/登録画面にGoogleボタンを追加
 - 同一メールアドレスでのメール認証アカウントとの紐付け方針を実装前に確認する
+
+---
+
+## 2026-07-29: ログイン機能 段階4（Google OAuth）
+
+DBスキーマの変更なし。`Account` テーブルが `providerId` + `accountId` を持つ設計のため、
+マイグレーション不要でGoogleアカウントを追加できた。
+
+### 実装前に判明した重要な点（Better Auth 1.6.25 のソースを直接確認）
+`node_modules/better-auth/dist/oauth2/link-account.mjs` の判定は次の形になっている。
+
+```js
+const requireLocalEmailVerified = accountLinking?.requireLocalEmailVerified ?? true;
+if ((!isTrustedProvider && !userInfo.emailVerified) ||
+    (requireLocalEmailVerified && !dbUser.user.emailVerified) || ...) → 紐付け拒否
+```
+
+ここから2点が分かった。
+
+1. **`trustedProviders` にGoogleを入れてはいけない。**
+   `isTrustedProvider` が真だと `userInfo.emailVerified` の判定ごと飛ばされる。
+   「安全そうだから信頼済みにする」は、要件（Googleが確認済みのときのみ紐付ける）を
+   **無効化する**設定だった。既定値は `[]` なので、設定しないのが正解。
+   なおGoogleの `emailVerified` はIDトークンの `email_verified` を直接マッピングしている
+   （`@better-auth/core/dist/social-providers/google.mjs:120`）。
+2. **`requireLocalEmailVerified` の既定は `true`。** このアプリはサインアップ時に
+   `emailVerified: false` 固定（`sign-up.mjs:181,226`）でメール確認もしないため、
+   このままでは既存のパスワードアカウントとは**常に紐付かない**。
+
+2について、`false`にして自動紐付けを優先する案（A）と、既定のまま安全側に倒す案（C）を
+比較してユーザーに確認し、**C（既定のまま）を採用**した。
+理由は、このアプリがメールアドレスの所有確認をしていないため、`false`にすると
+「攻撃者が他人のアドレスでパスワード登録 → 後で本人がGoogleログイン → 紐付いて
+攻撃者のパスワードでも入れる」というアカウント事前乗っ取りが成立してしまうため。
+紐付けできない場合は `account_not_linked` になるので、ログイン画面で理由を案内する。
+
+### 変更ファイル
+- `src/lib/auth.ts`: `socialProviders.google` と `accountLinking` の方針、
+  `onAPIError.errorURL: "/login"`（既定の `/api/auth/error` ではなく自前の画面に戻す）
+- 新規 `src/components/GoogleSignInButton.tsx`: `signIn.social()` を呼ぶ。
+  戻り先を引き継ぎ、失敗時は `/login` へ
+- 新規 `src/lib/authError.ts`: `?error=` の説明文を日本語に対応付ける
+- `src/components/AuthForm.tsx`: Googleボタンと「またはメールアドレスで」の区切りを追加
+- `src/app/login/page.tsx` / `src/app/signup/page.tsx`: `?error=` を受けて案内を表示
+- `CLAUDE.md`: 上記の方針を明文化
+
+### 動作確認結果（実測）
+- `npm run lint` / `npm run build` 成功
+- **認可URLの組み立て**: `accounts.google.com/o/oauth2/v2/auth` へ、
+  `redirect_uri=http://localhost:3000/api/auth/callback/google`（登録値と一致）、
+  `scope=email profile openid`、`response_type=code`、
+  **PKCE有効（`code_challenge_method=S256`）**、`state` あり
+- **設定の解決結果を実インスタンスで確認**:
+  `trustedProviders=undefined`（→`[]`）、`requireLocalEmailVerified=undefined`（→既定`true`）。
+  判定式に当てはめると「Google側・ローカル側の両方が確認済みのときだけ紐付ける」となり、
+  意図どおり
+- **コールバックのエラー経路**: 不正なコールバックが
+  `/login?error=state_not_found` へ戻ることを確認（既定の `/api/auth/error` ではない）
+- **エラー案内**: `account_not_linked` / `access_denied` / 未知のエラーで
+  それぞれ適切な日本語が出る
+- **既存フローの回帰**: メール/パスワードの登録・ログアウト・再ログイン、
+  戻り先（`callbackUrl=/dashboard`）がすべて従来どおり動作
+- ライト/ダーク両モードでスクリーンショットを取得
+- コンソールエラー: 0件
+- 検証データは削除済み
+
+### 実ログインでの確認（ユーザーが実施）
+Googleの認証画面は自動操作をブロックするため、認可画面への遷移までしか
+こちらでは確認できなかった。残りはユーザーが実機で確認し、次の結果を得た。
+- Googleアカウントでログインし、ヘッダーに名前が表示されることを確認
+- DBで `emailVerified=1` / `providerId=google` になっていることを確認
+
+これで「Googleで新規登録 → ログイン状態になる」経路が実際に動くことが確認できた。
+
+### 次回やること
+認証機能は段階1〜4で完了。以降の候補は章末の復習機能、モバイル対応、
+レッスン数の拡充など。

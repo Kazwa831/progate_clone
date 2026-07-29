@@ -27,6 +27,39 @@ export const auth = betterAuth({
     requireEmailVerification: false,
   },
 
+  socialProviders: {
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID ?? "",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
+    },
+  },
+
+  account: {
+    accountLinking: {
+      enabled: true,
+
+      // trustedProviders は「あえて設定しない」。
+      // Better Authの判定は
+      //   (!isTrustedProvider && !userInfo.emailVerified) → 紐付け拒否
+      // という形になっており、信頼済みにするとGoogle側のemail_verifiedの
+      // 確認ごと飛ばされてしまう。未設定にすることで
+      // 「Googleがメールアドレスを確認済みのときだけ紐付ける」が成立する。
+
+      // requireLocalEmailVerified は既定の true のまま使う。
+      // このアプリはメールアドレスの所有確認をしていないため、falseにすると
+      // 「攻撃者が他人のアドレスでパスワード登録 → 後で本人がGoogleログイン →
+      // 紐付いて攻撃者のパスワードでも入れる」という乗っ取りが成立してしまう。
+      // その結果、パスワード登録済みのアドレスとは紐付かず
+      // account_not_linked になるので、ログイン画面で理由を案内する。
+    },
+  },
+
+  // 紐付けできなかった場合などに、既定の /api/auth/error ではなく
+  // 自前のログイン画面へ戻して理由を日本語で伝える
+  onAPIError: {
+    errorURL: "/login",
+  },
+
   // 総当たり攻撃を抑えるため、認証エンドポイントへのリクエストを制限する
   rateLimit: {
     enabled: true,

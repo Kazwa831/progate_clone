@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { AuthForm } from "@/components/AuthForm";
 import { SiteHeader } from "@/components/SiteHeader";
+import { AlertIcon } from "@/components/icons";
 import { sanitizeCallbackUrl } from "@/lib/callbackUrl";
+import { authErrorMessage } from "@/lib/authError";
 import { getCurrentUserId } from "@/lib/session";
 
 export const metadata: Metadata = {
@@ -10,12 +12,13 @@ export const metadata: Metadata = {
 };
 
 type LoginPageProps = {
-  searchParams: Promise<{ callbackUrl?: string }>;
+  searchParams: Promise<{ callbackUrl?: string; error?: string }>;
 };
 
 export default async function LoginPage({ searchParams }: LoginPageProps) {
-  const { callbackUrl } = await searchParams;
+  const { callbackUrl, error } = await searchParams;
   const destination = sanitizeCallbackUrl(callbackUrl);
+  const errorMessage = authErrorMessage(error);
 
   // ログイン済みの人にログイン画面を見せない
   if ((await getCurrentUserId()) !== null) {
@@ -36,6 +39,17 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             ? "続けるにはログインが必要です。ログインすると元の画面に戻ります。"
             : "続きから学習を再開しましょう。"}
         </p>
+
+        {errorMessage && (
+          <p
+            role="alert"
+            className="type-body-sm mt-6 flex items-start gap-2 rounded-lg border-l-2 border-destructive bg-destructive/10 px-3 py-2.5 text-destructive-text"
+          >
+            <AlertIcon className="mt-0.5 h-4 w-4 shrink-0" />
+            {errorMessage}
+          </p>
+        )}
+
         <AuthForm mode="login" callbackUrl={destination} />
       </main>
     </div>

@@ -73,6 +73,7 @@ progate_clone/
 │   │   ├── SiteHeader.tsx           # 全画面共通のヘッダー
 │   │   ├── AuthForm.tsx             # 登録/ログイン共通フォーム
 │   │   ├── SignOutButton.tsx        # ログアウト
+│   │   ├── GoogleSignInButton.tsx   # Googleでログイン
 │   │   ├── StatCard.tsx             # ダッシュボードの数値タイル
 │   │   ├── StreakBadges.tsx         # 連続学習日数の達成バッジ
 │   │   ├── CompletedLessonList.tsx  # 完了レッスンの履歴一覧
@@ -86,6 +87,7 @@ progate_clone/
 │   │   ├── auth-client.ts           # 認証のクライアント
 │   │   ├── session.ts               # ログイン中のユーザーIDの取得
 │   │   ├── callbackUrl.ts           # ログイン後の戻り先の検証
+│   │   ├── authError.ts             # 認証エラーの説明文
 │   │   ├── contentLoader.ts
 │   │   ├── progress.ts              # 進捗の保存・取得
 │   │   ├── statistics.ts            # 学習ダッシュボード用の集計
@@ -179,6 +181,19 @@ progate_clone/
 - ログイン失敗のメッセージは理由を区別せず共通化する（アカウント列挙対策）。
 - パスワードはBetter Auth標準のscryptでハッシュ化する。平文は保存もログ出力もしない。
 - 秘密情報は`.env`のみに置く（`.gitignore`済み）。`.env.example`にはキー名と取得方法だけ書く。
+
+### Google OAuthとアカウント紐付け
+
+- **`accountLinking.trustedProviders` は設定しない。** Better Authの判定は
+  `(!isTrustedProvider && !userInfo.emailVerified)` で拒否する形になっており、
+  信頼済みにするとGoogle側の`email_verified`の確認ごと飛ばされる。
+  未設定にすることで「Googleが確認済みのときだけ紐付ける」が成立する。
+- **`requireLocalEmailVerified` は既定の`true`のまま。** このアプリはメールアドレスの
+  所有確認をしていないため、`false`にすると「攻撃者が他人のアドレスでパスワード登録
+  → 後で本人がGoogleログイン → 紐付いて攻撃者のパスワードでも入れる」という
+  乗っ取りが成立する。その結果、パスワード登録済みのアドレスとは紐付かず
+  `account_not_linked` になるので、ログイン画面で理由を案内する。
+- 将来メール確認機能を入れるまで、`accountLinking` は実質的に働かない点に注意。
 
 ### 保護範囲
 
